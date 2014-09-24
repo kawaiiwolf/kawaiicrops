@@ -1,4 +1,4 @@
-package com.kawaiiwolf.kawaiicrops.helpers;
+package com.kawaiiwolf.kawaiicrops.lib;
 
 public class Constants {
 	public static final String MOD_ID = "kawaiicrops";
