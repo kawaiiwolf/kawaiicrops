@@ -1,12 +1,40 @@
 package com.kawaiiwolf.kawaiicrops.item;
 
+import com.kawaiiwolf.kawaiicrops.lib.*;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 public class ItemHungerPotion extends ItemFood {
 
-	public ItemHungerPotion(int p_i45339_1_, float p_i45339_2_,	boolean p_i45339_3_) {
-		super(p_i45339_1_, p_i45339_2_, p_i45339_3_);
-		// TODO Auto-generated constructor stub
+	public ItemHungerPotion() {
+		super(0, 0, false);
+		setUnlocalizedName(Constants.ITEM_PREFIX + "hungerpotion");
+		setTextureName("potion_bottle_drinkable");
+		setAlwaysEdible();
+	}
+	
+	@Override
+    public EnumAction getItemUseAction(ItemStack par1ItemStack)
+    {
+        return EnumAction.drink;
+    }
+	
+	@Override
+    public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    {
+		ItemStack ret = super.onEaten(par1ItemStack, par2World, par3EntityPlayer);
+		if (par3EntityPlayer.getFoodStats().getFoodLevel() > 6)
+			par3EntityPlayer.getFoodStats().addStats(-6,0);
+		return ret;
+    }
+
+	public void register() {
+    	GameRegistry.registerItem(this, getUnlocalizedName());
 	}
 
 }
