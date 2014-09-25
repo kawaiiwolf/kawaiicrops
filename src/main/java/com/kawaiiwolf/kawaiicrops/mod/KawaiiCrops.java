@@ -5,7 +5,7 @@ import java.util.HashMap;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-import com.kawaiiwolf.kawaiicrops.item.ModItems;
+//import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.*;
 import com.kawaiiwolf.kawaiicrops.proxies.*;
 
@@ -33,7 +33,9 @@ public class KawaiiCrops {
     public void preInit(FMLPreInitializationEvent event) {
     	// Init Blocks/Items/etc
     	
-    	ModItems.preInit();
+    	//ModItems.preInit();
+    	
+    	ConfigurationLoader.loadConfiguration(event.getSuggestedConfigurationFile().getParent());
     }
  
     @Mod.EventHandler
