@@ -4,8 +4,6 @@ public class Constants {
 	public static final String MOD_ID = "kawaiicrops";
 	public static final String MOD_NAME = "A Kawaii Crop Mod";
 	public static final String VERSION = "0.0.1";
-	public static final String ITEM_PREFIX = MOD_ID + ".item.";
-	public static final String BLOCK_PREFIX = MOD_ID + ".block.";
 	public static final String CONFIG_FOLDER = "/kawaiicrops";
 	public static final String CONFIG_GENERAL = CONFIG_FOLDER + "/general.cfg";
 	public static final String CONFIG_BLOCKS = CONFIG_FOLDER + "/blocks.cfg";

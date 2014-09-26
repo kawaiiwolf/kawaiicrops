@@ -13,7 +13,7 @@ public class ItemHungerPotion extends ItemFood {
 
 	public ItemHungerPotion() {
 		super(0, 0, false);
-		setUnlocalizedName(Constants.ITEM_PREFIX + "hungerpotion");
+		setUnlocalizedName(Constants.MOD_ID + ".hungerpotion");
 		setTextureName("potion_bottle_drinkable");
 		setAlwaysEdible();
 	}

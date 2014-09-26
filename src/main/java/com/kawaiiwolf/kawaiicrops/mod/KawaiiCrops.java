@@ -33,7 +33,7 @@ public class KawaiiCrops {
     public void preInit(FMLPreInitializationEvent event) {
     	// Init Blocks/Items/etc
     	
-    	//ModItems.preInit();
+    	(new com.kawaiiwolf.kawaiicrops.item.ItemHungerPotion()).register();
     	
     	ConfigurationLoader.loadConfiguration(event.getSuggestedConfigurationFile().getParent());
     }
