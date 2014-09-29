@@ -2,6 +2,10 @@ package com.kawaiiwolf.kawaiicrops.block;
 
 import java.util.Set;
 
+import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
+import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
+import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeed;
+import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeedFood;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlock;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
@@ -15,6 +19,9 @@ import net.minecraft.block.BlockCrops;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemSeeds;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -55,32 +62,36 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	// Effectiveness of bonemeal.
 	public int BoneMealMin = 1;
 	public int BoneMealMax = 1;
+
+	// What block can this plant grow on. Do we want to allow more than one ?
+	public Block CropGrowsOn = Blocks.farmland;
 	
+	public boolean SeedsEnabled = true;
+	public boolean SeedsEdible = false;
+	public int SeedsHunger = 4;
+	public float SeedsSaturation = 0.6f;
+	public String SeedsToolTip = "";
+	public int SeedsMysterySeedWeight = 0;
+	
+	public boolean CropEnabled = true;
+	public boolean CropEdible = false;
+	public int CropHunger = 4;
+	public float CropSaturation = 0.6f;
+	public String CropToolTip = "";
+
 	/* TODO: Drops
 
 	drop tables
-	grows on
+	
+	water plant ?
+	
 	growth rate
-
-	Number of drops
-	bonus seeds
-	seed return
-
-	water ?
-	seed ?
-	seededible ?
-	seedhunger ?
-	seedsaturation ?
-	Mystery Seed Weight
-
-	seed tooltip
-	fruit ?
-	fruit hunger
-	fruit saturation
-	fruit tooltip
+	
 	*/
 	
     private IIcon[] iconArray;
+    private Item seed = null;
+    private Item crop = null;
 	
 	public BlockKawaiiCrop(String cropName)
 	{
@@ -93,7 +104,27 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	
 	public void register()
 	{
-		if (this.Enabled) GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		if (!this.Enabled) return; 
+		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		
+		if (this.SeedsEnabled) {
+			String seedName = this.Name + ".seed";
+			seed = (Item) (this.SeedsEdible 
+					? new ItemKawaiiSeedFood(seedName, this.SeedsToolTip, this.SeedsHunger, this.SeedsSaturation, this, this.CropGrowsOn) 
+					: new ItemKawaiiSeed(seedName, this.SeedsToolTip, this, this.CropGrowsOn));
+			
+			GameRegistry.registerItem(seed, Constants.MOD_ID + "." + seedName);
+		}
+		
+		if (this.CropEnabled) {
+			String cropName = this.Name + ".crop";
+			crop = (Item) (this.CropEdible
+					? new ItemKawaiiFood(cropName, this.CropToolTip, this.CropHunger, this.CropSaturation, this)
+					: new ItemKawaiiIngredient(cropName, this.CropToolTip, this));
+			
+			GameRegistry.registerItem(crop, Constants.MOD_ID + "." + cropName);
+		}
+			
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////
