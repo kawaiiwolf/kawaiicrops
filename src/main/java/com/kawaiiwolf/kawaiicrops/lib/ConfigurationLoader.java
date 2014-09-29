@@ -1,15 +1,26 @@
 package com.kawaiiwolf.kawaiicrops.lib;
 
 import java.io.File;
+import java.util.Iterator;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 
 public class ConfigurationLoader {
 
+	// Parent folder for configuration files.
+	private String configFolder = null;
+	
+	// Dump a list of Block/Item names to a config file.
+	private static boolean DumpIDs = false;
+	
+	public ConfigurationLoader(String configFolder) {
+		this.configFolder = configFolder;
+	}
 	
 	public static final String GENERAL_CROP_COMMENT = "" +
 			"Here you'll list the names of all the plants that you want the mod to generate. Make sure each crop\n"+
@@ -22,7 +33,7 @@ public class ConfigurationLoader {
 			"\n"+
 			"example: \"snowpea tomato broccoli\"";
 	
-	public static void loadConfiguration(String configFolder) {
+	public void loadConfiguration_PreInit() {
 		Configuration cfg_general = new Configuration(new File(configFolder + Constants.CONFIG_GENERAL));
 		Configuration cfg_blocks = new Configuration(new File(configFolder + Constants.CONFIG_BLOCKS));
 		Configuration cfg_items = new Configuration(new File(configFolder + Constants.CONFIG_ITEMS));
@@ -33,7 +44,9 @@ public class ConfigurationLoader {
 		for (int i = 0; i < 4; i++) configs[i].load();
 		
 		cfg_general.setCategoryComment(Configuration.CATEGORY_GENERAL, "Global Settings for KawaiiCraft");
-
+		DumpIDs = cfg_general.getBoolean("DumpNames", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
+		
+		
 		
 		/* Begin processing Crop Blocks.
 		 * - Read crop list from General Config & Cleanup
@@ -52,8 +65,38 @@ public class ConfigurationLoader {
 		
 		for (int i = 0; i < 4; i++) configs[i].save();
 	}
+	
+	public void loadConfiguration_PostInit() {
+		
+		if (DumpIDs) dumpIDs();
+		
+	}
+	
+	private void dumpIDs() {
+		
+		File f = new File(configFolder + Constants.CONFIG_DUMP);
+		
+		// Try to clear it out if it exists. Fresh File
+		try { if (f.exists()) f.delete(); } catch (Exception e) { }
+		
+		String blockList = "", itemList = "";
+		
+		Iterator<Block> blocks = NamespaceHelper.getBlockIterator();
+		while (blocks.hasNext())
+			blockList += NamespaceHelper.getBlockName(blocks.next()) + "\n";
+		
+		Iterator<Item> items = NamespaceHelper.getItemIterator();
+		while (items.hasNext())
+			itemList += NamespaceHelper.getItemName(items.next()) + "\n";
+		
+		Configuration config = new Configuration(f);
+		config.load();
+		config.setCategoryComment("Blocks", blockList);
+		config.setCategoryComment("Items", itemList);
+		config.save();
+	}
 
-	private static BlockKawaiiCrop loadBlock(Configuration config, String name) {
+	private BlockKawaiiCrop loadBlock(Configuration config, String name) {
 		
 		String category = "KawaiiCrops: " + name;
 		BlockKawaiiCrop b = new BlockKawaiiCrop(name);
@@ -70,14 +113,16 @@ public class ConfigurationLoader {
 		b.BoneMealMin = config.getInt("BoneMealMin", category, b.BoneMealMin, 0, 8, "Minimum stages of growth when using bonemeal.");
 		b.BoneMealMax = config.getInt("BoneMealMax", category, b.BoneMealMax, 0, 8, "Maximum stages of growth when using bonemeal.");
 		
+		b.register();
+		
 		return (name == null || name.length() == 0 ? null : b); 
 	}
 	
-	private static Item loadItem(Configuration config, String name){
+	private Item loadItem(Configuration config, String name){
 		return null;
 	}
 	
-	private static void loadRecipe(Configuration config, String name){
+	private void loadRecipe(Configuration config, String name){
 		
 	}
 	

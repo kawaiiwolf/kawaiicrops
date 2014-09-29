@@ -1,15 +1,32 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
-import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import java.util.Set;
 
+import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlock;
+import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
+
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
-public class BlockKawaiiCrop extends Block {
+public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	
 	public enum EnumRenderType { CROSS, HASH }
+	
+	// Crop Name
+	public String Name = "";
 	
 	// Don't register if false
 	public boolean Enabled = false;
@@ -63,22 +80,63 @@ public class BlockKawaiiCrop extends Block {
 	fruit tooltip
 	*/
 	
+    private IIcon[] iconArray;
 	
 	public BlockKawaiiCrop(String cropName)
 	{
-		super(Material.rock);
-		this.setBlockName(Constants.MOD_ID + "." + cropName );
-		this.setBlockTextureName(Constants.MOD_ID + ":" + cropName);
+		super();
+		//super(Material.plants);
 		
-		
-		
-		
-		
-		
+		this.Name = cropName;
+		this.setBlockName(Constants.MOD_ID + "." + this.Name );
 	}
 	
 	public void register()
 	{
-		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		if (this.Enabled) GameRegistry.registerBlock(this, this.getUnlocalizedName());
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Rendering Code
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister reg){
+		
+		iconArray = new IIcon[8];
+		
+		for (int i = 0; i < 8; i++)
+			iconArray[i] = reg.registerIcon(Constants.MOD_ID + ":" + this.Name + "_stage_" + i);
+	}
+	
+	private boolean printed = false;
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+    {
+		return iconArray[world.getBlockMetadata(x, y, z)];
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta) {
+		return iconArray[7];
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public int getRenderType()
+    {
+        return RenderingHandlerKawaiiCropBlock.instance.getRenderId();
+    }
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Tile Entity Code
+	
+	@Override
+	public TileEntity createNewTileEntity(World world, int meta) {
+		return new TileEntityKawaiiCrop();
+	}
+	
 }

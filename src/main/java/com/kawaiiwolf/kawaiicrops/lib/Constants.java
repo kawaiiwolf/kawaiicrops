@@ -9,4 +9,5 @@ public class Constants {
 	public static final String CONFIG_BLOCKS = CONFIG_FOLDER + "/blocks.cfg";
 	public static final String CONFIG_ITEMS = CONFIG_FOLDER + "/items.cfg";
 	public static final String CONFIG_RECIPIES = CONFIG_FOLDER + "/recipies.cfg";
+	public static final String CONFIG_DUMP = CONFIG_FOLDER + "/dump.cfg";
 }

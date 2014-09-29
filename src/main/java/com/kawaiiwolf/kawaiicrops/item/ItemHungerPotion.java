@@ -32,9 +32,4 @@ public class ItemHungerPotion extends ItemFood {
 			par3EntityPlayer.getFoodStats().addStats(-6,0);
 		return ret;
     }
-
-	public void register() {
-    	GameRegistry.registerItem(this, getUnlocalizedName());
-	}
-
 }
