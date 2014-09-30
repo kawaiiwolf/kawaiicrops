@@ -1,5 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.item;
 
+import com.kawaiiwolf.kawaiicrops.lib.Constants;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModItems {
@@ -8,7 +10,7 @@ public class ModItems {
 	
 	public static void register(){
 
-		GameRegistry.registerItem(HungerPotion, HungerPotion.getUnlocalizedName());
+		GameRegistry.registerItem(HungerPotion, Constants.MOD_ID + ".hungerpotion");
     	
 	}
 }
