@@ -7,6 +7,7 @@ import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeed;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeedFood;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.lib.DropTable;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlock;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
 
@@ -65,6 +66,10 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 
 	// What block can this plant grow on. Do we want to allow more than one ?
 	public Block CropGrowsOn = Blocks.farmland;
+
+	// Unparsed Drop Tables
+	public String DropTableRipeString = "seed 1, seed 2 | crop";
+	public String DropTableUnripeString = "seed";
 	
 	public boolean SeedsEnabled = true;
 	public boolean SeedsEdible = false;
@@ -78,6 +83,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public int CropHunger = 4;
 	public float CropSaturation = 0.6f;
 	public String CropToolTip = "";
+	
 
 	/* TODO: Drops
 
@@ -89,9 +95,11 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	
 	*/
 	
-    private IIcon[] iconArray;
-    private Item seed = null;
+	private IIcon[] iconArray;
+	private Item seed = null;
     private Item crop = null;
+    private DropTable dropTableRipe = null;
+    private DropTable dropTableUnripe = null;
 	
 	public BlockKawaiiCrop(String cropName)
 	{
@@ -124,7 +132,13 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 			
 			GameRegistry.registerItem(crop, Constants.MOD_ID + "." + cropName);
 		}
-			
+		
+		ModBlocks.AllCrops.add(this);
+	}
+	
+	public void registerDropTables() {
+		dropTableRipe = new DropTable(DropTableRipeString, seed, crop);
+		dropTableUnripe = new DropTable(DropTableUnripeString, seed, crop);		
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////

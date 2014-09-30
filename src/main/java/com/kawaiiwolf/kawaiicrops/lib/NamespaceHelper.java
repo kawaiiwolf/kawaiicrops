@@ -21,10 +21,12 @@ public class NamespaceHelper {
 	}
 	
 	public static String getItemName(Item item) {
+		if (item == null) return null;
 		return GameData.getItemRegistry().getNameForObject(item);
 	}
 	
 	public static Item getItemByName(String name) {
+		if (name == null) return null;
 		return GameData.getItemRegistry().getObject(name);
 	}
 	

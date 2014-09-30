@@ -11,6 +11,8 @@ import net.minecraft.item.Item;
 
 
 
+
+import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 //import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.*;
@@ -59,7 +61,9 @@ public class KawaiiCrops {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
      	// Recipies
+    	
     	config.loadConfiguration_PostInit();
+    	ModBlocks.registerDropTables();
     }
 	
 }

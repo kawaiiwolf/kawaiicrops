@@ -32,7 +32,48 @@ public class ConfigurationLoader {
 			"Bad Name: Snow Peas\n"+
 			"Good Name: snowpeas\n"+
 			"\n"+
-			"example: 'snowpea tomato broccoli'";
+			"S:Crops=snowpea tomato broccoli";
+	
+	public static final String REFERENCE_DROPTABLES_COMMENT = "" +
+			"A drop table is defined with the following syntax, in BNF:\n"+
+			"\n"+
+			"<drop-table> ::= <items> | <items> \"|\" <drop-table>\n"+
+			"     <items> ::= <item> | <item> \",\" <items>\n"+
+			"      <item> ::= <item-name> | <item-name> \" \" <num-drops> | <item-name> \" \" <num-drops> \" \" <weight>\n"+
+			" <item-name> ::= \"seed\" | \"crop\" | \"nothing\" | <minecraft-item-name>\n"+
+			" <num-drops> ::= <integer-between-1-and-64>\n"+
+			"    <weight> ::= <integer-between-1-and-64>\n"+
+			"\n"+
+			"\n"+
+			"The keywords 'seed', 'crop', and 'nothing' are shorthand so you don't have to type out the fully\n"+
+			"qualified names for the products of a crop (or empty blocks.) Number of drops and weight default to \n"+
+			"one if not supplied. Here are some examples of how to use this:\n"+
+			"\n"+
+			"\n"+
+			"Example 1:\n"+
+			"   S:DropTable=seed\n"+
+			"\n"+
+			"Drops a single seed 100% of the time. This is great for breaking unripe plants.\n"+
+			"\n"+
+			"\n"+
+			"Example 2:\n"+
+			"   S:DropTable=seed 1, seed 2, seed 3 | crop 1 1, crop 2 2, crop 3 1 | nothing 1 99, minecraft:diamond 1 1\n"+
+			"\n"+
+			"This drops between 1 and 3 seeds, all with equal chance. It will also drop one crop 1 in 4 times, two\n"+
+			"crops 2 in 4 times and three crops 1 in 4 times. Lastly, it has a 1 in 100 chance of dropping a diamond.\n"+
+			"\n"+
+			"\n"+
+			"Example 3:\n"+
+			"   S:DropTable=seed 2 | minecraft:carrot, minecraft:potato, minecraft:apple 1 2\n"+
+			"\n"+
+			"This drops two seeds and either a carrot, potato or apple with a 25%, 25% or 50% chance, respectively.\n"+
+			"\n"+
+			"\n"+
+			"Example 4:\n"+
+			"   S:DropTable=nothing\n"+
+			"\n"+
+			"No drops.\n";
+
 	
 	public void loadConfiguration_PreInit() {
 		Configuration cfg_general = new Configuration(new File(configFolder + Constants.CONFIG_GENERAL));
@@ -45,9 +86,8 @@ public class ConfigurationLoader {
 		for (int i = 0; i < 4; i++) configs[i].load();
 		
 		cfg_general.setCategoryComment(Configuration.CATEGORY_GENERAL, "Global Settings for KawaiiCraft");
+		cfg_general.setCategoryComment("Reference: Drop Table Help", REFERENCE_DROPTABLES_COMMENT);
 		DumpIDs = cfg_general.getBoolean("DumpNames", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
-		
-		
 		
 		/* Begin processing Crop Blocks.
 		 * - Read crop list from General Config & Cleanup
@@ -113,6 +153,9 @@ public class ConfigurationLoader {
 		b.UnripeHardness = config.getFloat("UnripeHardness", category, b.UnripeHardness, 0.0f, 1.0f, "Hardness of unripe crops (0 breaks instantly. Set higher to prevent accidental harvests) ?");
 		b.BoneMealMin = config.getInt("BoneMealMin", category, b.BoneMealMin, 0, 8, "Minimum stages of growth when using bonemeal.");
 		b.BoneMealMax = config.getInt("BoneMealMax", category, b.BoneMealMax, 0, 8, "Maximum stages of growth when using bonemeal.");
+		
+		b.DropTableRipeString = config.getString("DropTableRipe", category, b.DropTableRipeString, "What is the drop table for Ripe crops ? Please see General.cfg to see how to use these.");
+		b.DropTableUnripeString = config.getString("DropTableUnripe", category, b.DropTableUnripeString, "What is the drop table for Unripe crops ? Please see General.cfg to see how to use these.");
 
 		Block tmp = NamespaceHelper.getBlockByName(config.getString("SeedsGrowOn", category, NamespaceHelper.getBlockName(b.CropGrowsOn), "What block does this grow on ? For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)"));
 		b.CropGrowsOn = (tmp == Blocks.air ? b.CropGrowsOn : tmp);
