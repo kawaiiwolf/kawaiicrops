@@ -191,7 +191,40 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
-		return new TileEntityKawaiiCrop();
+		return (this.MultiHarvest ? new TileEntityKawaiiCrop() : null);
+	}
+	
+	@Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    {
+		// No SUPER. Prevent base BLock class from destroying the tile entity.
+		TileEntity te = world.getTileEntity(x, y, z);
+		
+		if (this.MultiHarvest && te != null && te instanceof TileEntityKawaiiCrop && meta >= 7)
+			((TileEntityKawaiiCrop)te).arm(block, this.UnripeMeta);
+		else
+			world.removeTileEntity(x, y, z);
+    }
+	
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Block Height Code
+	
+	private int getBaseY(World world, int x, int y, int z) {
+		for (;world.getBlock(x, y - 1, z) == this; y--);
+		return y;
+	}
+	
+	private int getTopY(World world, int x, int y, int z) {
+		for (;world.getBlock(x, y + 1, z) == this; y++);
+		return y;
+	}
+	
+	private int getCropTotalHeight(World world, int x, int y, int z) {
+		return 1 + getTopY(world, x, y, z) - getBaseY(world, x, y, z);
+	}
+	
+	private int getCropCurrentHeight(World world, int x, int y, int z) {
+		return 1 + y - getBaseY(world, x, y, z);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -230,5 +263,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     public float getBlockHardness(World world, int x, int y, int z) {
     	return (world.getBlockMetadata(x, y, z) >=7 ? 0.0f : this.UnripeHardness);
     }
+    
+    
 	
 }
