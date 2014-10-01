@@ -6,15 +6,8 @@ import java.util.Iterator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-
-
-
-
-
-
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
-//import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.*;
 import com.kawaiiwolf.kawaiicrops.proxies.*;
 import com.kawaiiwolf.kawaiicrops.tileentity.ModTileEntities;

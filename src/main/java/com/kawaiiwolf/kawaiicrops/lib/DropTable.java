@@ -13,7 +13,7 @@ public class DropTable {
 	private ArrayList<ArrayList<DropTableItem>> list = new ArrayList<ArrayList<DropTableItem>>();
 	
 	public DropTable(String table, Item seed, Item crop) {
-
+		
 		/* Look for pattern:
 		 * 		<item-name>
 		 * 		<item-name> <quantity>
@@ -32,19 +32,19 @@ public class DropTable {
 				// match on 'name [drops] [weight]'
 				if (match.find()) {
 					
-					String name = (match.group(4) != null ? match.group(4) : (match.group(1) != null ? match.group(1) : match.group(0)));
+					String name = (match.group(4) != null ? match.group(4) : (match.group(1) != null ? match.group(1) : match.group(0))); name = name.toString();
 					String drops = (match.group(2) == null ? "" : match.group(2)) + (match.group(5) == null ? "" : match.group(5));
 					String weight = (match.group(3) == null ? "" : match.group(3));
 					
-					if (name == "seed")
+					if (name.equalsIgnoreCase("seed"))
 						item.item = seed;
-					else if (name == "crop")
+					else if (name.equalsIgnoreCase("crop"))
 						item.item = crop;
-					else if (name == "nothing")
+					else if (name.equalsIgnoreCase("nothing"))
 						item.item = null;
 					else
 						item.item = NamespaceHelper.getItemByName(name);
-					
+		
 					if (drops.length() > 0) {
 						int i = Integer.parseInt(drops);
 						if (i < 1) i = 1;
@@ -77,7 +77,7 @@ public class DropTable {
 			
 			count = (int)(count * rand.nextFloat());
 			
-			for (i = 0; count > table.get(i).weight; i++)
+			for (i = 0; count >= table.get(i).weight; i++)
 				count -= table.get(i).weight;
 			
 			if (table.get(i).item != null)
@@ -85,6 +85,15 @@ public class DropTable {
 		}
 		
 		return ret;
+	}
+	
+	public void DEBUG_OUT() {
+		System.out.println("Outputting Drop Table");
+		for (int i = 0; i < list.size(); i++){
+			System.out.println("  Drop Group " + (1 + i));
+			for (int j = 0; j < list.get(i).size(); j++)
+				System.out.println("    Item [" + (j + 1) + "] " + (list.get(i).get(j).item == null ? "Nothing" : list.get(i).get(j).item.getUnlocalizedName()) + " " + list.get(i).get(j).drops + " " + list.get(i).get(j).weight);
+		}
 	}
 	
 	private class DropTableItem {

@@ -138,13 +138,15 @@ public class ConfigurationLoader {
 	}
 
 	private BlockKawaiiCrop loadBlock(Configuration config, String name) {
-		
+
+		if (name == null || name.length() == 0) return null;
+
 		String category = "KawaiiCrops: " + name;
 		BlockKawaiiCrop b = new BlockKawaiiCrop(name);
 		
 		// Get crop variables from config file
 		b.Enabled = config.getBoolean("Enabled", category, false, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
-		b.CropStages = config.getInt("CropStates", category, b.CropStages, 2, 8, "Number of crop states ?  Valid values are between 2 and 8. (Ex: Carrots = 4, Wheat = 8)");
+		b.CropStages = config.getInt("States", category, b.CropStages, 2, 8, "Number of crop states ?  Valid values are between 2 and 8. (Ex: Carrots = 4, Wheat = 8)");
 		b.RenderType = (config.getString("RenderType", category, "Hash", "How will the crop render ? Valid values are 'Hash' (Ex: Carrots) or 'Cross' (Ex: Mushrooms)").toLowerCase() == "cross" ? BlockKawaiiCrop.EnumRenderType.CROSS : BlockKawaiiCrop.EnumRenderType.HASH);
 		b.MaxHeight = config.getInt("MaxHeight", category, b.MaxHeight, 1, 32, "How many blocks tall will this crop grow ?");
 		b.MaxHeightRequiredToRipen = config.getBoolean("MaxHeightRequired", category, b.MaxHeightRequiredToRipen, "Does the plant need to be at max height before lower blocks are ready to harvest ?");
@@ -169,7 +171,6 @@ public class ConfigurationLoader {
 		b.SeedsMysterySeedWeight = config.getInt("SeedsMysterySeedWeight", category_seeds, b.SeedsMysterySeedWeight, 0, 1000, "If mystery seeds enabled, what weight should this have on mystery seed results (0 = None)");
 		b.SeedsToolTip = config.getString("SeedsToolTip", category_seeds, b.SeedsToolTip, "Tooltip for the seed in game.");
 
-
 		String category_crops = category + " Crops";
 		
 		b.CropEnabled = config.getBoolean("CropEnabled", category_crops, b.CropEnabled, "Does this plant drop other crops ?");
@@ -177,12 +178,10 @@ public class ConfigurationLoader {
 		b.CropHunger = config.getInt("CropHunger", category, b.CropHunger, 0, 20, "If CropEdible, how many half shanks of food does this restore ?");
 		b.CropSaturation = config.getFloat("CropSaturation", category_crops, b.CropSaturation, 0, 20.0f, "If CropEdible, what is the saturation level of this food ?");
 		b.CropToolTip = config.getString("CropToolTip", category_crops, b.CropToolTip, "Tooltip for the crop in game.");
-
-
 		
 		b.register();
 		
-		return (name == null || name.length() == 0 ? null : b); 
+		return b; 
 	}
 	
 	private Item loadItem(Configuration config, String name){

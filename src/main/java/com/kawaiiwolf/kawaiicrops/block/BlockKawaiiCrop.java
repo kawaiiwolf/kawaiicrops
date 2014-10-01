@@ -1,5 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Set;
 
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
@@ -21,8 +23,10 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSeeds;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -30,6 +34,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
+	
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Rendering Code
 	
 	public enum EnumRenderType { CROSS, HASH }
 	
@@ -71,6 +78,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public String DropTableRipeString = "seed 1, seed 2 | crop";
 	public String DropTableUnripeString = "seed";
 	
+	// Seeds details
 	public boolean SeedsEnabled = true;
 	public boolean SeedsEdible = false;
 	public int SeedsHunger = 4;
@@ -78,8 +86,9 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public String SeedsToolTip = "";
 	public int SeedsMysterySeedWeight = 0;
 	
+	// Produce details
 	public boolean CropEnabled = true;
-	public boolean CropEdible = false;
+	public boolean CropEdible = true;
 	public int CropHunger = 4;
 	public float CropSaturation = 0.6f;
 	public String CropToolTip = "";
@@ -87,8 +96,6 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 
 	/* TODO: Drops
 
-	drop tables
-	
 	water plant ?
 	
 	growth rate
@@ -101,6 +108,9 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     private DropTable dropTableRipe = null;
     private DropTable dropTableUnripe = null;
 	
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Configuration
+    
 	public BlockKawaiiCrop(String cropName)
 	{
 		super();
@@ -183,5 +193,42 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityKawaiiCrop();
 	}
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Item Drop Code
+	
+	@Override
+    public int quantityDropped(Random r)
+    {
+        return 0;
+    }
+	
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+    {
+        if (metadata >= 7)
+        	return this.dropTableRipe.generateLoot(world.rand);
+        else
+        	return this.dropTableUnripe.generateLoot(world.rand);
+    }
+    
+    @Override
+    protected Item func_149866_i()
+    {
+        return seed;
+    }
+
+    @Override
+    protected Item func_149865_P()
+    {
+        return crop;
+    }
+    
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Hardness Tweak
+    
+    public float getBlockHardness(World world, int x, int y, int z) {
+    	return (world.getBlockMetadata(x, y, z) >=7 ? 0.0f : this.UnripeHardness);
+    }
 	
 }
