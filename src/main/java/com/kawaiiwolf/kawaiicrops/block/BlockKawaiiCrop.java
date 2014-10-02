@@ -32,6 +32,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	
@@ -226,6 +227,10 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	private int getCropCurrentHeight(World world, int x, int y, int z) {
 		return 1 + y - getBaseY(world, x, y, z);
 	}
+	
+	private boolean isBase(World world, int x, int y, int z) {
+		return (y == getBaseY(world, x, y, z)); 
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Item Drop Code
@@ -260,10 +265,30 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Hardness Tweak
     
+    @Override
     public float getBlockHardness(World world, int x, int y, int z) {
     	return (world.getBlockMetadata(x, y, z) >=7 ? 0.0f : this.UnripeHardness);
     }
     
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Custom Soil
     
+    @Override
+    public boolean canBlockStay(World world, int x, int y, int z)
+    {
+    	Block below = world.getBlock(x, y - 1, z);
+    	
+    	if (below == this.CropGrowsOn) {
+    		if (below.getMaterial() != Material.water && below.getMaterial() != Material.lava)
+    			return true;
+    		// We want to make sure a liquid is still
+    		if (world.getBlockMetadata(x, y, z) == 0)
+    			return true;
+    	}
+    	if (this.MaxHeight > 1 && below == this)
+    		return true;
+    	
+        return false;
+    }
 	
 }
