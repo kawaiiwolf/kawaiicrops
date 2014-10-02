@@ -153,8 +153,12 @@ public class ConfigurationLoader {
 		b.MultiHarvest = config.getBoolean("MultiHarvest", category, b.MultiHarvest, "Upon harvesting this crop, does it grow back to an earlier, unripe state ?");
 		b.UnripeMeta = config.getInt("UnripeMeta", category, b.UnripeMeta, 0, 7, "If MultiHarvest, upon harvesting the crop goes from Metadata value 7 to Meta ?");
 		b.UnripeHardness = config.getFloat("UnripeHardness", category, b.UnripeHardness, 0.0f, 1.0f, "Hardness of unripe crops (0 breaks instantly. Set higher to prevent accidental harvests) ?");
+		b.GrowthMutliplier = config.getFloat("GrowthMultiplier", category, b.GrowthMutliplier, 0.01f, 100.0f, "How fast does your plant grow ? (1.0 is normal vanilla speeds, 3.0 is growth rate on wet farmland when growing on other block types.");
 		b.BoneMealMin = config.getInt("BoneMealMin", category, b.BoneMealMin, 0, 8, "Minimum stages of growth when using bonemeal.");
 		b.BoneMealMax = config.getInt("BoneMealMax", category, b.BoneMealMax, 0, 8, "Maximum stages of growth when using bonemeal.");
+		
+		if (b.BoneMealMin > b.BoneMealMax) b.BoneMealMin = b.BoneMealMax;
+		if (b.BoneMealMax < b.BoneMealMin) b.BoneMealMax = b.BoneMealMin;
 		
 		b.DropTableRipeString = config.getString("DropTableRipe", category, b.DropTableRipeString, "What is the drop table for Ripe crops ? Please see General.cfg to see how to use these.");
 		b.DropTableUnripeString = config.getString("DropTableUnripe", category, b.DropTableUnripeString, "What is the drop table for Unripe crops ? Please see General.cfg to see how to use these.");

@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -67,6 +68,9 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	
 	// Hardness of unripe block
 	public float UnripeHardness = 0.5f;
+	
+	// Growth Multiplier
+	public float GrowthMutliplier = 1.0f;
 	
 	// Effectiveness of bonemeal.
 	public int BoneMealMin = 1;
@@ -290,5 +294,89 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     	
         return false;
     }
+    
+    @Override
+    protected boolean canPlaceBlockOn(Block block)
+    {
+        return block == this.CropGrowsOn || (this.MaxHeight > 1 && block == this);
+    }
+    
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Custom Growth Code    
+    
+    @Override
+    public void updateTick(World world, int x, int y, int z, Random rand)
+    {
+        super.updateTick(world, x, y, z, rand);
+
+        if (world.getBlockLightValue(x, y + 1, z) >= 9)
+        {
+            int meta = world.getBlockMetadata(x, y, z);
+
+            if (meta < 7)
+            {
+                float f = this.vanillaGrowth(world, x, y, z);
+
+                if (rand.nextInt((int)(25.0F / f) + 1) == 0)
+                {
+                    ++meta;
+                    world.setBlockMetadataWithNotify(x, y, z, meta, 2);
+                }
+            }
+        }
+    }
+    
+    private int getNeighborCount(World world, int x, int y, int z, int distance, int height) {
+    	if (distance < 0 || height < 0) return 0;
+    	if (distance > 16) distance = 16;
+    	if (height > 16) height = 3;
+    	
+    	int count = 0;
+    	for (int i = x - distance; i <= x + distance; i ++ )
+        	for (int j = y - height; j <= y + height; j ++ )
+            	for (int k = z - distance; k <= z + distance; z ++ ) 
+            		if ((i != x || j != y || k != z) && world.getBlock(x, y, z) == world.getBlock(i, j, k))
+            			count++;
+    	return count;
+    }
+    
+    private float vanillaGrowth(World world, int x, int y, int z)
+    {
+        float ret = 1.0F;
+
+        for (int i = x - 1; i <= x + 1; ++i)
+        {
+            for (int j = z - 1; j <= z + 1; ++j)
+            {
+                float tmp = 0.0F;
+
+                if (world.getBlock(i, y - 1, j) == this.CropGrowsOn)
+                {
+                    tmp = 1.0F;
+                    if (world.getBlock(i, y - 1, j).isFertile(world, i, y - 1, j))
+                        tmp = 3.0F;
+                }
+
+                if (i != x || j != z)
+                    tmp /= 4.0F;
+
+                ret += tmp;
+            }
+        }
+
+        if (this.getNeighborCount(world, x, y, z, 1, 0) > 0)
+            ret /= 2.0F;
+
+        return ret * this.GrowthMutliplier;
+    }
+    
+    // Bonemeal Fertilize Call
+    @Override
+    public void func_149863_m(World world, int x, int y, int z)
+    {
+        int meta = world.getBlockMetadata(x, y, z) + BoneMealMin + ((int)(world.rand.nextFloat() * (1 + BoneMealMax - BoneMealMin)));
+        world.setBlockMetadataWithNotify(x, y, z, (meta > 7 ? 7 : meta), 2);
+    }
+    
 	
 }
