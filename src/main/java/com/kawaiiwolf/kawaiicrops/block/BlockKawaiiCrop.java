@@ -73,8 +73,8 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public float GrowthMutliplier = 1.0f;
 	
 	// Effectiveness of bonemeal.
-	public int BoneMealMin = 1;
-	public int BoneMealMax = 1;
+	public int BoneMealMin = 2;
+	public int BoneMealMax = 4;
 
 	// What block can this plant grow on. Do we want to allow more than one ?
 	public Block CropGrowsOn = Blocks.farmland;
@@ -304,29 +304,28 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Custom Growth Code    
     
+    private void growPlant(World world, int x, int y, int z) 
+    {
+    	int meta = world.getBlockMetadata(x, y, z);
+    	
+    	if (meta < 7) {
+    		world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
+    	}
+    }    
+    
     @Override
     public void updateTick(World world, int x, int y, int z, Random rand)
     {
-        super.updateTick(world, x, y, z, rand);
-
-        if (world.getBlockLightValue(x, y + 1, z) >= 9)
-        {
-            int meta = world.getBlockMetadata(x, y, z);
-
-            if (meta < 7)
-            {
-                float f = this.vanillaGrowth(world, x, y, z);
-
-                if (rand.nextInt((int)(25.0F / f) + 1) == 0)
-                {
-                    ++meta;
-                    world.setBlockMetadataWithNotify(x, y, z, meta, 2);
-                }
-            }
-        }
+    	this.checkAndDropBlock(world, x, y, z);
+    	
+    	if (	(this.getTopY(world, x, y, z) == y) &&
+    			(world.getBlockLightValue(x, y + 1, z) >= 9) && 
+    			(rand.nextInt((int)(25.0F / this.vanillaGrowth(world, x, y, z)) + 1) == 0))
+    		growPlant(world, x, y, z);
     }
     
-    private int getNeighborCount(World world, int x, int y, int z, int distance, int height) {
+    private int getNeighborCount(World world, int x, int y, int z, int distance, int height) 
+    {
     	if (distance < 0 || height < 0) return 0;
     	if (distance > 16) distance = 16;
     	if (height > 16) height = 3;
@@ -334,7 +333,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     	int count = 0;
     	for (int i = x - distance; i <= x + distance; i ++ )
         	for (int j = y - height; j <= y + height; j ++ )
-            	for (int k = z - distance; k <= z + distance; z ++ ) 
+            	for (int k = z - distance; k <= z + distance; k ++ ) 
             		if ((i != x || j != y || k != z) && world.getBlock(x, y, z) == world.getBlock(i, j, k))
             			count++;
     	return count;
@@ -374,8 +373,9 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     @Override
     public void func_149863_m(World world, int x, int y, int z)
     {
-        int meta = world.getBlockMetadata(x, y, z) + BoneMealMin + ((int)(world.rand.nextFloat() * (1 + BoneMealMax - BoneMealMin)));
-        world.setBlockMetadataWithNotify(x, y, z, (meta > 7 ? 7 : meta), 2);
+        int growth = BoneMealMin + ((int)(world.rand.nextFloat() * (1 + BoneMealMax - BoneMealMin)));
+        for (int i = 0; i < growth; i++)
+        	growPlant(world, x, y, z);
     }
     
 	
