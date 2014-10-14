@@ -3,6 +3,7 @@ package com.kawaiiwolf.kawaiicrops.lib;
 import java.io.File;
 import java.util.Iterator;
 
+import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -33,6 +34,16 @@ public class ConfigurationLoader {
 			"Good Name: snowpeas\n"+
 			"\n"+
 			"S:Crops=snowpea tomato broccoli";
+	
+	public static final String GENERAL_CAKE_COMMENT = "" + 
+			"List the names of all cakes you the mod to generate. Make sure each cake name is lower case and has no\n" + 
+			"spaces or punctuation. You can separate these with commans or spaces.\n" +
+			"\n"+
+			"Bad Name: Strawberry Shortcake\n"+
+			"Good Name: strawberryshort\n"+
+			"\n"+
+			"S:Cakes=strawberryshort chocolate carrot";
+	
 	
 	public static final String REFERENCE_DROPTABLES_COMMENT = "" +
 			"A drop table is defined with the following syntax, in BNF:\n"+
@@ -102,7 +113,14 @@ public class ConfigurationLoader {
 			BlockKawaiiCrop b = loadBlock(cfg_blocks, cropsParsed[i]);
 		}
 		
+		cfg_general.setCategoryComment("KawaiiCrop Yummy Cakes", GENERAL_CAKE_COMMENT);
+		String cakesRaw = cfg_general.getString("Cakes", "KawaiiCrop Yummy Cakes", "", "Cake List");
+		String[] cakesParsed = cakesRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
+		for (int i = 0; i < cakesParsed.length; i++)
+		{
+			BlockKawaiiCake c = loadCake(cfg_general, cakesParsed[i]);
+		}
 		
 		for (int i = 0; i < 4; i++) configs[i].save();
 	}
@@ -186,6 +204,16 @@ public class ConfigurationLoader {
 		b.register();
 		
 		return b; 
+	}
+	
+	private BlockKawaiiCake loadCake(Configuration config, String name){
+		
+		if (name == null || name.length() == 0) return null;
+		
+		BlockKawaiiCake c = new BlockKawaiiCake(name);
+		c.register();
+		
+		return c;
 	}
 	
 	private Item loadItem(Configuration config, String name){

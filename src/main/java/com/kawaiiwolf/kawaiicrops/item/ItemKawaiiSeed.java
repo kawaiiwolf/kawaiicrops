@@ -1,5 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.item;
 
+import java.util.List;
+
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 
@@ -33,6 +35,13 @@ public class ItemKawaiiSeed extends ItemSeeds {
 		this.plant = plant;
 		this.soil = soil;
 		this.ToolTipText = toolTip;
+	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean p_77624_4_) {
+		if (ToolTipText.length() > 0)
+			list.add(ToolTipText);
 	}
 
     @Override

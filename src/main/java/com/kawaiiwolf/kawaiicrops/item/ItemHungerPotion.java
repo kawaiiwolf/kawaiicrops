@@ -1,8 +1,12 @@
 package com.kawaiiwolf.kawaiicrops.item;
 
+import java.util.List;
+
 import com.kawaiiwolf.kawaiicrops.lib.*;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemFood;
@@ -16,6 +20,12 @@ public class ItemHungerPotion extends ItemFood {
 		setUnlocalizedName(Constants.MOD_ID + ".hungerpotion");
 		setTextureName("potion_bottle_drinkable");
 		setAlwaysEdible();
+	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean p_77624_4_) {
+		list.add("You feel hungry just looking at it.");
 	}
 	
 	@Override
