@@ -188,10 +188,30 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) 
 	{
 		int top = this.getTopY(world, x, y, z);
+		//int base = this.getBaseY(world, x, y, z);
 		float f = 0.0625F;
 		
 		this.setBlockBounds(0.0F + f, 0.0F, 0.0F + f, 1.0F - f, (y == top ? 0.25F : 1.0F), 1.0F - f);
+		//this.setBlockBounds(0.0F + f, (float)(y - base), 0.0F + f, 1.0F - f, 0.25F + (float)(top - y), 1.0F - f);
+
 	}
+	
+	/*
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+	{
+		this.setBlockBoundsBasedOnState(world, x, y, z);
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z)
+	{
+		this.setBlockBoundsBasedOnState(world, x, y, z);
+		return super.getSelectedBoundingBoxFromPool(world, x, y, z);
+	}
+	*/
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Tile Entity Code
