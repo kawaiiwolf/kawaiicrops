@@ -98,15 +98,6 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public float CropSaturation = 0.6f;
 	public String CropToolTip = "";
 	
-
-	/* TODO: Drops
-
-	water plant ?
-	
-	growth rate
-	
-	*/
-	
 	private IIcon[] iconArray;
 	private Item seed = null;
     private Item crop = null;
@@ -123,6 +114,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 		
 		this.Name = cropName;
 		this.setBlockName(Constants.MOD_ID + "." + this.Name );
+		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
 	public void register()
@@ -163,9 +155,9 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg){
 		
-		iconArray = new IIcon[8];
+		iconArray = new IIcon[this.CropStages];
 		
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < this.CropStages; i++)
 			iconArray[i] = reg.registerIcon(Constants.MOD_ID + ":" + this.Name + "_stage_" + i);
 	}
 	
@@ -175,13 +167,14 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
-		return iconArray[world.getBlockMetadata(x, y, z)];
+		int stage = MathHelper.clamp_int(world.getBlockMetadata(x, y, z) + CropStages - 8, 0, this.CropStages - 1);
+		return iconArray[stage];
     }
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
-		return iconArray[7];
+		return iconArray[this.CropStages - 1];
 	}
 	
 	@Override
@@ -191,6 +184,15 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
         return RenderingHandlerKawaiiCropBlock.instance.getRenderId();
     }
 
+	@Override
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) 
+	{
+		int top = this.getTopY(world, x, y, z);
+		float f = 0.0625F;
+		
+		this.setBlockBounds(0.0F + f, 0.0F, 0.0F + f, 1.0F - f, (y == top ? 0.25F : 1.0F), 1.0F - f);
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Tile Entity Code
 	
@@ -209,30 +211,37 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 			((TileEntityKawaiiCrop)te).arm(block, this.UnripeMeta);
 		else
 			world.removeTileEntity(x, y, z);
+		
+		for (int i = -1; i <= 1; i += 2)
+			if (world.getBlock(x, y + i, z) == this) 
+			{
+	            this.dropBlockAsItem(world, x, y + i, z, world.getBlockMetadata(x, y + i, z), 0);
+	            world.setBlock(x, y + i, z, getBlockById(0), 0, 2);
+	        }
     }
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Block Height Code
 	
-	private int getBaseY(World world, int x, int y, int z) {
+	private int getBaseY(IBlockAccess world, int x, int y, int z) {
 		for (;world.getBlock(x, y - 1, z) == this; y--);
 		return y;
 	}
 	
-	private int getTopY(World world, int x, int y, int z) {
+	private int getTopY(IBlockAccess world, int x, int y, int z) {
 		for (;world.getBlock(x, y + 1, z) == this; y++);
 		return y;
 	}
 	
-	private int getCropTotalHeight(World world, int x, int y, int z) {
+	private int getCropTotalHeight(IBlockAccess world, int x, int y, int z) {
 		return 1 + getTopY(world, x, y, z) - getBaseY(world, x, y, z);
 	}
 	
-	private int getCropCurrentHeight(World world, int x, int y, int z) {
+	private int getCropCurrentHeight(IBlockAccess world, int x, int y, int z) {
 		return 1 + y - getBaseY(world, x, y, z);
 	}
 	
-	private boolean isBase(World world, int x, int y, int z) {
+	private boolean isBase(IBlockAccess world, int x, int y, int z) {
 		return (y == getBaseY(world, x, y, z)); 
 	}
 
@@ -302,14 +311,47 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     }
     
 	///////////////////////////////////////////////////////////////////////////////////////
-	// Custom Growth Code    
+	// Custom Growth Code
+    
+    @Override
+    public void onBlockAdded(World world, int x, int y, int z)
+    {
+        super.onBlockAdded(world, x, y, z);
+        
+        if (world.getBlockMetadata(x, y, z) < 8 - this.CropStages)
+        	world.setBlockMetadataWithNotify(x, y, z, 8 - this.CropStages, 2);
+    }
     
     private void growPlant(World world, int x, int y, int z) 
     {
+    	if (world.getBlock(x, y, z) != this) return;
     	int meta = world.getBlockMetadata(x, y, z);
     	
-    	if (meta < 7) {
-    		world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
+    	if (this.MaxHeight == 1) 
+    	{
+	    	if (meta < 7)
+	    		world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
+    	} 
+    	else 
+    	{
+    		int top = this.getTopY(world, x, y, z);
+    		int base = this.getBaseY(world, x, y, z);
+    		
+    		if (meta == (this.UnripeMeta + 8 - this.CropStages) && world.isAirBlock(x, y + 1, z) && (top - base + 1) < this.MaxHeight)
+    			world.setBlock(x, y + 1, z, this);
+    		
+    		if (this.MaxHeightRequiredToRipen)
+    		{
+    			if (world.getBlock(x, y, z) == world.getBlock(x, top, z) && (1 + top - base) == this.MaxHeight && world.getBlockMetadata(x, top, z) >= (this.UnripeMeta + 8 - this.CropStages))
+    				for (int i = base; i <= top; i++)
+    					world.setBlockMetadataWithNotify(x, i, z, meta + 1, 2);
+    			else if (meta < (this.UnripeMeta + 8 - this.CropStages))
+    				world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
+    			else
+    				growPlant(world, x, y + 1, z);
+    		}
+    		else if (meta < 7)
+   	    		world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
     	}
     }    
     

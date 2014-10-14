@@ -146,7 +146,7 @@ public class ConfigurationLoader {
 		
 		// Get crop variables from config file
 		b.Enabled = config.getBoolean("Enabled", category, false, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
-		b.CropStages = config.getInt("States", category, b.CropStages, 2, 8, "Number of crop states ?  Valid values are between 2 and 8. (Ex: Carrots = 4, Wheat = 8)");
+		b.CropStages = config.getInt("CropStages", category, b.CropStages, 2, 8, "Number of crop states ?  Valid values are between 2 and 8. (Ex: Carrots = 4, Wheat = 8)");
 		b.RenderType = (config.getString("RenderType", category, "Hash", "How will the crop render ? Valid values are 'Hash' (Ex: Carrots) or 'Cross' (Ex: Mushrooms)").toLowerCase() == "cross" ? BlockKawaiiCrop.EnumRenderType.CROSS : BlockKawaiiCrop.EnumRenderType.HASH);
 		b.MaxHeight = config.getInt("MaxHeight", category, b.MaxHeight, 1, 32, "How many blocks tall will this crop grow ?");
 		b.MaxHeightRequiredToRipen = config.getBoolean("MaxHeightRequired", category, b.MaxHeightRequiredToRipen, "Does the plant need to be at max height before lower blocks are ready to harvest ?");
