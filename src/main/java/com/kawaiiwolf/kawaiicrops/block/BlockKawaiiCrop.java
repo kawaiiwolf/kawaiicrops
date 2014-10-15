@@ -46,7 +46,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public String Name = "";
 	
 	// Don't register if false
-	public boolean Enabled = false;
+	public boolean Enabled = true;
 	
 	// Number of crop stages
 	public int CropStages = 8;
@@ -110,7 +110,6 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public BlockKawaiiCrop(String cropName)
 	{
 		super();
-		//super(Material.plants);
 		
 		this.Name = cropName;
 		this.setBlockName(Constants.MOD_ID + "." + this.Name );
@@ -118,7 +117,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	}
 	
 	public void register()
-	{
+	{		
 		if (!this.Enabled) return; 
 		GameRegistry.registerBlock(this, this.getUnlocalizedName());
 		
@@ -147,6 +146,13 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 		dropTableRipe = new DropTable(DropTableRipeString, seed, crop);
 		dropTableUnripe = new DropTable(DropTableUnripeString, seed, crop);		
 	}
+	
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Item getItem(World world, int x, int y, int z)
+    {
+        return seed;
+    }
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Rendering Code

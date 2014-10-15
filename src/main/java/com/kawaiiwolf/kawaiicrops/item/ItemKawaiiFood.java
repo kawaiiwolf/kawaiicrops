@@ -10,6 +10,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.world.World;
 
 public class ItemKawaiiFood extends ItemFood {
 	
@@ -35,5 +37,13 @@ public class ItemKawaiiFood extends ItemFood {
 		if (ToolTipText.length() > 0)
 			list.add(ToolTipText);
 	}
+
+	@Override
+    public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
+    {
+		//player.addPotionEffect(new PotionEffect(intPotionId, intDurationTicks, intAmplifier));
+		return super.onEaten(stack, world, player);
+    }
+	
 
 }

@@ -6,8 +6,9 @@ public class Constants {
 	public static final String VERSION = "0.0.1";
 	public static final String CONFIG_FOLDER = "/kawaiicrops";
 	public static final String CONFIG_GENERAL = CONFIG_FOLDER + "/general.cfg";
-	public static final String CONFIG_BLOCKS = CONFIG_FOLDER + "/blocks.cfg";
-	public static final String CONFIG_ITEMS = CONFIG_FOLDER + "/items.cfg";
-	public static final String CONFIG_RECIPIES = CONFIG_FOLDER + "/recipies.cfg";
+	public static final String CONFIG_CROPS = CONFIG_FOLDER + "/crops.cfg";
+	public static final String CONFIG_CAKES = CONFIG_FOLDER + "/cakes.cfg";
 	public static final String CONFIG_DUMP = CONFIG_FOLDER + "/dump.cfg";
+	
+	
 }

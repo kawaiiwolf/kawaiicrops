@@ -86,43 +86,46 @@ public class ConfigurationLoader {
 			"No drops.\n";
 
 	
-	public void loadConfiguration_PreInit() {
+	public void loadConfiguration_PreInit() 
+	{
 		Configuration cfg_general = new Configuration(new File(configFolder + Constants.CONFIG_GENERAL));
-		Configuration cfg_blocks = new Configuration(new File(configFolder + Constants.CONFIG_BLOCKS));
-		Configuration cfg_items = new Configuration(new File(configFolder + Constants.CONFIG_ITEMS));
-		Configuration cfg_recipies = new Configuration(new File(configFolder + Constants.CONFIG_RECIPIES));
-		
-		Configuration[] configs = {cfg_general, cfg_blocks, cfg_items, cfg_recipies};
-		
-		for (int i = 0; i < 4; i++) configs[i].load();
+		cfg_general.load();
 		
 		cfg_general.setCategoryComment(Configuration.CATEGORY_GENERAL, "Global Settings for KawaiiCraft");
 		cfg_general.setCategoryComment("Reference: Drop Table Help", REFERENCE_DROPTABLES_COMMENT);
 		DumpIDs = cfg_general.getBoolean("DumpNames", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
 		
-		/* Begin processing Crop Blocks.
-		 * - Read crop list from General Config & Cleanup
-		 * - For each crop, loadBlock() and register.
-		 */
+		// Crops
+		
 		cfg_general.setCategoryComment("KawaiiCrop Crops", GENERAL_CROP_COMMENT);
 		String cropsRaw = cfg_general.getString("Crops", "KawaiiCrop Crops", "snowpea","Crop List");
 		String[] cropsParsed = cropsRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
-		for (int i = 0; i < cropsParsed.length; i++)
+		if(cropsParsed.length > 0)
 		{
-			BlockKawaiiCrop b = loadBlock(cfg_blocks, cropsParsed[i]);
+			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CROPS));
+			cfg.load();
+			for (String crop : cropsParsed)
+				loadBlock(cfg, crop);
+			cfg.save();
 		}
+		
+		// Cakes
 		
 		cfg_general.setCategoryComment("KawaiiCrop Yummy Cakes", GENERAL_CAKE_COMMENT);
-		String cakesRaw = cfg_general.getString("Cakes", "KawaiiCrop Yummy Cakes", "", "Cake List");
+		String cakesRaw = cfg_general.getString("Cakes", "KawaiiCrop Yummy Cakes", "strawberryshort", "Cake List");
 		String[] cakesParsed = cakesRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
-		for (int i = 0; i < cakesParsed.length; i++)
+		if(cakesParsed.length > 0)
 		{
-			BlockKawaiiCake c = loadCake(cfg_general, cakesParsed[i]);
+			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CAKES));
+			cfg.load();
+			for (String cake : cakesParsed)
+				loadCake(cfg, cake);
+			cfg.save();
 		}
 		
-		for (int i = 0; i < 4; i++) configs[i].save();
+		cfg_general.save();
 	}
 	
 	public void loadConfiguration_PostInit() {
@@ -163,26 +166,29 @@ public class ConfigurationLoader {
 		BlockKawaiiCrop b = new BlockKawaiiCrop(name);
 		
 		// Get crop variables from config file
-		b.Enabled = config.getBoolean("Enabled", category, false, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
-		b.CropStages = config.getInt("CropStages", category, b.CropStages, 2, 8, "Number of crop states ?  Valid values are between 2 and 8. (Ex: Carrots = 4, Wheat = 8)");
-		b.RenderType = (config.getString("RenderType", category, "Hash", "How will the crop render ? Valid values are 'Hash' (Ex: Carrots) or 'Cross' (Ex: Mushrooms)").toLowerCase() == "cross" ? BlockKawaiiCrop.EnumRenderType.CROSS : BlockKawaiiCrop.EnumRenderType.HASH);
-		b.MaxHeight = config.getInt("MaxHeight", category, b.MaxHeight, 1, 32, "How many blocks tall will this crop grow ?");
-		b.MaxHeightRequiredToRipen = config.getBoolean("MaxHeightRequired", category, b.MaxHeightRequiredToRipen, "Does the plant need to be at max height before lower blocks are ready to harvest ?");
+		b.Enabled = config.getBoolean("0. Enabled", category, b.Enabled, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
+		
+		b.RenderType = (config.getString("1.General  Render Type", category, "Hash", "How will the crop render ? Valid values are 'Hash' (Ex: Carrots) or 'Cross' (Ex: Mushrooms)").toLowerCase() == "cross" ? BlockKawaiiCrop.EnumRenderType.CROSS : BlockKawaiiCrop.EnumRenderType.HASH);
+		b.CropStages = config.getInt("1.General  Crop Stages", category, b.CropStages, 2, 8, "Number of crop states ?  Valid values are between 2 and 8. (Ex: Carrots = 4, Wheat = 8)");
+		b.MaxHeight = config.getInt("1.General  Max Height", category, b.MaxHeight, 1, 32, "How many blocks tall will this crop grow ?");
+
+		Block tmp = NamespaceHelper.getBlockByName(config.getString("1.General  Soil Block", category, NamespaceHelper.getBlockName(b.CropGrowsOn), "What block does this grow on ? For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)"));
+		b.CropGrowsOn = (tmp == Blocks.air ? b.CropGrowsOn : tmp);
+		
+		b.MaxHeightRequiredToRipen = config.getBoolean("2.Harvest  Max Height Required to Ripen", category, b.MaxHeightRequiredToRipen, "Does the plant need to be at max height before lower blocks are ready to harvest ?");
 		b.MultiHarvest = config.getBoolean("MultiHarvest", category, b.MultiHarvest, "Upon harvesting this crop, does it grow back to an earlier, unripe state ?");
-		b.UnripeMeta = config.getInt("UnripeMeta", category, b.UnripeMeta, 0, 7, "If MultiHarvest, upon harvesting the crop goes from Metadata value 7 to Meta ?");
-		b.UnripeHardness = config.getFloat("UnripeHardness", category, b.UnripeHardness, 0.0f, 1.0f, "Hardness of unripe crops (0 breaks instantly. Set higher to prevent accidental harvests) ?");
-		b.GrowthMutliplier = config.getFloat("GrowthMultiplier", category, b.GrowthMutliplier, 0.01f, 100.0f, "How fast does your plant grow ? (1.0 is normal vanilla speeds, 3.0 is growth rate on wet farmland when growing on other block types.");
-		b.BoneMealMin = config.getInt("BoneMealMin", category, b.BoneMealMin, 0, 8, "Minimum stages of growth when using bonemeal.");
-		b.BoneMealMax = config.getInt("BoneMealMax", category, b.BoneMealMax, 0, 8, "Maximum stages of growth when using bonemeal.");
+		b.UnripeMeta = config.getInt("2.Harvest  Unripe Meta", category, b.UnripeMeta, 0, 7, "If MultiHarvest, upon harvesting the crop goes from Metadata value 7 to Meta ?");
+		b.UnripeHardness = config.getFloat("2.Harvest  Unripe Hardness", category, b.UnripeHardness, 0.0f, 1.0f, "Hardness of unripe crops (0 breaks instantly. Set higher to prevent accidental harvests) ?");
+		
+		b.GrowthMutliplier = config.getFloat("3.Growth  Growth Multiplier", category, b.GrowthMutliplier, 0.001f, 1000.0f, "How fast does your plant grow ? (1.0 is normal vanilla speeds, 3.0 is growth rate on wet farmland when growing on other block types.");
+		b.BoneMealMin = config.getInt("3.Growth  Bonemeal Min", category, b.BoneMealMin, 0, 8, "Minimum stages of growth when using bonemeal.");
+		b.BoneMealMax = config.getInt("3.Growth  Bonemeal Max", category, b.BoneMealMax, 0, 8, "Maximum stages of growth when using bonemeal.");
 		
 		if (b.BoneMealMin > b.BoneMealMax) b.BoneMealMin = b.BoneMealMax;
 		if (b.BoneMealMax < b.BoneMealMin) b.BoneMealMax = b.BoneMealMin;
 		
-		b.DropTableRipeString = config.getString("DropTableRipe", category, b.DropTableRipeString, "What is the drop table for Ripe crops ? Please see General.cfg to see how to use these.");
-		b.DropTableUnripeString = config.getString("DropTableUnripe", category, b.DropTableUnripeString, "What is the drop table for Unripe crops ? Please see General.cfg to see how to use these.");
-
-		Block tmp = NamespaceHelper.getBlockByName(config.getString("SeedsGrowOn", category, NamespaceHelper.getBlockName(b.CropGrowsOn), "What block does this grow on ? For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)"));
-		b.CropGrowsOn = (tmp == Blocks.air ? b.CropGrowsOn : tmp);
+		b.DropTableRipeString = config.getString("4.Drops  Ripe Drop Table", category, b.DropTableRipeString, "What is the drop table for Ripe crops ? Please see General.cfg to see how to use these.");
+		b.DropTableUnripeString = config.getString("4.Drops  Unripe Drop Table", category, b.DropTableUnripeString, "What is the drop table for Unripe crops ? Please see General.cfg to see how to use these.");
 				
 		String category_seeds = category + " Seeds";
 		
@@ -203,6 +209,12 @@ public class ConfigurationLoader {
 		
 		b.register();
 		
+		System.out.println("REGISTERING BLOCK: " + b.Name);
+		System.out.println("REGISTERING BLOCK: " + b.Name);
+		System.out.println("REGISTERING BLOCK: " + b.Name);
+		System.out.println("REGISTERING BLOCK: " + b.Name);
+		System.out.println("REGISTERING BLOCK: " + b.Name);
+		
 		return b; 
 	}
 	
@@ -211,6 +223,13 @@ public class ConfigurationLoader {
 		if (name == null || name.length() == 0) return null;
 		
 		BlockKawaiiCake c = new BlockKawaiiCake(name);
+		String category = "Kawaiicrops: " + name + " cake";
+		
+		c.Enabled = config.getBoolean("Enabled", category, c.Enabled, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
+		c.Hunger = config.getInt("Hunger Restored", category, c.Hunger, 0, 20, "How much hunger does a eating a slice of cake restore ?");
+		c.Saturation = config.getFloat("Saturation", category, c.Saturation, 0.0F, 20.0f, "How saturating is a slice of cake ?");
+		c.ToolTipText = config.getString("Tool Tip Text", category, c.ToolTipText, "Tooltip for the cake in game.");
+		
 		c.register();
 		
 		return c;
