@@ -41,6 +41,7 @@ public class KawaiiCrops {
     	
     	config = new ConfigurationLoader(event.getSuggestedConfigurationFile().getParent());
     	config.loadConfiguration_PreInit();
+    	
     	ModItems.register();
     }
  

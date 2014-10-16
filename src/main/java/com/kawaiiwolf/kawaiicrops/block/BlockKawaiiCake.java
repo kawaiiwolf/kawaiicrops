@@ -2,6 +2,7 @@ package com.kawaiiwolf.kawaiicrops.block;
 
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.lib.PotionEffectParser;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -19,6 +20,7 @@ public class BlockKawaiiCake extends BlockCake {
 	public float Saturation = 0.1F;
 	public boolean Enabled = true;
 	public String ToolTipText = "";
+	public PotionEffectParser Potion = null;
 	
 	private ItemKawaiiCake cake = null;
 	
@@ -57,6 +59,8 @@ public class BlockKawaiiCake extends BlockCake {
         if (player.canEat(false))
         {
             player.getFoodStats().addStats(this.Hunger, this.Saturation);
+            // ADD Potion loop here !
+            
             int l = world.getBlockMetadata(x, y, z) + 1;
 
             if (l >= 6)

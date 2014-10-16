@@ -86,6 +86,50 @@ public class ConfigurationLoader {
 			"No drops.\n";
 
 	
+	public static final String REFERENCE_POTION_COMMENT = "" +
+			"A Potion Effect is deifned with the following syntax:\n"+
+			"\n"+
+			"  <Potion-Effects> ::= <Potion-Effect> | <Potion-Effect> \"|\" <Potion-Effects>\n"+
+			"   <Potion-Effect> ::= <potion-id> \" \" <duration-seconds> \" \" <Amplifier> \" \" <Chance>\n"+
+			"       <potion-id> ::= <number-between-1-and-23>\n"+
+			"<duration-seconds> ::= <positive-number>\n"+
+			"       <Amplifier> ::= <positive-number>\n"+
+			"          <Chance> ::= <decimal-between-0.0-and-1.0>\n"+
+			"\n"+
+			"\n"+
+			"Ex: \n"+
+			"  \"1 4 1 1.0\" This applies Speed I for 4 seconds 100% of the time\n"+
+			"  \"9 10 1 .05\" This applies Nausea for 10 seconds, 5% of the time\n"+
+			"  \"1 4 1 1.0 | 9 10 1 .05\" This always applies speed I and 5% of the time, Nausea\n"+
+			"\n"+
+			"\n"+
+			"Potion IDs:\n"+
+			"\n"+
+			" 1 Speed \n"+
+			" 2 Slowness \n"+
+			" 3 Haste \n"+
+			" 4 Mining Fatigue \n"+
+			" 5 Strength \n"+
+			" 6 Instant Health \n"+
+			" 7 Instant Damage \n"+
+			" 8 Jump Boost \n"+
+			" 9 Nausea \n"+
+			"10 Regeneration \n"+
+			"11 Resistance \n"+
+			"12 Fire Resistance \n"+
+			"13 Water Breathing \n"+
+			"14 Invisibility \n"+
+			"15 Blindness \n"+
+			"16 Night vision \n"+
+			"17 Hunger \n"+
+			"18 Weakness \n"+
+			"19 Poison \n"+
+			"20 Wither \n"+
+			"21 Health Boost \n"+
+			"22 Absorption \n"+
+			"23 Saturation";
+
+	
 	public void loadConfiguration_PreInit() 
 	{
 		Configuration cfg_general = new Configuration(new File(configFolder + Constants.CONFIG_GENERAL));
@@ -93,6 +137,7 @@ public class ConfigurationLoader {
 		
 		cfg_general.setCategoryComment(Configuration.CATEGORY_GENERAL, "Global Settings for KawaiiCraft");
 		cfg_general.setCategoryComment("Reference: Drop Table Help", REFERENCE_DROPTABLES_COMMENT);
+		cfg_general.setCategoryComment("Reference: Potions Help", REFERENCE_POTION_COMMENT);
 		DumpIDs = cfg_general.getBoolean("DumpNames", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
 		
 		// Crops
@@ -209,12 +254,6 @@ public class ConfigurationLoader {
 		
 		b.register();
 		
-		System.out.println("REGISTERING BLOCK: " + b.Name);
-		System.out.println("REGISTERING BLOCK: " + b.Name);
-		System.out.println("REGISTERING BLOCK: " + b.Name);
-		System.out.println("REGISTERING BLOCK: " + b.Name);
-		System.out.println("REGISTERING BLOCK: " + b.Name);
-		
 		return b; 
 	}
 	
@@ -229,6 +268,7 @@ public class ConfigurationLoader {
 		c.Hunger = config.getInt("Hunger Restored", category, c.Hunger, 0, 20, "How much hunger does a eating a slice of cake restore ?");
 		c.Saturation = config.getFloat("Saturation", category, c.Saturation, 0.0F, 20.0f, "How saturating is a slice of cake ?");
 		c.ToolTipText = config.getString("Tool Tip Text", category, c.ToolTipText, "Tooltip for the cake in game.");
+		c.Potion = new PotionEffectParser(config.getString("Potion Effect", category, "", "What potion effect do you want triggered on this cake ?  Please see General.cfg to see how to use these."));
 		
 		c.register();
 		
