@@ -59,7 +59,14 @@ public class BlockKawaiiCake extends BlockCake {
         if (player.canEat(false))
         {
             player.getFoodStats().addStats(this.Hunger, this.Saturation);
-            // ADD Potion loop here !
+
+            if (!world.isRemote) {
+            	for (com.kawaiiwolf.kawaiicrops.lib.PotionEffectParser.Potion p : this.Potion.Effects)
+            	{
+            		if (world.rand.nextFloat() < p.Chance)
+                    	player.addPotionEffect(p.getPotionEffect());
+            	}
+            }
             
             int l = world.getBlockMetadata(x, y, z) + 1;
 

@@ -20,7 +20,7 @@ public class PotionEffectParser
 	{
 		Pattern pattern = Pattern.compile("([0-9]{1,2})[ ]*([0-9]{1,2})[ ]*([0-9]{1,2})[ ]*(1|0?[.][0-9]*)");
 		
-		for (String effect : effects.split("|"))
+		for (String effect : effects.split("[|]"))
 		{
 			Matcher match = pattern.matcher(effect.replaceAll("[^0-9 .]", ""));
 	
@@ -53,7 +53,7 @@ public class PotionEffectParser
 		{
 			if (this.PotionID == 0) 
 				return null;
-			return new PotionEffect(PotionID, Duration, Amplitude);
+			return new PotionEffect(PotionID, 20 * Duration, Amplitude);
 		}
 	}
 }
