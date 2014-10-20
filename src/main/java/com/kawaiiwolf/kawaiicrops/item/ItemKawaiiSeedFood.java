@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,8 +25,14 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
 	private String name = "";
 	private BlockKawaiiCrop plant = null;
 	private Block soil = null;
+	public PotionEffectHelper potion = null;
 
-	public ItemKawaiiSeedFood(String name, String toolTip, int hunger, float saturation, BlockKawaiiCrop plant, Block soil) {
+	public ItemKawaiiSeedFood(String name, String toolTip, int hunger, float saturation, BlockKawaiiCrop plant, Block soil) 
+	{
+		this(name, toolTip, hunger, saturation, plant, soil, null);
+	}
+
+	public ItemKawaiiSeedFood(String name, String toolTip, int hunger, float saturation, BlockKawaiiCrop plant, Block soil, PotionEffectHelper potion) {
 		super(hunger, saturation, plant, soil);
 		
 		this.setTextureName(Constants.MOD_ID + ":" + name);
@@ -34,8 +41,8 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
 		this.plant = plant;	
 		this.soil = soil;
 		this.ToolTipText = toolTip;
+		this.potion = potion;
 	}
-	
 	
 	@Override
     @SideOnly(Side.CLIENT)
@@ -79,5 +86,16 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
         {
             return false;
         }
+    }
+    
+	@Override
+    public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
+    {
+		if (player.canEat(false) && !world.isRemote && this.potion != null)
+        	for (com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper.Potion p : this.potion.Effects)
+        		if (world.rand.nextFloat() < p.Chance)
+                	player.addPotionEffect(p.getPotionEffect());
+		
+		return super.onEaten(stack, world, player);
     }
 }

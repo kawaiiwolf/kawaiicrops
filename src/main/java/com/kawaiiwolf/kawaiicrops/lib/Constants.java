@@ -8,6 +8,8 @@ public class Constants {
 	public static final String CONFIG_GENERAL = CONFIG_FOLDER + "/general.cfg";
 	public static final String CONFIG_CROPS = CONFIG_FOLDER + "/crops.cfg";
 	public static final String CONFIG_CAKES = CONFIG_FOLDER + "/cakes.cfg";
+	public static final String CONFIG_FOODS = CONFIG_FOLDER + "/food.cfg";
+	public static final String CONFIG_INGREDIENTS = CONFIG_FOLDER + "/ingredients.cfg";
 	public static final String CONFIG_DUMP = CONFIG_FOLDER + "/dump.cfg";
 	
 	

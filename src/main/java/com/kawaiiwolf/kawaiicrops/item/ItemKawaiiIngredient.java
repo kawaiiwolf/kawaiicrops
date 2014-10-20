@@ -12,17 +12,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ItemKawaiiIngredient extends Item {
-	public String ToolTipText = "";
-	
-	private String name = "";
-	private BlockKawaiiCrop plant = null;
 
-	public ItemKawaiiIngredient(String name, String toolTip, BlockKawaiiCrop plant) {
+	public String ToolTipText = "";
+	private String name = "";
+
+	public ItemKawaiiIngredient(String name, String toolTip) {
 		
 		this.setTextureName(Constants.MOD_ID + ":" + name);
 		this.setUnlocalizedName(Constants.MOD_ID + "." + name);
 		this.name = name;
-		this.plant = plant;
 		this.ToolTipText = toolTip;
 	}
 	

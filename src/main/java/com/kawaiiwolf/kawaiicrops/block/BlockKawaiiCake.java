@@ -2,7 +2,7 @@ package com.kawaiiwolf.kawaiicrops.block;
 
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
-import com.kawaiiwolf.kawaiicrops.lib.PotionEffectParser;
+import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -20,7 +20,7 @@ public class BlockKawaiiCake extends BlockCake {
 	public float Saturation = 0.1F;
 	public boolean Enabled = true;
 	public String ToolTipText = "";
-	public PotionEffectParser Potion = null;
+	public PotionEffectHelper Potion = null;
 	
 	private ItemKawaiiCake cake = null;
 	
@@ -60,8 +60,8 @@ public class BlockKawaiiCake extends BlockCake {
         {
             player.getFoodStats().addStats(this.Hunger, this.Saturation);
 
-            if (!world.isRemote) {
-            	for (com.kawaiiwolf.kawaiicrops.lib.PotionEffectParser.Potion p : this.Potion.Effects)
+            if (!world.isRemote && this.Potion != null) {
+            	for (com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper.Potion p : this.Potion.Effects)
             	{
             		if (world.rand.nextFloat() < p.Chance)
                     	player.addPotionEffect(p.getPotionEffect());

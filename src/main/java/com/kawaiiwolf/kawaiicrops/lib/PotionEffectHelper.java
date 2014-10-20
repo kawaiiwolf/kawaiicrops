@@ -9,14 +9,14 @@ import java.util.regex.Pattern;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
-public class PotionEffectParser 
+public class PotionEffectHelper 
 {
 	public static final int MIN_ID = 1;
 	public static final int MAX_ID = 23;
 
 	public ArrayList<Potion> Effects = new ArrayList<Potion>();
 	
-	public PotionEffectParser(String effects) 
+	public PotionEffectHelper(String effects) 
 	{
 		Pattern pattern = Pattern.compile("([0-9]{1,2})[ ]*([0-9]{1,2})[ ]*([0-9]{1,2})[ ]*(1|0?[.][0-9]*)");
 		

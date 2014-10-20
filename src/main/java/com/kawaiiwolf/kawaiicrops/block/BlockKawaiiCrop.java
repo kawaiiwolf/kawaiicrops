@@ -10,6 +10,7 @@ import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeed;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeedFood;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.DropTable;
+import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlock;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
 
@@ -90,6 +91,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public float SeedsSaturation = 0.6f;
 	public String SeedsToolTip = "";
 	public int SeedsMysterySeedWeight = 0;
+	public PotionEffectHelper SeedsPotionEffects = null;
 	
 	// Produce details
 	public boolean CropEnabled = true;
@@ -97,6 +99,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public int CropHunger = 4;
 	public float CropSaturation = 0.6f;
 	public String CropToolTip = "";
+	public PotionEffectHelper CropPotionEffects = null;
 	
 	private IIcon[] iconArray;
 	private Item seed = null;
@@ -133,8 +136,8 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 		if (this.CropEnabled) {
 			String cropName = this.Name + ".crop";
 			crop = (Item) (this.CropEdible
-					? new ItemKawaiiFood(cropName, this.CropToolTip, this.CropHunger, this.CropSaturation, this)
-					: new ItemKawaiiIngredient(cropName, this.CropToolTip, this));
+					? new ItemKawaiiFood(cropName, this.CropToolTip, this.CropHunger, this.CropSaturation, this.CropPotionEffects)
+					: new ItemKawaiiIngredient(cropName, this.CropToolTip));
 			
 			GameRegistry.registerItem(crop, Constants.MOD_ID + "." + cropName);
 		}
@@ -283,6 +286,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
+    	if (world.isRemote) return null;
         if (metadata >= 7)
         	return this.dropTableRipe.generateLoot(world.rand);
         else
@@ -441,6 +445,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     @Override
     public void func_149863_m(World world, int x, int y, int z)
     {
+    	if (world.isRemote) return;
         int growth = BoneMealMin + ((int)(world.rand.nextFloat() * (1 + BoneMealMax - BoneMealMin)));
         for (int i = 0; i < growth; i++)
         	growPlant(world, x, y, z);

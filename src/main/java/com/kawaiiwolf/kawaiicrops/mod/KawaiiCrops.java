@@ -59,5 +59,16 @@ public class KawaiiCrops {
     	config.loadConfiguration_PostInit();
     	ModBlocks.registerDropTables();
     }
-	
+
+    /**
+     * TODO:
+     * 
+     * Multiblock Plant Icons & (-Drops- possibly fixed already ?)
+     * Forge Dictionary
+     * Recipies
+     * BUSH render type
+     * Trees
+     * World Gen & Mystery Seeds
+     * Custom Cooking ! 
+     */
 }

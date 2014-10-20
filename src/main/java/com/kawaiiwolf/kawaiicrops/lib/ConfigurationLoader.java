@@ -5,8 +5,11 @@ import java.util.Iterator;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
+import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
+import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -37,12 +40,33 @@ public class ConfigurationLoader {
 	
 	public static final String GENERAL_CAKE_COMMENT = "" + 
 			"List the names of all cakes you the mod to generate. Make sure each cake name is lower case and has no\n" + 
-			"spaces or punctuation. You can separate these with commans or spaces.\n" +
+			"spaces or punctuation. You can separate these with commas or spaces.\n" +
 			"\n"+
 			"Bad Name: Strawberry Shortcake\n"+
 			"Good Name: strawberryshort\n"+
 			"\n"+
 			"S:Cakes=strawberryshort chocolate carrot";
+	
+	
+	public static final String GENERAL_FOOD_COMMENT = "" + 
+			"List the names of all foods you the mod to generate. Make sure each name is lower case and has no\n" + 
+			"spaces or punctuation. You can separate these with commas or spaces.\n" +
+			"\n"+
+			"Bad Name: Raspberry Tea\n"+
+			"Good Name: raspberrytea\n"+
+			"\n"+
+			"S:Cakes=raspberrytea banananutmuffin";	
+	
+	
+	public static final String GENERAL_INGREDIENTS_COMMENT = "" + 
+			"List the names of all non-food items you the mod to generate. Typically these will be used as byproducts\n" +
+			"or half-steps in recipies, such as an unbaked cake or ground pepper. Make sure each name is lower case\n" +
+			"and has no spaces or punctuation. You can separate these with commas or spaces.\n" +
+			"\n"+
+			"Bad Name: Unbaked Chocoalte Cake\n"+
+			"Good Name: unbakedchocolatecake\n"+
+			"\n"+
+			"S:Cakes=unbakedchocolatecake groundpepper";
 	
 	
 	public static final String REFERENCE_DROPTABLES_COMMENT = "" +
@@ -170,6 +194,36 @@ public class ConfigurationLoader {
 			cfg.save();
 		}
 		
+		// Foods
+		
+		cfg_general.setCategoryComment("KawaiiCrop Foods", GENERAL_FOOD_COMMENT);
+		String foodsRaw = cfg_general.getString("Foods", "KawaiiCrop Foods", "", "Food List");
+		String[] foodsParsed = foodsRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		
+		if(foodsParsed.length > 0)
+		{
+			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_FOODS));
+			cfg.load();
+			for (String food : foodsParsed)
+				loadFood(cfg, food);
+			cfg.save();
+		}
+		
+		// Ingredients
+		cfg_general.setCategoryComment("KawaiiCrop Ingredients", GENERAL_INGREDIENTS_COMMENT);
+		String ingredientsRaw = cfg_general.getString("Ingredients", "KawaiiCrop Ingredients", "", "Ingredients List");
+		String[] ingredientsParsed = ingredientsRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		
+		if(ingredientsParsed.length > 0)
+		{
+			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_INGREDIENTS));
+			cfg.load();
+			for (String ingredient : ingredientsParsed)
+				loadIngredient(cfg, ingredient);
+			cfg.save();
+		}
+		
+		
 		cfg_general.save();
 	}
 	
@@ -240,17 +294,29 @@ public class ConfigurationLoader {
 		b.SeedsEnabled = config.getBoolean("SeedsEnabled", category_seeds, b.SeedsEnabled, "Does this crop have seeds ?");
 		b.SeedsEdible = config.getBoolean("SeedsEdible", category_seeds, b.SeedsEdible, "Are seeds also a food ?");
 		b.SeedsHunger = config.getInt("SeedsHunger", category_seeds, b.SeedsHunger, 0, 20, "If SeedsEdible, how many half shanks of food does this restore ?");
-		b.SeedsSaturation = config.getFloat("SeedsSaturation", category_seeds, b.SeedsSaturation, 0, 20.0f, "If SeedsEdible, what is the saturation level of this food ?");
+		b.SeedsSaturation = config.getFloat("SeedsSaturation", category_seeds, b.SeedsSaturation, 0, 20.0f, "If SeedsEdible, how saturating is this food ?");
 		b.SeedsMysterySeedWeight = config.getInt("SeedsMysterySeedWeight", category_seeds, b.SeedsMysterySeedWeight, 0, 1000, "If mystery seeds enabled, what weight should this have on mystery seed results (0 = None)");
 		b.SeedsToolTip = config.getString("SeedsToolTip", category_seeds, b.SeedsToolTip, "Tooltip for the seed in game.");
+		b.SeedsPotionEffects = new PotionEffectHelper(config.getString("Potion Effect", category_seeds, "", "What potion effect do you want triggered on eating this seed ?  Please see General.cfg to see how to use these."));
 
+		config.setCategoryComment(category_seeds, 
+				"Resource Pack settings for " + name + " seed\n\n" +
+				"Langage Name: item.kawaiicrops." + name + ".seed.name\n" +
+				"Texture Name: textures/items/" + name + ".seed.png");
+		
 		String category_crops = category + " Crops";
 		
 		b.CropEnabled = config.getBoolean("CropEnabled", category_crops, b.CropEnabled, "Does this plant drop other crops ?");
 		b.CropEdible = config.getBoolean("CropEdible", category_crops, b.CropEdible, "Are Crop also a food ?");
 		b.CropHunger = config.getInt("CropHunger", category, b.CropHunger, 0, 20, "If CropEdible, how many half shanks of food does this restore ?");
-		b.CropSaturation = config.getFloat("CropSaturation", category_crops, b.CropSaturation, 0, 20.0f, "If CropEdible, what is the saturation level of this food ?");
+		b.CropSaturation = config.getFloat("CropSaturation", category_crops, b.CropSaturation, 0, 20.0f, "If CropEdible, how is the saturating is this food ?");
 		b.CropToolTip = config.getString("CropToolTip", category_crops, b.CropToolTip, "Tooltip for the crop in game.");
+		b.CropPotionEffects = new PotionEffectHelper(config.getString("Potion Effect", category_crops, "", "What potion effect do you want triggered on eating this crop ?  Please see General.cfg to see how to use these."));
+
+		config.setCategoryComment(category_crops, 
+				"Resource Pack settings for " + name + " crop\n\n" +
+				"Langage Name: item.kawaiicrops." + name + ".crop.name\n" +
+				"Texture Name: textures/items/" + name + ".crop.png");
 		
 		b.register();
 		
@@ -265,24 +331,72 @@ public class ConfigurationLoader {
 		String category = "Kawaiicrops: " + name + " cake";
 		
 		c.Enabled = config.getBoolean("Enabled", category, c.Enabled, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
-		c.Hunger = config.getInt("Hunger Restored", category, c.Hunger, 0, 20, "How much hunger does a eating a slice of cake restore ?");
+		c.Hunger = config.getInt("Hunger Restored", category, c.Hunger, 0, 20, "How many half shanks of food does eating a slice of cake restore ?");
 		c.Saturation = config.getFloat("Saturation", category, c.Saturation, 0.0F, 20.0f, "How saturating is a slice of cake ?");
 		c.ToolTipText = config.getString("Tool Tip Text", category, c.ToolTipText, "Tooltip for the cake in game.");
-		c.Potion = new PotionEffectParser(config.getString("Potion Effect", category, "", "What potion effect do you want triggered on this cake ?  Please see General.cfg to see how to use these."));
+		c.Potion = new PotionEffectHelper(config.getString("Potion Effect", category, "", "What potion effect do you want triggered on eating this cake ?  Please see General.cfg to see how to use these."));
+		
+		config.setCategoryComment(category, 
+				"Resource Pack settings for " + name + " Cake\n\n" +
+				"Langage Name: item.kawaiicrops." + name + ".cake.name\n" +
+				"Langage Name: tile.kawaiicrops." + name + ".cake.name\n\n" +
+				"Texture Name: textures/items/" + name + ".cake.png\n\n" +
+				"Texture Name: textures/blocks/" + name + ".cake_top.png\n" +
+				"Texture Name: textures/blocks/" + name + ".cake_bottom.png\n" +
+				"Texture Name: textures/blocks/" + name + ".cake_side.png\n" +
+				"Texture Name: textures/blocks/" + name + ".cake_inner.png");
 		
 		c.register();
 		
 		return c;
 	}
 	
-	private Item loadItem(Configuration config, String name){
-		return null;
-	}
-	
-	private void loadRecipe(Configuration config, String name){
+	private ItemKawaiiFood loadFood(Configuration config, String name)
+	{
+		if (name == null || name.length() == 0) return null;
 		
+		String category = "Kawaiicrops: " + name;
+		
+		boolean enabled = config.getBoolean("Enabled", category, false, "Is this an item in minecraft ? Defaults to false to allow you to configure before putting it in the game.");
+		int hunger = config.getInt("Hunger", category, 1, 0, 20, "How many half shanks of food does this restore ?");
+		float saturation = config.getFloat("Saturation", category, 0, 0, 20.0F, "How saturating is this food ?");
+		String toolTipText = config.getString("Tool Tip Text", category, "", "Tooltip for this food.");
+		PotionEffectHelper potion = new PotionEffectHelper(config.getString("Potion Effect", category, "", "What potion effect do you want triggered on eating this food ?  Please see General.cfg to see how to use these."));
+		boolean drinkable = config.getBoolean("Drink", category, false, "Do you drink this instead of eat ?");
+		boolean anytime = config.getBoolean("Eat Anytime", category, false, "Can you eat this food even while full ?");
+		
+		config.setCategoryComment(category, 
+				"Resource Pack settings for " + name + "\n\n" +
+				"Langage Name: item.kawaiicrops." + name + ".name\n" +
+				"Texture Name: textures/items/" + name + ".png");
+		
+		ItemKawaiiFood food = new ItemKawaiiFood(name, toolTipText, hunger, saturation, potion);
+		if (enabled)
+			GameRegistry.registerItem(food, Constants.MOD_ID + "." + name);
+		
+		return food;
 	}
 	
-	
+	private ItemKawaiiIngredient loadIngredient(Configuration config, String name)
+	{
+		if (name == null || name.length() == 0) return null;
+		
+		String category = "Kawaiicrops: " + name;
+		
+		boolean enabled = config.getBoolean("Enabled", category, false, "Is this an item in minecraft ? Defaults to false to allow you to configure before putting it in the game.");
+		String toolTipText = config.getString("Tool Tip Text", category, "", "Tooltip for this food.");
+		
+		config.setCategoryComment(category, 
+				"Resource Pack settings for " + name + "\n\n" +
+				"Langage Name: item.kawaiicrops." + name + ".name\n" +
+				"Texture Name: textures/items/" + name + ".png");
+		
+		ItemKawaiiIngredient ingredient = new ItemKawaiiIngredient(name, toolTipText);
+		
+		if (enabled)
+			GameRegistry.registerItem(ingredient, Constants.MOD_ID + "." + name);		
+		
+		return ingredient;
+	}
 	
 }
