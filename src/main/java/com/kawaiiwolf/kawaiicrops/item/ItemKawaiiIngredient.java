@@ -15,6 +15,7 @@ public class ItemKawaiiIngredient extends Item {
 
 	public String ToolTipText = "";
 	private String name = "";
+	public String OreDict = "";
 
 	public ItemKawaiiIngredient(String name, String toolTip) {
 		
@@ -22,6 +23,8 @@ public class ItemKawaiiIngredient extends Item {
 		this.setUnlocalizedName(Constants.MOD_ID + "." + name);
 		this.name = name;
 		this.ToolTipText = toolTip;
+		
+		ModItems.ModIngredients.add(this);
 	}
 	
 	

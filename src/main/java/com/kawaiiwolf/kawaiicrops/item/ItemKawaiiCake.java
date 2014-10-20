@@ -15,12 +15,15 @@ import net.minecraft.item.ItemStack;
 public class ItemKawaiiCake extends ItemReed {
 
 	private BlockKawaiiCake cake = null;
+	public String OreDict = "";
 	
 	public ItemKawaiiCake(BlockKawaiiCake cake) {
 		super(cake);
 		this.setTextureName(Constants.MOD_ID + ":" + cake.Name + ".cake");
 		this.setUnlocalizedName(Constants.MOD_ID + "." + cake.Name + ".cake");
 		this.cake = cake;
+		
+		ModItems.ModCakes.add(this);
 	}
 	
 	@Override

@@ -26,6 +26,7 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
 	private BlockKawaiiCrop plant = null;
 	private Block soil = null;
 	public PotionEffectHelper potion = null;
+	public String OreDict = "";
 
 	public ItemKawaiiSeedFood(String name, String toolTip, int hunger, float saturation, BlockKawaiiCrop plant, Block soil) 
 	{
@@ -42,6 +43,8 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
 		this.soil = soil;
 		this.ToolTipText = toolTip;
 		this.potion = potion;
+		
+		ModItems.ModSeedFoods.add(this);
 	}
 	
 	@Override

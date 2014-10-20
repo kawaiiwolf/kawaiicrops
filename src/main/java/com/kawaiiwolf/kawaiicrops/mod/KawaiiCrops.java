@@ -3,7 +3,6 @@ package com.kawaiiwolf.kawaiicrops.mod;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
@@ -24,9 +23,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Constants.MOD_ID, name = Constants.MOD_NAME, version = Constants.VERSION)
 public class KawaiiCrops {
-	
-	public static HashMap<String,Item> items = new HashMap<String,Item>();
-	public static HashMap<String,Block> blocks = new HashMap<String,Block>();
 	
 	@Instance(value = Constants.MOD_ID)
 	public static KawaiiCrops instance;
@@ -50,6 +46,7 @@ public class KawaiiCrops {
      	
     	proxy.registerRenderers();
     	ModTileEntities.register();
+    	ModItems.registerOreDictionary();
     }
  
     @Mod.EventHandler
@@ -63,9 +60,9 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
-     * Multiblock Plant Icons & (-Drops- possibly fixed already ?)
-     * Forge Dictionary
+     * Set OreDict string in config loader
      * Recipies
+     * REFERENCE_ORE_COMMENT
      * BUSH render type
      * Trees
      * World Gen & Mystery Seeds

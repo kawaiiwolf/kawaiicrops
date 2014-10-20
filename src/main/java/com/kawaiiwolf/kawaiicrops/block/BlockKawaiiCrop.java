@@ -65,7 +65,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public boolean MultiHarvest = false;
 	
 	// Meta to restore to if MultiHarvest is set
-	public int UnripeMeta = 4;
+	public int UnripeStage = 4;
 	
 	// Hardness of unripe block
 	public float UnripeHardness = 0.5f;
@@ -164,26 +164,26 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg){
 		
-		iconArray = new IIcon[this.CropStages];
+		iconArray = new IIcon[this.CropStages * (MaxHeightRequiredToRipen ? MaxHeight : 1)];
 		
-		for (int i = 0; i < this.CropStages; i++)
-			iconArray[i] = reg.registerIcon(Constants.MOD_ID + ":" + this.Name + "_stage_" + i);
+		for (int i = 0; i < (MaxHeightRequiredToRipen ? MaxHeight : 1); i++)
+			for (int j = 0; j < CropStages; j++)
+				iconArray[i * CropStages + j] = reg.registerIcon(Constants.MOD_ID + ":" + Name + "_stage_"  + (MaxHeightRequiredToRipen ? i + "_" : "") + j);
 	}
-	
-	private boolean printed = false;
-	
+		
 	@Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
+		int height = MaxHeightRequiredToRipen ? (y - getBaseY(world, x, y, z)) : 0;
 		int stage = MathHelper.clamp_int(world.getBlockMetadata(x, y, z) + CropStages - 8, 0, this.CropStages - 1);
-		return iconArray[stage];
+		return iconArray[height * CropStages + stage];
     }
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
-		return iconArray[this.CropStages - 1];
+		return iconArray[iconArray.length - 1];
 	}
 	
 	@Override
@@ -237,14 +237,15 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 		TileEntity te = world.getTileEntity(x, y, z);
 		
 		if (this.MultiHarvest && te != null && te instanceof TileEntityKawaiiCrop && meta >= 7)
-			((TileEntityKawaiiCrop)te).arm(block, this.UnripeMeta);
-		else
+			((TileEntityKawaiiCrop)te).arm(block, 8 - CropStages + UnripeStage);
+		else 
 			world.removeTileEntity(x, y, z);
 		
 		for (int i = -1; i <= 1; i += 2)
 			if (world.getBlock(x, y + i, z) == this) 
 			{
-	            this.dropBlockAsItem(world, x, y + i, z, world.getBlockMetadata(x, y + i, z), 0);
+				if (!this.MaxHeightRequiredToRipen)
+					this.dropBlockAsItem(world, x, y + i, z, world.getBlockMetadata(x, y + i, z), 0);
 	            world.setBlock(x, y + i, z, getBlockById(0), 0, 2);
 	        }
     }
@@ -287,6 +288,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
     	if (world.isRemote) return null;
+    	
         if (metadata >= 7)
         	return this.dropTableRipe.generateLoot(world.rand);
         else
@@ -367,21 +369,24 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     		int top = this.getTopY(world, x, y, z);
     		int base = this.getBaseY(world, x, y, z);
     		
-    		if (meta == (this.UnripeMeta + 8 - this.CropStages) && world.isAirBlock(x, y + 1, z) && (top - base + 1) < this.MaxHeight)
-    			world.setBlock(x, y + 1, z, this);
-    		
     		if (this.MaxHeightRequiredToRipen)
     		{
-    			if (world.getBlock(x, y, z) == world.getBlock(x, top, z) && (1 + top - base) == this.MaxHeight && world.getBlockMetadata(x, top, z) >= (this.UnripeMeta + 8 - this.CropStages))
-    				for (int i = base; i <= top; i++)
-    					world.setBlockMetadataWithNotify(x, i, z, meta + 1, 2);
-    			else if (meta < (this.UnripeMeta + 8 - this.CropStages))
+    			if (world.getBlock(x, y, z) == world.getBlock(x, top, z) && (1 + top - base) == this.MaxHeight && world.getBlockMetadata(x, top, z) >= (this.UnripeStage + 8 - this.CropStages))
+    			{
+    				if (meta < 7)
+	    				for (int i = base; i <= top; i++)
+	    					world.setBlockMetadataWithNotify(x, i, z, meta + 1, 2);
+    			}
+    			else if (meta < (this.UnripeStage + 8 - this.CropStages))
     				world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
     			else
     				growPlant(world, x, y + 1, z);
     		}
     		else if (meta < 7)
    	    		world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
+
+    		if (meta >= (this.UnripeStage + 8 - this.CropStages) && world.isAirBlock(x, y + 1, z) && (top - base + 1) < this.MaxHeight)
+    			world.setBlock(x, y + 1, z, this);
     	}
     }    
     
@@ -447,6 +452,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     {
     	if (world.isRemote) return;
         int growth = BoneMealMin + ((int)(world.rand.nextFloat() * (1 + BoneMealMax - BoneMealMin)));
+        
         for (int i = 0; i < growth; i++)
         	growPlant(world, x, y, z);
     }

@@ -25,6 +25,7 @@ public class ItemKawaiiSeed extends ItemSeeds {
 	private String name = "";
 	private BlockKawaiiCrop plant = null;
 	private Block soil = null;
+	public String OreDict = "";
 	
 	public ItemKawaiiSeed(String name, String toolTip, BlockKawaiiCrop plant, Block soil) {
 		super(plant, soil);
@@ -35,6 +36,8 @@ public class ItemKawaiiSeed extends ItemSeeds {
 		this.plant = plant;
 		this.soil = soil;
 		this.ToolTipText = toolTip;
+		
+		ModItems.ModSeeds.add(this);
 	}
 	
 	@Override

@@ -22,6 +22,7 @@ public class ItemKawaiiFood extends ItemFood {
 	public PotionEffectHelper Potion = null;
 	public boolean DrinkEffect = false;
 	public boolean EatAnytime = false;
+	public String OreDict = "";
 
 	public ItemKawaiiFood(String name, String toolTip, int hunger, float saturation)
 	{
@@ -46,6 +47,8 @@ public class ItemKawaiiFood extends ItemFood {
 		
 		if (eatAnytime) 
 			setAlwaysEdible();
+		
+		ModItems.ModFoods.add(this);
 	}
 	
 	@Override
