@@ -8,12 +8,14 @@ import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ConfigurationLoader {
 
@@ -156,6 +158,89 @@ public class ConfigurationLoader {
 	public static final String REFERENCE_ORE_COMMENT = "" +
 			"Ore Dictionary Text. I should probably be filled with something useful !";
 	
+	public static final String REFERENCE_RECIPES = "" +
+			"These values control the number of recipies to be parsed. If it's not enough\n" +
+			"simply increase these numbers and load up the game to automatically create\n" +
+			"new slots below.";
+	
+	public static final String REFERENCE_RECIPES_2 = "" +
+			"Format for 2x2 Shaped Crafting Recipies:\n"+
+			"\n"+
+			"+---+---+\n"+
+			"| 1 | 2 |\n"+
+			"+---+---+\n"+
+			"| 3 | 4 |\n"+
+			"+---+---+\n"+
+			"\n"+
+			"\n"+
+			"\"<item/block name> <number crafted> <1> <2> <3> <4>\"\n"+
+			"\n"+
+			"Where 1,2,3 or 4 are the names of blocks, items or ore dictonary names.\n"+
+			"You can use \"nothing\" if you want that spot to be blank. For a list of\n"+
+			"all valid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
+			"\n"+
+			"Example:\n"+
+			"\n"+
+			"\"minecraft:lever 1 stickWood nothing cobblestone nothing\"\n"+
+			"Makes a vanilla lever using stick and cobble ore dictionary entries.\n"+
+			"\n"+
+			"\"minecraft:arrow 8 minecraft:feather minecraft:feather minecraft:feather minecraft:feather\"\n"+
+			"Makes 8 arrows out of 4 feathers";
+
+	public static final String REFERENCE_RECIPES_3 = "" +
+			"Format for 2x2 Shaped Crafting Recipies:\n"+
+			"\n"+
+			"+---+---+---+\n"+
+			"| 1 | 2 | 3 |\n"+
+			"+---+---+---+\n"+
+			"| 4 | 5 | 6 |\n"+
+			"+---+---+---+\n"+
+			"| 7 | 8 | 9 |\n"+
+			"+---+---+---+\n"+
+			"\n"+
+			"\n"+
+			"\"<item/block name> <number crafted> <1> <2> <3> <4> <5> <6> <7> <8> <9>\"\n"+
+			"\n"+
+			"Where 1, 2, ..., 9 are the names of blocks, items or ore dictonary names.\n"+
+			"You can use \"nothing\" if you want that spot to be blank. For a list of\n"+
+			"all valid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
+			"\n"+
+			"Example:\n"+
+			"\n"+
+			"\"minecraft:furnace 1 cobblestone cobblestone cobblestone cobblestone \n"+
+			"nothing cobblestone cobblestone cobblestone cobblestone \"\n"+
+			"Makes a vanilla furnace cobblestone ore dictionary entries.";
+
+	public static final String REFERENCE_RECIPES_U = "" +
+			"Format for Shapeless Crafting Recipies:\n"+
+			"\n"+
+			"\"<item/block name> <number crafted> <1> <2> <3> ...\"\n"+
+			"\n"+
+			"Where 1 is the names of blocks or item you're throwing in the furnace.\n"+
+			"For a list of all valid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
+			"\n"+
+			"Example:\n"+
+			"\n"+
+			"\"minecraft:mushroom_stew 4 minecraft:bowl minecraft:bowl minecraft:bowl \n" +
+			"minecraft:bowl minecraft:brown_mushroom minecraft:red_mushroom minecraft:carrots\"\n"+
+			"Makes 4 bowls of soup with 4 bowls, one of each mushroom and a carrot\n"+
+			"\n"+
+			"\"minecraft:record_13 1 dustRedstone record\"\n"+
+			"Create record 13 by adding redstone to any record.";
+	
+	public static final String REFERENCE_RECIPES_S = "" +
+			"Format for Smelting Crafting Recipies:\n"+
+			"\n"+
+			"\"<item/block name> <number crafted> <1>\"\n"+
+			"\n"+
+			"Where 1 is the names of blocks or item you're throwing in the furnace.\n"+
+			"For a list of all valid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
+			"\n"+
+			"Example:\n"+
+			"\n"+
+			"\"minecraft:stick 1 minecraft:sapling \"\n"+
+			"Smelting a sapling ";
+	
 	public void loadConfiguration_PreInit() 
 	{
 		Configuration cfg_general = new Configuration(new File(configFolder + Constants.CONFIG_GENERAL));
@@ -164,7 +249,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment(Configuration.CATEGORY_GENERAL, "Global Settings for KawaiiCraft");
 		cfg_general.setCategoryComment("Reference: Drop Table Help", REFERENCE_DROPTABLES_COMMENT);
 		cfg_general.setCategoryComment("Reference: Potions Help", REFERENCE_POTION_COMMENT);
-		DumpIDs = cfg_general.getBoolean("DumpNames", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
+		DumpIDs = cfg_general.getBoolean("Dump All IDs", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
 		
 		// Crops
 		
@@ -229,10 +314,54 @@ public class ConfigurationLoader {
 		cfg_general.save();
 	}
 	
-	public void loadConfiguration_PostInit() {
+	public void loadConfiguration_PostInit(FMLPostInitializationEvent event) {
 		
 		if (DumpIDs) dumpIDs();
 		
+		Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_RECIPES));
+		cfg.load();
+		
+		String category = "0. Main Settings";
+		cfg.setCategoryComment(category, REFERENCE_RECIPES);
+		
+		int recipes2 = cfg.getInt("2 by 2", category, 10, 0, 10000, "Number of 2x2 Shaped crafting recipies ?");
+		int recipes3 = cfg.getInt("3 by 3", category, 10, 0, 10000, "Number of 3x3 Shaped crafting recipies ?");
+		int recipesU = cfg.getInt("Unshaped", category, 10, 0, 10000, "Number of Unshaped crafting recipies ?");
+		int recipesS = cfg.getInt("Smelting", category, 10, 0, 10000, "Number of Smelting crafting recipies ?");
+		
+		category = "2 by 2 Shaped Crafting Recipies";
+		cfg.setCategoryComment(category, REFERENCE_RECIPES_2);
+		for (int i = 0; i < recipes2; i++)
+		{
+			String recipe = cfg.getString("" + i, category, "", "");
+			RecipeHelper.register2x2recipie(recipe);
+		}
+
+		category = "3 by 3 Shaped Crafting Recipies";
+		cfg.setCategoryComment(category, REFERENCE_RECIPES_3);
+		for (int i = 0; i < recipes3; i++)
+		{
+			String recipe = cfg.getString("" + i, category, "", "");
+			RecipeHelper.register3x3recipie(recipe);
+		}
+		
+		category = "Shapeless Crafting Recipies";
+		cfg.setCategoryComment(category, REFERENCE_RECIPES_U);
+		for (int i = 0; i < recipesU; i++)
+		{
+			String recipe = cfg.getString("" + i, category, "", "");
+			RecipeHelper.registerShapelessRecipie(recipe);
+		}
+		
+		category = "Smelting Crafting Recipies";
+		cfg.setCategoryComment(category, REFERENCE_RECIPES_S);
+		for (int i = 0; i < recipesS; i++)
+		{
+			String recipe = cfg.getString("" + i, category, "", "");
+			RecipeHelper.registerSmeltingRecipie(recipe);
+		}
+
+		cfg.save();
 	}
 	
 	private void dumpIDs() {
@@ -242,7 +371,7 @@ public class ConfigurationLoader {
 		// Try to clear it out if it exists. Fresh File
 		try { if (f.exists()) f.delete(); } catch (Exception e) { }
 		
-		String blockList = "", itemList = "";
+		String blockList = "", itemList = "", oreList = "";
 		
 		Iterator<Block> blocks = NamespaceHelper.getBlockIterator();
 		while (blocks.hasNext())
@@ -252,10 +381,14 @@ public class ConfigurationLoader {
 		while (items.hasNext())
 			itemList += NamespaceHelper.getItemName(items.next()) + "\n";
 		
+		for (String name : OreDictionary.getOreNames())
+			oreList += name + "\n";
+		
 		Configuration config = new Configuration(f);
 		config.load();
 		config.setCategoryComment("Blocks", blockList);
 		config.setCategoryComment("Items", itemList);
+		config.setCategoryComment("OreDictionary", oreList);
 		config.save();
 	}
 
@@ -309,7 +442,7 @@ public class ConfigurationLoader {
 		b.SeedsMysterySeedWeight = config.getInt("SeedsMysterySeedWeight", category_seeds, b.SeedsMysterySeedWeight, 0, 1000, "If mystery seeds enabled, what weight should this have on mystery seed results (0 = None)");
 		b.SeedsToolTip = config.getString("SeedsToolTip", category_seeds, b.SeedsToolTip, "Tooltip for the seed in game.");
 		b.SeedsPotionEffects = new PotionEffectHelper(config.getString("Potion Effect", category_seeds, "", "What potion effect do you want triggered on eating this seed ?  Please see General.cfg to see how to use these."));
-		
+		b.SeedOreDict = config.getString("Ore Dictionary Entries", category_seeds, b.SeedOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 
 		config.setCategoryComment(category_seeds, 
 				"Resource Pack settings for " + name + " seed\n\n" +
@@ -324,6 +457,7 @@ public class ConfigurationLoader {
 		b.CropSaturation = config.getFloat("CropSaturation", category_crops, b.CropSaturation, 0, 20.0f, "If CropEdible, how is the saturating is this food ?");
 		b.CropToolTip = config.getString("CropToolTip", category_crops, b.CropToolTip, "Tooltip for the crop in game.");
 		b.CropPotionEffects = new PotionEffectHelper(config.getString("Potion Effect", category_crops, "", "What potion effect do you want triggered on eating this crop ?  Please see General.cfg to see how to use these."));
+		b.CropOreDict = config.getString("Ore Dictionary Entries", category_crops, b.CropOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 
 		config.setCategoryComment(category_crops, 
 				"Resource Pack settings for " + name + " crop\n\n" +
@@ -347,6 +481,7 @@ public class ConfigurationLoader {
 		c.Saturation = config.getFloat("Saturation", category, c.Saturation, 0.0F, 20.0f, "How saturating is a slice of cake ?");
 		c.ToolTipText = config.getString("Tool Tip Text", category, c.ToolTipText, "Tooltip for the cake in game.");
 		c.Potion = new PotionEffectHelper(config.getString("Potion Effect", category, "", "What potion effect do you want triggered on eating this cake ?  Please see General.cfg to see how to use these."));
+		c.OreDict = config.getString("Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 		
 		config.setCategoryComment(category, 
 				"Resource Pack settings for " + name + " Cake\n\n" +

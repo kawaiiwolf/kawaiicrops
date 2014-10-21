@@ -92,6 +92,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public String SeedsToolTip = "";
 	public int SeedsMysterySeedWeight = 0;
 	public PotionEffectHelper SeedsPotionEffects = null;
+	public String SeedOreDict = "";
 	
 	// Produce details
 	public boolean CropEnabled = true;
@@ -100,6 +101,8 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public float CropSaturation = 0.6f;
 	public String CropToolTip = "";
 	public PotionEffectHelper CropPotionEffects = null;
+	public String CropOreDict = "";
+
 	
 	private IIcon[] iconArray;
 	private Item seed = null;
@@ -126,18 +129,28 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 		
 		if (this.SeedsEnabled) {
 			String seedName = this.Name + ".seed";
-			seed = (Item) (this.SeedsEdible 
+			seed = (Item) (SeedsEdible 
 					? new ItemKawaiiSeedFood(seedName, this.SeedsToolTip, this.SeedsHunger, this.SeedsSaturation, this, this.CropGrowsOn) 
 					: new ItemKawaiiSeed(seedName, this.SeedsToolTip, this, this.CropGrowsOn));
+			
+			if (SeedsEdible)
+				((ItemKawaiiSeedFood)seed).OreDict = SeedOreDict;
+			else
+				((ItemKawaiiSeed)seed).OreDict = SeedOreDict;
 			
 			GameRegistry.registerItem(seed, Constants.MOD_ID + "." + seedName);
 		}
 		
 		if (this.CropEnabled) {
 			String cropName = this.Name + ".crop";
-			crop = (Item) (this.CropEdible
+			crop = (Item) (CropEdible
 					? new ItemKawaiiFood(cropName, this.CropToolTip, this.CropHunger, this.CropSaturation, this.CropPotionEffects)
 					: new ItemKawaiiIngredient(cropName, this.CropToolTip));
+			
+			if (CropEdible)
+				((ItemKawaiiFood)crop).OreDict = CropOreDict;
+			else
+				((ItemKawaiiIngredient)crop).OreDict = CropOreDict;
 			
 			GameRegistry.registerItem(crop, Constants.MOD_ID + "." + cropName);
 		}

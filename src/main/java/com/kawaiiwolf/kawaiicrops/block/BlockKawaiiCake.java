@@ -21,6 +21,7 @@ public class BlockKawaiiCake extends BlockCake {
 	public boolean Enabled = true;
 	public String ToolTipText = "";
 	public PotionEffectHelper Potion = null;
+	public String OreDict = "";
 	
 	private ItemKawaiiCake cake = null;
 	
@@ -38,6 +39,8 @@ public class BlockKawaiiCake extends BlockCake {
 		GameRegistry.registerBlock(this, this.getUnlocalizedName());
 		
 		cake = new ItemKawaiiCake(this);
+		cake.OreDict = OreDict;
+		
 		GameRegistry.registerItem(cake, Constants.MOD_ID + "." + this.Name + ".cake");
 	}
 	

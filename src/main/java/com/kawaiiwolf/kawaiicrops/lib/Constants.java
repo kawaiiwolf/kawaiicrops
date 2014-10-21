@@ -10,6 +10,7 @@ public class Constants {
 	public static final String CONFIG_CAKES = CONFIG_FOLDER + "/cakes.cfg";
 	public static final String CONFIG_FOODS = CONFIG_FOLDER + "/food.cfg";
 	public static final String CONFIG_INGREDIENTS = CONFIG_FOLDER + "/ingredients.cfg";
+	public static final String CONFIG_RECIPES = CONFIG_FOLDER + "/recipes.cfg";
 	public static final String CONFIG_DUMP = CONFIG_FOLDER + "/dump.cfg";
 	
 	
