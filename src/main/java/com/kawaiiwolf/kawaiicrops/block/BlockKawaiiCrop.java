@@ -181,7 +181,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 		
 		for (int i = 0; i < (MaxHeightRequiredToRipen ? MaxHeight : 1); i++)
 			for (int j = 0; j < CropStages; j++)
-				iconArray[i * CropStages + j] = reg.registerIcon(Constants.MOD_ID + ":" + Name + "_stage_"  + (MaxHeightRequiredToRipen ? i + "_" : "") + j);
+				iconArray[i * CropStages + j] = reg.registerIcon(Constants.MOD_ID + ":" + Name + "_stage_"  + (MaxHeightRequiredToRipen && MaxHeight > 1? i + "_" : "") + j);
 	}
 		
 	@Override
@@ -249,17 +249,22 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 		// No SUPER. Prevent base BLock class from destroying the tile entity.
 		TileEntity te = world.getTileEntity(x, y, z);
 		
-		if (this.MultiHarvest && te != null && te instanceof TileEntityKawaiiCrop && meta >= 7)
-			((TileEntityKawaiiCrop)te).arm(block, 8 - CropStages + UnripeStage);
-		else 
-			world.removeTileEntity(x, y, z);
+		if (te != null)
+		{
+			if (this.MultiHarvest && te != null && te instanceof TileEntityKawaiiCrop && meta == 7)
+			{
+				((TileEntityKawaiiCrop)te).arm(block, 8 - CropStages + UnripeStage);
+			}
+			else 
+				world.removeTileEntity(x, y, z);
+		}
 		
 		for (int i = -1; i <= 1; i += 2)
-			if (world.getBlock(x, y + i, z) == this) 
+			if (world.getBlock(x, y + i, z) == this && (!MultiHarvest || meta < 7)) 
 			{
-				if (!this.MaxHeightRequiredToRipen)
-					this.dropBlockAsItem(world, x, y + i, z, world.getBlockMetadata(x, y + i, z), 0);
-	            world.setBlock(x, y + i, z, getBlockById(0), 0, 2);
+				if (!MaxHeightRequiredToRipen)
+					dropBlockAsItem(world, x, y + i, z, world.getBlockMetadata(x, y + i, z), 0);
+				world.setBlock(x, y + i, z, getBlockById(0), 0, 2);
 	        }
     }
 	
@@ -346,6 +351,10 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     	if (this.MaxHeight > 1 && below == this)
     		return true;
     	
+    	TileEntity te = world.getTileEntity(x, y - 1, z);
+    	if (te != null && te instanceof TileEntityKawaiiCrop && ((TileEntityKawaiiCrop)te).isArmed())
+    		return true;
+    	
         return false;
     }
     
@@ -398,6 +407,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     		else if (meta < 7)
    	    		world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
 
+    		// Grow block above
     		if (meta >= (this.UnripeStage + 8 - this.CropStages) && world.isAirBlock(x, y + 1, z) && (top - base + 1) < this.MaxHeight)
     			world.setBlock(x, y + 1, z, this);
     	}
@@ -408,9 +418,9 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     {
     	this.checkAndDropBlock(world, x, y, z);
     	
-    	if (	(this.getTopY(world, x, y, z) == y) &&
+    	if (	(getTopY(world, x, y, z) == y || !MaxHeightRequiredToRipen) &&
     			(world.getBlockLightValue(x, y + 1, z) >= 9) && 
-    			(rand.nextInt((int)(25.0F / this.vanillaGrowth(world, x, y, z)) + 1) == 0))
+    			(rand.nextInt((int)(25.0F / vanillaGrowth(world, x, y, z)) + 1) == 0))
     		growPlant(world, x, y, z);
     }
     
