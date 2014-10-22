@@ -61,6 +61,9 @@ public class RenderingHandlerKawaiiCropBlock implements ISimpleBlockRenderingHan
 				case HASH:
 					drawHash(tessellator, iicon, x, y, z);
 					break;
+				case BLOCK:
+					drawBlock(tessellator, iicon, x, y, z);
+					break;
 				default:
 					break;
 	        }
@@ -70,79 +73,98 @@ public class RenderingHandlerKawaiiCropBlock implements ISimpleBlockRenderingHan
 	
     public void drawHash(Tessellator tessellator, IIcon iicon, double x, double y, double z)
     {
-        double d3 = (double)iicon.getMinU();
-        double d4 = (double)iicon.getMinV();
-        double d5 = (double)iicon.getMaxU();
-        double d6 = (double)iicon.getMaxV();
-        double d7 = x + 0.5D - 0.25D;
-        double d8 = x + 0.5D + 0.25D;
-        double d9 = z + 0.5D - 0.5D;
-        double d10 = z + 0.5D + 0.5D;
-        tessellator.addVertexWithUV(d7, y + 1.0D, d9, d3, d4);
-        tessellator.addVertexWithUV(d7, y + 0.0D, d9, d3, d6);
-        tessellator.addVertexWithUV(d7, y + 0.0D, d10, d5, d6);
-        tessellator.addVertexWithUV(d7, y + 1.0D, d10, d5, d4);
-        tessellator.addVertexWithUV(d7, y + 1.0D, d10, d3, d4);
-        tessellator.addVertexWithUV(d7, y + 0.0D, d10, d3, d6);
-        tessellator.addVertexWithUV(d7, y + 0.0D, d9, d5, d6);
-        tessellator.addVertexWithUV(d7, y + 1.0D, d9, d5, d4);
-        tessellator.addVertexWithUV(d8, y + 1.0D, d10, d3, d4);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d10, d3, d6);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d9, d5, d6);
-        tessellator.addVertexWithUV(d8, y + 1.0D, d9, d5, d4);
-        tessellator.addVertexWithUV(d8, y + 1.0D, d9, d3, d4);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d9, d3, d6);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d10, d5, d6);
-        tessellator.addVertexWithUV(d8, y + 1.0D, d10, d5, d4);
-        d7 = x + 0.5D - 0.5D;
-        d8 = x + 0.5D + 0.5D;
-        d9 = z + 0.5D - 0.25D;
-        d10 = z + 0.5D + 0.25D;
-        tessellator.addVertexWithUV(d7, y + 1.0D, d9, d3, d4);
-        tessellator.addVertexWithUV(d7, y + 0.0D, d9, d3, d6);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d9, d5, d6);
-        tessellator.addVertexWithUV(d8, y + 1.0D, d9, d5, d4);
-        tessellator.addVertexWithUV(d8, y + 1.0D, d9, d3, d4);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d9, d3, d6);
-        tessellator.addVertexWithUV(d7, y + 0.0D, d9, d5, d6);
-        tessellator.addVertexWithUV(d7, y + 1.0D, d9, d5, d4);
-        tessellator.addVertexWithUV(d8, y + 1.0D, d10, d3, d4);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d10, d3, d6);
-        tessellator.addVertexWithUV(d7, y + 0.0D, d10, d5, d6);
-        tessellator.addVertexWithUV(d7, y + 1.0D, d10, d5, d4);
-        tessellator.addVertexWithUV(d7, y + 1.0D, d10, d3, d4);
-        tessellator.addVertexWithUV(d7, y + 0.0D, d10, d3, d6);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d10, d5, d6);
-        tessellator.addVertexWithUV(d8, y + 1.0D, d10, d5, d4);
+        drawFaceMirror(tessellator, iicon, x + 0.25D, y + 0.0D, z + 0.0D, x + 0.25D, y + 1.0D, z + 0.0D, x + 0.25D, y + 1.0D, z + 1.0D);
+        drawFaceMirror(tessellator, iicon, x + 0.75D, y + 0.0D, z + 0.0D, x + 0.75D, y + 1.0D, z + 0.0D, x + 0.75D, y + 1.0D, z + 1.0D);
+        drawFaceMirror(tessellator, iicon, x + 0.0D, y + 0.0D, z + 0.25D, x + 0.0D, y + 1.0D, z + 0.25D, x + 1.0D, y + 1.0D, z + 0.25D);
+        drawFaceMirror(tessellator, iicon, x + 0.0D, y + 0.0D, z + 0.75D, x + 0.0D, y + 1.0D, z + 0.75D, x + 1.0D, y + 1.0D, z + 0.75D);
     }
 
-    public void drawCross(Tessellator tessellator, IIcon iicon, double x, double y, double z, float height)
+    public void drawCross(Tessellator tessellator, IIcon iicon, double x, double y, double z, double scale)
     {
-        double d3 = (double)iicon.getMinU();
-        double d4 = (double)iicon.getMinV();
-        double d5 = (double)iicon.getMaxU();
-        double d6 = (double)iicon.getMaxV();
-        double d7 = 0.45D * (double)height;
-        double d8 = x + 0.5D - d7;
-        double d9 = x + 0.5D + d7;
-        double d10 = z + 0.5D - d7;
-        double d11 = z + 0.5D + d7;
-        tessellator.addVertexWithUV(d8, y + (double)height, d10, d3, d4);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d10, d3, d6);
-        tessellator.addVertexWithUV(d9, y + 0.0D, d11, d5, d6);
-        tessellator.addVertexWithUV(d9, y + (double)height, d11, d5, d4);
-        tessellator.addVertexWithUV(d9, y + (double)height, d11, d3, d4);
-        tessellator.addVertexWithUV(d9, y + 0.0D, d11, d3, d6);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d10, d5, d6);
-        tessellator.addVertexWithUV(d8, y + (double)height, d10, d5, d4);
-        tessellator.addVertexWithUV(d8, y + (double)height, d11, d3, d4);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d11, d3, d6);
-        tessellator.addVertexWithUV(d9, y + 0.0D, d10, d5, d6);
-        tessellator.addVertexWithUV(d9, y + (double)height, d10, d5, d4);
-        tessellator.addVertexWithUV(d9, y + (double)height, d10, d3, d4);
-        tessellator.addVertexWithUV(d9, y + 0.0D, d10, d3, d6);
-        tessellator.addVertexWithUV(d8, y + 0.0D, d11, d5, d6);
-        tessellator.addVertexWithUV(d8, y + (double)height, d11, d5, d4);
+        double minX = x + 0.5D - 0.45D * scale;
+        double maxX = x + 0.5D + 0.45D * scale;
+        double minY = y;
+        double maxY = y + scale;
+        double minZ = z + 0.5D - 0.45D * scale;
+        double maxZ = z + 0.5D + 0.45D * scale;
+
+        drawFace(tessellator, iicon,minX, minY, minZ,minX, maxY, minZ,maxX, maxY, maxZ);
+        drawFace(tessellator, iicon,maxX, minY, minZ,maxX, maxY, minZ,minX, maxY, maxZ);     
+    }
+    
+    public void drawBlock(Tessellator tessellator, IIcon iicon, double x, double y, double z)
+    {
+    	drawFaceSingle(tessellator, iicon, x + 0.0D, y + 0.0D, z + 0.0D, x + 0.0D, y + 1.0D, z + 0.0D, x + 1.0D, y + 1.0D, z + 0.0D);
+    	drawFaceSingle(tessellator, iicon, x + 1.0D, y + 0.0D, z + 0.0D, x + 1.0D, y + 1.0D, z + 0.0D, x + 1.0D, y + 1.0D, z + 1.0D);
+    	drawFaceSingle(tessellator, iicon, x + 1.0D, y + 0.0D, z + 1.0D, x + 1.0D, y + 1.0D, z + 1.0D, x + 0.0D, y + 1.0D, z + 1.0D);
+    	drawFaceSingle(tessellator, iicon, x + 0.0D, y + 0.0D, z + 1.0D, x + 0.0D, y + 1.0D, z + 1.0D, x + 0.0D, y + 1.0D, z + 0.0D);
+    	drawFaceSingle(tessellator, iicon, x + 1.0D, y + 1.0D, z + 1.0D, x + 1.0D, y + 1.0D, z + 0.0D, x + 0.0D, y + 1.0D, z + 0.0D);
+    	drawFaceSingle(tessellator, iicon, x + 0.0D, y + 0.0D, z + 1.0D, x + 0.0D, y + 0.0D, z + 0.0D, x + 1.0D, y + 0.0D, z + 0.0D);
+    }
+    
+    /*
+     *      u   U
+     *    v 2---3
+     *      | / |
+     *    V 1---+
+     */
+    public void drawFace(Tessellator tessellator, IIcon iicon, 
+    		double x1, double y1, double z1, 
+    		double x2, double y2, double z2, 
+    		double x3, double y3, double z3)
+    {
+        double minU = (double)iicon.getMinU();
+        double minV = (double)iicon.getMinV();
+        double maxU = (double)iicon.getMaxU();
+        double maxV = (double)iicon.getMaxV();
+    	
+    	tessellator.addVertexWithUV(x1, y1, z1, minU, maxV);
+    	tessellator.addVertexWithUV(x2, y2, z2, minU, minV);
+    	tessellator.addVertexWithUV(x3, y3, z3, maxU, minV);
+    	tessellator.addVertexWithUV(x1 + x3 - x2, y1 + y3 - y2, z1 + z3 - z2, maxU, maxV);
+    	
+    	tessellator.addVertexWithUV(x1, y1, z1, minU, maxV);
+    	tessellator.addVertexWithUV(x1 + x3 - x2, y1 + y3 - y2, z1 + z3 - z2, maxU, maxV);
+    	tessellator.addVertexWithUV(x3, y3, z3, maxU, minV);
+    	tessellator.addVertexWithUV(x2, y2, z2, minU, minV);
+    }
+    
+    public void drawFaceSingle(Tessellator tessellator, IIcon iicon, 
+    		double x1, double y1, double z1, 
+    		double x2, double y2, double z2, 
+    		double x3, double y3, double z3)
+    {
+        double minU = (double)iicon.getMinU();
+        double minV = (double)iicon.getMinV();
+        double maxU = (double)iicon.getMaxU();
+        double maxV = (double)iicon.getMaxV();
+    	
+    	tessellator.addVertexWithUV(x1, y1, z1, maxU, maxV);
+    	tessellator.addVertexWithUV(x2, y2, z2, maxU, minV);
+    	tessellator.addVertexWithUV(x3, y3, z3, minU, minV);
+    	tessellator.addVertexWithUV(x1 + x3 - x2, y1 + y3 - y2, z1 + z3 - z2, minU, maxV);
+    	
+    }    
+    
+    public void drawFaceMirror(Tessellator tessellator, IIcon iicon, 
+    		double x1, double y1, double z1, 
+    		double x2, double y2, double z2, 
+    		double x3, double y3, double z3)
+    {
+        double minU = (double)iicon.getMinU();
+        double minV = (double)iicon.getMinV();
+        double maxU = (double)iicon.getMaxU();
+        double maxV = (double)iicon.getMaxV();
+    	
+    	tessellator.addVertexWithUV(x1, y1, z1, maxU, maxV);
+    	tessellator.addVertexWithUV(x2, y2, z2, maxU, minV);
+    	tessellator.addVertexWithUV(x3, y3, z3, minU, minV);
+    	tessellator.addVertexWithUV(x1 + x3 - x2, y1 + y3 - y2, z1 + z3 - z2, minU, maxV);
+    	
+    	tessellator.addVertexWithUV(x1, y1, z1, minU, maxV);
+    	tessellator.addVertexWithUV(x1 + x3 - x2, y1 + y3 - y2, z1 + z3 - z2, maxU, maxV);
+    	tessellator.addVertexWithUV(x3, y3, z3, maxU, minV);
+    	tessellator.addVertexWithUV(x2, y2, z2, minU, minV);
     }
 }
 

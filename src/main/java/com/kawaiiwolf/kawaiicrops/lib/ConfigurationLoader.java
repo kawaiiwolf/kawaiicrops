@@ -1,6 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.lib;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
@@ -156,7 +157,15 @@ public class ConfigurationLoader {
 			"23 Saturation";
 
 	public static final String REFERENCE_ORE_COMMENT = "" +
-			"Ore Dictionary Text. I should probably be filled with something useful !";
+			"Use this field to add items to ore dictionary references. These can be used as\n"+
+			"shortcuts when making recipies. Ore recipies should be separated by a space and may\n" +
+			"contain upper and lowercase letters and numbers.\n" +
+			"\n"+
+			"For example, to the snowpea crop we could set the \"Ore Dictionary Entries\" to:\n"+
+			"  \"vegetables stirFryVegetables saladVegetables\"" +
+			"and use any of those three names in recipies.\n"+
+			"\n"+
+			"To see a list of all Ore Dictionary names, turn on \"Dump All IDs\" and see dump.cfg";
 	
 	public static final String REFERENCE_RECIPES = "" +
 			"These values control the number of recipies to be parsed. If it's not enough\n" +
@@ -249,6 +258,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment(Configuration.CATEGORY_GENERAL, "Global Settings for KawaiiCraft");
 		cfg_general.setCategoryComment("Reference: Drop Table Help", REFERENCE_DROPTABLES_COMMENT);
 		cfg_general.setCategoryComment("Reference: Potions Help", REFERENCE_POTION_COMMENT);
+		cfg_general.setCategoryComment("Reference: Ore Dictionary Help", REFERENCE_ORE_COMMENT);
 		DumpIDs = cfg_general.getBoolean("Dump All IDs", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
 		
 		// Crops
@@ -297,6 +307,7 @@ public class ConfigurationLoader {
 		}
 		
 		// Ingredients
+		
 		cfg_general.setCategoryComment("KawaiiCrop Ingredients", GENERAL_INGREDIENTS_COMMENT);
 		String ingredientsRaw = cfg_general.getString("Ingredients", "KawaiiCrop Ingredients", "", "Ingredients List");
 		String[] ingredientsParsed = ingredientsRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
@@ -402,12 +413,23 @@ public class ConfigurationLoader {
 		// Get crop variables from config file
 		b.Enabled = config.getBoolean("0. Enabled", category, b.Enabled, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
 		
-		b.RenderType = (config.getString("1.General  Render Type", category, "Hash", "How will the crop render ? Valid values are 'Hash' (Ex: Carrots) or 'Cross' (Ex: Mushrooms)").toLowerCase() == "cross" ? BlockKawaiiCrop.EnumRenderType.CROSS : BlockKawaiiCrop.EnumRenderType.HASH);
+		String r = config.getString("1.General  Render Type", category, "Hash", "How will the crop render ? Valid values are [Hash, Cross, Block]").toLowerCase();
+		if (r.equals("cross"))
+			b.RenderType = BlockKawaiiCrop.EnumRenderType.CROSS;
+		else if (r.equals("hash"))
+			b.RenderType = BlockKawaiiCrop.EnumRenderType.HASH;
+		else
+			b.RenderType = BlockKawaiiCrop.EnumRenderType.BLOCK;
+		
+		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
+		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
+		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
+		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
+		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
+		
 		b.CropStages = config.getInt("1.General  Crop Stages", category, b.CropStages, 2, 8, "Number of crop states ?  Valid values are between 2 and 8. (Ex: Carrots = 4, Wheat = 8)");
 		b.MaxHeight = config.getInt("1.General  Max Height", category, b.MaxHeight, 1, 32, "How many blocks tall will this crop grow ?");
-
-		Block tmp = NamespaceHelper.getBlockByName(config.getString("1.General  Soil Block", category, NamespaceHelper.getBlockName(b.CropGrowsOn), "What block does this grow on ? For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)"));
-		b.CropGrowsOn = (tmp == Blocks.air ? b.CropGrowsOn : tmp);
+		b.CropGrowsOn = new HashSet<Block>(NamespaceHelper.getBlocksByName(config.getString("1.General  Soil Block", category, "minecraft:farmland", "What blocks does this grow on ? Seperate blocks with a space or comma. For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)"))); 
 		
 		b.MaxHeightRequiredToRipen = config.getBoolean("2.Harvest  Max Height Required to Ripen", category, b.MaxHeightRequiredToRipen, "Does the plant need to be at max height before lower blocks are ready to harvest ?");
 		b.MultiHarvest = config.getBoolean("2. Multi Harvest", category, b.MultiHarvest, "Upon harvesting this crop, does it grow back to an earlier, unripe state ?");
@@ -417,7 +439,9 @@ public class ConfigurationLoader {
 		b.GrowthMutliplier = config.getFloat("3.Growth  Growth Multiplier", category, b.GrowthMutliplier, 0.001f, 1000.0f, "How fast does your plant grow ? (1.0 is normal vanilla speeds, 3.0 is growth rate on wet farmland when growing on other block types.");
 		b.BoneMealMin = config.getInt("3.Growth  Bonemeal Min", category, b.BoneMealMin, 0, 8, "Minimum stages of growth when using bonemeal.");
 		b.BoneMealMax = config.getInt("3.Growth  Bonemeal Max", category, b.BoneMealMax, 0, 8, "Maximum stages of growth when using bonemeal.");
-		
+		b.LightLevelMin = config.getInt("3.Growth  Light Minimum", category, b.LightLevelMin, 0, 15, "Minimum level of light required for plant to grow naturally.");
+		b.LightLevelMax = config.getInt("3.Growth  Light Maximum", category, b.LightLevelMax, 0, 15, "Maximum level of light required for plant to grow naturally.");
+				
 		if (b.BoneMealMin > b.BoneMealMax) b.BoneMealMin = b.BoneMealMax;
 		if (b.BoneMealMax < b.BoneMealMin) b.BoneMealMax = b.BoneMealMin;
 		
@@ -427,7 +451,7 @@ public class ConfigurationLoader {
 		String comment = "Resource Pack settings for " + name + "\n\nLangage Name: tile.kawaiicrops." + name + ".seed.name\n\n";
 		for (int i = 0; i < (b.MaxHeightRequiredToRipen ? b.MaxHeight : 1); i++)
 			for (int j = 0; j < b.CropStages; j++)
-				comment += "Texture Name: textures/blocks/" + name + "_stage_" + (b.MaxHeightRequiredToRipen ? j + "_" : "") + j + ".png\n";
+				comment += "Texture Name: textures/blocks/" + name + "_stage_" + (b.MaxHeightRequiredToRipen && b.MaxHeight > 1 ? j + "_" : "") + j + ".png\n";
 		comment += "\nWarning: Texture names listed above will change as \"1.General  Crop Stages\", \"1.General  Max Height\" " +
 				"\n and \"2.Harvest  Max Height Required to Ripen\" settings are changed."; 
 		
@@ -435,14 +459,14 @@ public class ConfigurationLoader {
 		
 		String category_seeds = category + " Seeds";
 		
-		b.SeedsEnabled = config.getBoolean("SeedsEnabled", category_seeds, b.SeedsEnabled, "Does this crop have seeds ?");
-		b.SeedsEdible = config.getBoolean("SeedsEdible", category_seeds, b.SeedsEdible, "Are seeds also a food ?");
-		b.SeedsHunger = config.getInt("SeedsHunger", category_seeds, b.SeedsHunger, 0, 20, "If SeedsEdible, how many half shanks of food does this restore ?");
-		b.SeedsSaturation = config.getFloat("SeedsSaturation", category_seeds, b.SeedsSaturation, 0, 20.0f, "If SeedsEdible, how saturating is this food ?");
-		b.SeedsMysterySeedWeight = config.getInt("SeedsMysterySeedWeight", category_seeds, b.SeedsMysterySeedWeight, 0, 1000, "If mystery seeds enabled, what weight should this have on mystery seed results (0 = None)");
-		b.SeedsToolTip = config.getString("SeedsToolTip", category_seeds, b.SeedsToolTip, "Tooltip for the seed in game.");
-		b.SeedsPotionEffects = new PotionEffectHelper(config.getString("Potion Effect", category_seeds, "", "What potion effect do you want triggered on eating this seed ?  Please see General.cfg to see how to use these."));
-		b.SeedOreDict = config.getString("Ore Dictionary Entries", category_seeds, b.SeedOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
+		b.SeedsEnabled = config.getBoolean("0.  Enabled", category_seeds, b.SeedsEnabled, "Does this crop have seeds ?");
+		b.SeedsEdible = config.getBoolean("1.General  Edible", category_seeds, b.SeedsEdible, "Are seeds also a food ?");
+		b.SeedsHunger = config.getInt("1.General  Hunger", category_seeds, b.SeedsHunger, 0, 20, "If SeedsEdible, how many half shanks of food does this restore ?");
+		b.SeedsSaturation = config.getFloat("1.General  Saturation", category_seeds, b.SeedsSaturation, 0, 20.0f, "If SeedsEdible, how saturating is this food ?");
+		b.SeedsMysterySeedWeight = config.getInt("2.Other  Mystery Seed Weight", category_seeds, b.SeedsMysterySeedWeight, 0, 1000, "If mystery seeds enabled, what weight should this have on mystery seed results (0 = None)");
+		b.SeedsToolTip = config.getString("2.Other  Tool Tip", category_seeds, b.SeedsToolTip, "Tooltip for the seed in game.");
+		b.SeedsPotionEffects = new PotionEffectHelper(config.getString("2.Other  Potion Effect", category_seeds, "", "What potion effect do you want triggered on eating this seed ?  Please see General.cfg to see how to use these."));
+		b.SeedOreDict = config.getString("2.Other  Ore Dictionary Entries", category_seeds, b.SeedOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 
 		config.setCategoryComment(category_seeds, 
 				"Resource Pack settings for " + name + " seed\n\n" +
@@ -451,13 +475,13 @@ public class ConfigurationLoader {
 		
 		String category_crops = category + " Crops";
 		
-		b.CropEnabled = config.getBoolean("CropEnabled", category_crops, b.CropEnabled, "Does this plant drop crops other than seeds ?");
-		b.CropEdible = config.getBoolean("CropEdible", category_crops, b.CropEdible, "Are Crop also a food ?");
-		b.CropHunger = config.getInt("CropHunger", category_crops, b.CropHunger, 0, 20, "If CropEdible, how many half shanks of food does this restore ?");
-		b.CropSaturation = config.getFloat("CropSaturation", category_crops, b.CropSaturation, 0, 20.0f, "If CropEdible, how is the saturating is this food ?");
-		b.CropToolTip = config.getString("CropToolTip", category_crops, b.CropToolTip, "Tooltip for the crop in game.");
-		b.CropPotionEffects = new PotionEffectHelper(config.getString("Potion Effect", category_crops, "", "What potion effect do you want triggered on eating this crop ?  Please see General.cfg to see how to use these."));
-		b.CropOreDict = config.getString("Ore Dictionary Entries", category_crops, b.CropOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
+		b.CropEnabled = config.getBoolean("0.  CropEnabled", category_crops, b.CropEnabled, "Does this plant drop crops other than seeds ?");
+		b.CropEdible = config.getBoolean("1.General  Edible", category_crops, b.CropEdible, "Are Crop also a food ?");
+		b.CropHunger = config.getInt("1.General  Hunger", category_crops, b.CropHunger, 0, 20, "If CropEdible, how many half shanks of food does this restore ?");
+		b.CropSaturation = config.getFloat("1.General  Saturation", category_crops, b.CropSaturation, 0, 20.0f, "If CropEdible, how is the saturating is this food ?");
+		b.CropToolTip = config.getString("2.Other  Tool Tip", category_crops, b.CropToolTip, "Tooltip for the crop in game.");
+		b.CropPotionEffects = new PotionEffectHelper(config.getString("2.Other  Potion Effect", category_crops, "", "What potion effect do you want triggered on eating this crop ?  Please see General.cfg to see how to use these."));
+		b.CropOreDict = config.getString("2.Other  Ore Dictionary Entries", category_crops, b.CropOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 
 		config.setCategoryComment(category_crops, 
 				"Resource Pack settings for " + name + " crop\n\n" +
@@ -476,12 +500,12 @@ public class ConfigurationLoader {
 		BlockKawaiiCake c = new BlockKawaiiCake(name);
 		String category = "Kawaiicrops: " + name + " cake";
 		
-		c.Enabled = config.getBoolean("Enabled", category, c.Enabled, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
-		c.Hunger = config.getInt("Hunger Restored", category, c.Hunger, 0, 20, "How many half shanks of food does eating a slice of cake restore ?");
-		c.Saturation = config.getFloat("Saturation", category, c.Saturation, 0.0F, 20.0f, "How saturating is a slice of cake ?");
-		c.ToolTipText = config.getString("Tool Tip Text", category, c.ToolTipText, "Tooltip for the cake in game.");
-		c.Potion = new PotionEffectHelper(config.getString("Potion Effect", category, "", "What potion effect do you want triggered on eating this cake ?  Please see General.cfg to see how to use these."));
-		c.OreDict = config.getString("Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
+		c.Enabled = config.getBoolean("0.  Enabled", category, c.Enabled, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
+		c.Hunger = config.getInt("1.General  Hunger Restored", category, c.Hunger, 0, 20, "How many half shanks of food does eating a slice of cake restore ?");
+		c.Saturation = config.getFloat("1.General  Saturation", category, c.Saturation, 0.0F, 20.0f, "How saturating is a slice of cake ?");
+		c.ToolTipText = config.getString("2.Other  Tool Tip Text", category, c.ToolTipText, "Tooltip for the cake in game.");
+		c.Potion = new PotionEffectHelper(config.getString("2.Other  Potion Effect", category, "", "What potion effect do you want triggered on eating this cake ?  Please see General.cfg to see how to use these."));
+		c.OreDict = config.getString("2.Other  Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 		
 		config.setCategoryComment(category, 
 				"Resource Pack settings for " + name + " Cake\n\n" +
@@ -504,14 +528,14 @@ public class ConfigurationLoader {
 		
 		String category = "Kawaiicrops: " + name;
 		
-		boolean enabled = config.getBoolean("Enabled", category, false, "Is this an item in minecraft ? Defaults to false to allow you to configure before putting it in the game.");
-		int hunger = config.getInt("Hunger", category, 1, 0, 20, "How many half shanks of food does this restore ?");
-		float saturation = config.getFloat("Saturation", category, 0, 0, 20.0F, "How saturating is this food ?");
-		String toolTipText = config.getString("Tool Tip Text", category, "", "Tooltip for this food.");
-		PotionEffectHelper potion = new PotionEffectHelper(config.getString("Potion Effect", category, "", "What potion effect do you want triggered on eating this food ?  Please see General.cfg to see how to use these."));
-		boolean drinkable = config.getBoolean("Drink", category, false, "Do you drink this instead of eat ?");
-		boolean anytime = config.getBoolean("Eat Anytime", category, false, "Can you eat this food even while full ?");
-		String oreDict = config.getString("Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
+		boolean enabled = config.getBoolean("0.  Enabled", category, false, "Is this an item in minecraft ? Defaults to false to allow you to configure before putting it in the game.");
+		int hunger = config.getInt("1.General  Hunger", category, 1, 0, 20, "How many half shanks of food does this restore ?");
+		float saturation = config.getFloat("1.General  Saturation", category, 0, 0, 20.0F, "How saturating is this food ?");
+		boolean drinkable = config.getBoolean("1.General  Drink", category, false, "Do you drink this instead of eat ?");
+		boolean anytime = config.getBoolean("1.General  Eat Anytime", category, false, "Can you eat this food even while full ?");
+		String toolTipText = config.getString("2.Other  Tool Tip Text", category, "", "Tooltip for this food.");
+		PotionEffectHelper potion = new PotionEffectHelper(config.getString("2.Other  Potion Effect", category, "", "What potion effect do you want triggered on eating this food ?  Please see General.cfg to see how to use these."));
+		String oreDict = config.getString("2.Other  Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 		
 		config.setCategoryComment(category, 
 				"Resource Pack settings for " + name + "\n\n" +
@@ -532,9 +556,9 @@ public class ConfigurationLoader {
 		
 		String category = "Kawaiicrops: " + name;
 		
-		boolean enabled = config.getBoolean("Enabled", category, false, "Is this an item in minecraft ? Defaults to false to allow you to configure before putting it in the game.");
-		String toolTipText = config.getString("Tool Tip Text", category, "", "Tooltip for this food.");
-		String oreDict = config.getString("Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
+		boolean enabled = config.getBoolean("0.  Enabled", category, false, "Is this an item in minecraft ? Defaults to false to allow you to configure before putting it in the game.");
+		String toolTipText = config.getString("2.Other  Tool Tip Text", category, "", "Tooltip for this food.");
+		String oreDict = config.getString("2.Other  Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 		
 		config.setCategoryComment(category, 
 				"Resource Pack settings for " + name + "\n\n" +

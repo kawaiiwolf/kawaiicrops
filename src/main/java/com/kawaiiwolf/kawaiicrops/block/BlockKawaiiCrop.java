@@ -1,6 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -41,7 +42,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Rendering Code
 	
-	public enum EnumRenderType { CROSS, HASH }
+	public enum EnumRenderType { CROSS, HASH, BLOCK }
 	
 	// Crop Name
 	public String Name = "";
@@ -76,9 +77,13 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	// Effectiveness of bonemeal.
 	public int BoneMealMin = 2;
 	public int BoneMealMax = 4;
+	
+	// Required Light levels
+	public int LightLevelMin = 9;
+	public int LightLevelMax = 15;
 
 	// What block can this plant grow on. Do we want to allow more than one ?
-	public Block CropGrowsOn = Blocks.farmland;
+	public HashSet<Block> CropGrowsOn = new HashSet<Block>();
 
 	// Unparsed Drop Tables
 	public String DropTableRipeString = "seed 1, seed 2 | crop";
@@ -130,13 +135,24 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 		if (this.SeedsEnabled) {
 			String seedName = this.Name + ".seed";
 			seed = (Item) (SeedsEdible 
-					? new ItemKawaiiSeedFood(seedName, this.SeedsToolTip, this.SeedsHunger, this.SeedsSaturation, this, this.CropGrowsOn) 
-					: new ItemKawaiiSeed(seedName, this.SeedsToolTip, this, this.CropGrowsOn));
+					? new ItemKawaiiSeedFood(seedName, this.SeedsToolTip, this.SeedsHunger, this.SeedsSaturation, this) 
+					: new ItemKawaiiSeed(seedName, this.SeedsToolTip, this));
 			
 			if (SeedsEdible)
 				((ItemKawaiiSeedFood)seed).OreDict = SeedOreDict;
 			else
 				((ItemKawaiiSeed)seed).OreDict = SeedOreDict;
+			
+			for (Block b : CropGrowsOn)
+			{
+				if (b.getMaterial() == Material.water || b.getMaterial() == Material.lava)
+				{
+					if (SeedsEdible) 
+						((ItemKawaiiSeedFood)seed).WaterPlant = true;
+					else
+						((ItemKawaiiSeed)seed).WaterPlant = true;
+				}
+			}
 			
 			GameRegistry.registerItem(seed, Constants.MOD_ID + "." + seedName);
 		}
@@ -341,7 +357,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     {
     	Block below = world.getBlock(x, y - 1, z);
     	
-    	if (below == this.CropGrowsOn) {
+    	if (CropGrowsOn.contains(below)) {
     		if (below.getMaterial() != Material.water && below.getMaterial() != Material.lava)
     			return true;
     		// We want to make sure a liquid is still
@@ -361,7 +377,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     @Override
     protected boolean canPlaceBlockOn(Block block)
     {
-        return block == this.CropGrowsOn || (this.MaxHeight > 1 && block == this);
+        return CropGrowsOn.contains(block) || (this.MaxHeight > 1 && block == this);
     }
     
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -416,10 +432,13 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
     @Override
     public void updateTick(World world, int x, int y, int z, Random rand)
     {
+    	if(world.isRemote) return;
+    	
     	this.checkAndDropBlock(world, x, y, z);
+    	int lightLevel = world.getBlockLightValue(x, y + 1, z);
     	
     	if (	(getTopY(world, x, y, z) == y || !MaxHeightRequiredToRipen) &&
-    			(world.getBlockLightValue(x, y + 1, z) >= 9) && 
+    			(lightLevel >= LightLevelMin && lightLevel <= LightLevelMax) &&
     			(rand.nextInt((int)(25.0F / vanillaGrowth(world, x, y, z)) + 1) == 0))
     		growPlant(world, x, y, z);
     }
@@ -449,7 +468,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
             {
                 float tmp = 0.0F;
 
-                if (world.getBlock(i, y - 1, j) == this.CropGrowsOn)
+                if (this.CropGrowsOn.contains(world.getBlock(i, y - 1, j)))
                 {
                     tmp = 1.0F;
                     if (world.getBlock(i, y - 1, j).isFertile(world, i, y - 1, j))

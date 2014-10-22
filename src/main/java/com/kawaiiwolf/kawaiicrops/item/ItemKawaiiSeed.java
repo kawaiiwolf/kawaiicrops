@@ -24,17 +24,16 @@ public class ItemKawaiiSeed extends ItemSeeds {
 	
 	private String name = "";
 	private BlockKawaiiCrop plant = null;
-	private Block soil = null;
 	public String OreDict = "";
+	public boolean WaterPlant = false;
 	
-	public ItemKawaiiSeed(String name, String toolTip, BlockKawaiiCrop plant, Block soil) {
-		super(plant, soil);
+	public ItemKawaiiSeed(String name, String toolTip, BlockKawaiiCrop plant) {
+		super(plant, null);
 
 		this.setTextureName(Constants.MOD_ID + ":" + name);
 		this.setUnlocalizedName(Constants.MOD_ID + "." + name);
 		this.name = name;
 		this.plant = plant;
-		this.soil = soil;
 		this.ToolTipText = toolTip;
 		
 		ModItems.ModSeeds.add(this);
@@ -50,7 +49,7 @@ public class ItemKawaiiSeed extends ItemSeeds {
     @Override
     public boolean onItemUse(ItemStack items, EntityPlayer entity, World world, int x, int y, int z, int side, float xHit, float yHit, float zHit)
     {
-    	if (soil.getMaterial() == Material.water || soil.getMaterial() == Material.lava) {
+    	if (WaterPlant) {
     		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, entity, true);
         	if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
         	{
@@ -67,7 +66,7 @@ public class ItemKawaiiSeed extends ItemSeeds {
         }
         else if (entity.canPlayerEdit(x, y, z, side, items) && entity.canPlayerEdit(x, y + 1, z, side, items))
         {
-            if (world.getBlock(x, y, z) == soil && world.isAirBlock(x, y + 1, z))
+            if (plant.CropGrowsOn.contains(world.getBlock(x, y, z)) && world.isAirBlock(x, y + 1, z))
             {
                 world.setBlock(x, y + 1, z, this.plant);
                 --items.stackSize;

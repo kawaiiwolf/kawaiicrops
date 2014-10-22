@@ -1,5 +1,6 @@
 package com.kawaiiwolf.kawaiicrops.lib;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -16,6 +17,21 @@ public class NamespaceHelper {
 		return GameData.getBlockRegistry().getObject(name);
 	}
 	
+	public static ArrayList<Block> getBlocksByName(String names) { return getBlocksByName(names,"[ ]"); }
+	public static ArrayList<Block> getBlocksByName(String names, String separator)
+	{
+		ArrayList<Block> blocks = new ArrayList<Block>();
+		
+		for (String name : names.split(separator))
+		{
+			Block block = getBlockByName(name);
+			if (block != Block.getBlockById(0))
+				blocks.add(block);
+		}
+		
+		return blocks;
+	}
+	
 	public static Iterator<Block> getBlockIterator() {
 		return GameData.getBlockRegistry().iterator();
 	}
@@ -28,6 +44,21 @@ public class NamespaceHelper {
 	public static Item getItemByName(String name) {
 		if (name == null) return null;
 		return GameData.getItemRegistry().getObject(name);
+	}
+	
+	public static ArrayList<Item> getItemsByName(String names) { return getItemsByName(names,"[ ,]"); }
+	public static ArrayList<Item> getItemsByName(String names, String separator)
+	{
+		ArrayList<Item> items = new ArrayList<Item>();
+		
+		for (String name : names.split(separator))
+		{
+			Item item = getItemByName(name);
+			if (item != null)
+				items.add(item);
+		}
+		
+		return items;
 	}
 	
 	public static Iterator<Item> getItemIterator() {

@@ -44,7 +44,6 @@ public class KawaiiCrops {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) 
     {
-     	// Recipies
     	config.loadConfiguration_PostInit(event);
     	ModBlocks.registerDropTables();
     }
@@ -54,11 +53,8 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
-     * REFERENCE_ORE_COMMENT && cleanup overall ? Make seeds/crop consistent w/ food ?
-     * BUSH render type
      * Trees
      * World Gen & Mystery Seeds
      * Custom Cooking ! 
-     * Test mutli-tall crops with require max height set to false
      */
 }
