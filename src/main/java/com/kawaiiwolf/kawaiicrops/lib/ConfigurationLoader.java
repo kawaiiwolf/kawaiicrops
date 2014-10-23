@@ -30,6 +30,12 @@ public class ConfigurationLoader {
 		this.configFolder = configFolder;
 	}
 	
+	public static final String HEADER_COMMENT = ""+
+			"Note: If your block/item doesn't show up in this file, make sure you set it in general.cfg, save\n" +
+			"and open minecraft at least once. You don't need to load into a world, just get to the splash \n" +
+			"screen and the necesary configuration will be automatically generated for you.";
+
+	
 	public static final String GENERAL_CROP_COMMENT = "" +
 			"Here you'll list the names of all the plants that you want the mod to generate. Make sure each crop\n"+
 			"name is lower case and has no spaces or punctuation. You can separate these with commas or spaces.\n"+
@@ -271,6 +277,7 @@ public class ConfigurationLoader {
 		{
 			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CROPS));
 			cfg.load();
+			cfg.setCategoryComment("0", HEADER_COMMENT);
 			for (String crop : cropsParsed)
 				loadCrop(cfg, crop);
 			cfg.save();
@@ -286,6 +293,7 @@ public class ConfigurationLoader {
 		{
 			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CAKES));
 			cfg.load();
+			cfg.setCategoryComment("0", HEADER_COMMENT);
 			for (String cake : cakesParsed)
 				loadCake(cfg, cake);
 			cfg.save();
@@ -301,6 +309,7 @@ public class ConfigurationLoader {
 		{
 			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_FOODS));
 			cfg.load();
+			cfg.setCategoryComment("0", HEADER_COMMENT);
 			for (String food : foodsParsed)
 				loadFood(cfg, food);
 			cfg.save();
@@ -316,6 +325,7 @@ public class ConfigurationLoader {
 		{
 			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_INGREDIENTS));
 			cfg.load();
+			cfg.setCategoryComment("0", HEADER_COMMENT);
 			for (String ingredient : ingredientsParsed)
 				loadIngredient(cfg, ingredient);
 			cfg.save();
@@ -332,7 +342,7 @@ public class ConfigurationLoader {
 		Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_RECIPES));
 		cfg.load();
 		
-		String category = "0. Main Settings";
+		String category = "0 Main Settings";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES);
 		
 		int recipes2 = cfg.getInt("2 by 2", category, 10, 0, 10000, "Number of 2x2 Shaped crafting recipies ?");
