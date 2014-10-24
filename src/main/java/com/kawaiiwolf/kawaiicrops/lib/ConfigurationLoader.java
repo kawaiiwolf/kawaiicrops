@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
+import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiTreeBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 
@@ -46,6 +47,15 @@ public class ConfigurationLoader {
 			"Good Name: snowpeas\n"+
 			"\n"+
 			"S:Crops=snowpea tomato broccoli";
+	
+	public static final String GENERAL_TREE_COMMENT = "" + 
+			"List the names of all fruit bearing trees you the mod to generate. Make sure each tree name is lower\n" +
+			"case and has no spaces or punctuation. You can separate these with commas or spaces.\n" +
+			"\n"+
+			"Bad Name: Cherry\n"+
+			"Good Name: cherry\n"+
+			"\n"+
+			"S:Cakes=strawberryshort chocolate carrot";	
 	
 	public static final String GENERAL_CAKE_COMMENT = "" + 
 			"List the names of all cakes you the mod to generate. Make sure each cake name is lower case and has no\n" + 
@@ -283,6 +293,22 @@ public class ConfigurationLoader {
 			cfg.save();
 		}
 		
+		// Trees
+		
+		cfg_general.setCategoryComment("KawaiiCrops Trees", GENERAL_TREE_COMMENT);
+		String treesRaw = cfg_general.getString("Trees", "KawaiiCrops Trees", "", "Tree List");
+		String[] treesParsed = treesRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+
+		if(treesParsed.length > 0)
+		{
+			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CROPS));
+			cfg.load();
+			cfg.setCategoryComment("0", HEADER_COMMENT);
+			for (String tree : treesParsed)
+				loadTree(cfg, tree);
+			cfg.save();
+		}
+		
 		// Cakes
 		
 		cfg_general.setCategoryComment("KawaiiCrop Yummy Cakes", GENERAL_CAKE_COMMENT);
@@ -431,12 +457,6 @@ public class ConfigurationLoader {
 		else
 			b.RenderType = BlockKawaiiCrop.EnumRenderType.BLOCK;
 		
-		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
-		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
-		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
-		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
-		System.out.println("Render type set to: " + b.RenderType + ". Input: [" + r + "]");
-		
 		b.CropStages = config.getInt("1.General  Crop Stages", category, b.CropStages, 2, 8, "Number of crop states ?  Valid values are between 2 and 8. (Ex: Carrots = 4, Wheat = 8)");
 		b.MaxHeight = config.getInt("1.General  Max Height", category, b.MaxHeight, 1, 32, "How many blocks tall will this crop grow ?");
 		b.CropGrowsOn = new HashSet<Block>(NamespaceHelper.getBlocksByName(config.getString("1.General  Soil Block", category, "minecraft:farmland", "What blocks does this grow on ? Seperate blocks with a space or comma. For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)"))); 
@@ -503,8 +523,41 @@ public class ConfigurationLoader {
 		return b; 
 	}
 	
-	private BlockKawaiiCake loadCake(Configuration config, String name){
+	private BlockKawaiiTreeBlocks loadTree(Configuration config, String name)
+	{
+		if (name == null || name.length() == 0) return null;
 		
+		BlockKawaiiTreeBlocks t = new BlockKawaiiTreeBlocks(name);
+		
+		String category = "Kawaiicrops: " + name + " tree";
+		
+		t.Enabled = config.getBoolean("0.  Enabled", category, t.Enabled, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
+		
+		/*
+		 * sapling growth chance (0.0 to 1.0) per tick
+		 * sapling growth bonemeal chance (0.0 to 1.0)
+		 * sapling can grow on: BLOCKLIST
+		 * sapling tool text
+		 * 
+		 * tree wood block
+		 * tree wood shape ?
+		 * 
+		 * fruit growth mutliplier
+		 * fruit matures in leaf block OR in own block
+		 * fruit gravity chance (0.0 to 1.0)
+		 * ripe/unripe drop tables
+		 * 
+		 * fruit edible/hunger/saturation
+		 * fruit potion effects
+		 * fruit ore dict
+		 * fruit tooltip
+		 */
+		
+		return t;
+	}
+	
+	private BlockKawaiiCake loadCake(Configuration config, String name)
+	{
 		if (name == null || name.length() == 0) return null;
 		
 		BlockKawaiiCake c = new BlockKawaiiCake(name);

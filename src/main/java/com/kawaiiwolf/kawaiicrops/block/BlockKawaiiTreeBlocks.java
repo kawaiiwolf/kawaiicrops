@@ -5,7 +5,9 @@ import java.util.Random;
 
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 
+import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockLeavesBase;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -18,12 +20,13 @@ import net.minecraftforge.common.IShearable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockKawaiiLeaf extends BlockLeavesBase implements IShearable {
+public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGrowable {
 
 	private String name = "";
+	public Boolean Enabled = false;
 	
-	public BlockKawaiiLeaf(String name) {
-		super(Material.leaves, false);
+	public BlockKawaiiTreeBlocks(String name) {
+		super(Material.leaves);
 		
         this.setTickRandomly(true);
         this.setHardness(0.2F);
@@ -50,6 +53,27 @@ public class BlockKawaiiLeaf extends BlockLeavesBase implements IShearable {
     {
 		iicon = reg.registerIcon(Constants.MOD_ID + ":" + name);
 	}
+	
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+    {
+    	// INSIDE UNTOUCHED FROM BLOCK grandparent
+        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+
+        int count = quantityDropped(metadata, fortune, world.rand);
+        for(int i = 0; i < count; i++)
+        {
+            Item item = getItemDropped(metadata, world.rand, fortune);
+            if (item != null)
+            {
+                ret.add(new ItemStack(item, 1, damageDropped(metadata)));
+            }
+        }
+        return ret;
+    }
+	
+    /////////////////////////////////////////////////////////////////////////////////////
+    // IShearable
 
 	@Override
 	public boolean isShearable(ItemStack item, IBlockAccess world, int x, int y, int z) 
@@ -70,21 +94,24 @@ public class BlockKawaiiLeaf extends BlockLeavesBase implements IShearable {
     	if(world.isRemote) return;
     }
 
-    @Override
-    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
-    {
-    	// INSIDE UNTOUCHED FROM BLOCK grandparent
-        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+    /////////////////////////////////////////////////////////////////////////////////////
+    // IGrowable
+    
+	@Override
+	public boolean func_149851_a(World world, int x, int y, int z, boolean p_149851_5_) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-        int count = quantityDropped(metadata, fortune, world.rand);
-        for(int i = 0; i < count; i++)
-        {
-            Item item = getItemDropped(metadata, world.rand, fortune);
-            if (item != null)
-            {
-                ret.add(new ItemStack(item, 1, damageDropped(metadata)));
-            }
-        }
-        return ret;
-    }
+	@Override
+	public boolean func_149852_a(World world, Random rand, int x, int y, int z) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void func_149853_b(World world, Random rand,	int x, int y, int z) {
+		// TODO Auto-generated method stub
+		
+	}
 }
