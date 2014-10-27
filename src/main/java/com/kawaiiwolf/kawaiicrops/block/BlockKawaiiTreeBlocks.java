@@ -11,20 +11,24 @@ import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.DropTable;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
+import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiTree;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockLeavesBase;
+import net.minecraft.block.BlockSapling;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -70,6 +74,8 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	/*
 	 * tree wood shape ?
 	 */
+	
+	public boolean TreeIsTall = false; 
 	
 	public BlockKawaiiTreeBlocks(String name) {
 		super(Material.leaves);
@@ -243,9 +249,12 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	}
 
 	@Override // onBonemeal
-	public void func_149853_b(World world, Random rand,	int x, int y, int z) {
-		// TODO Auto-generated method stub
+	public void func_149853_b(World world, Random rand,	int x, int y, int z) 
+	{
+		if (world.getBlockMetadata(x, y, z) == 0)
+			(new WorldGenKawaiiTree(this)).generate(world, rand, x, y, z);
 		
+		//world.setBlockMetadataWithNotify(x, y, z, 1 + (world.getBlockMetadata(x, y, z) + 1 ) % 6, 2);
 	}
 	
     /////////////////////////////////////////////////////////////////////////////////////
@@ -274,5 +283,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     {
     	if(world.isRemote) return;
     }
+    
+
 	
 }

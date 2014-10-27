@@ -58,7 +58,6 @@ public class KawaiiCrops {
      *   Drops
      *   Decay
      *   Shearing
-     *   block.isLeaves
      * 
      * World Gen & Mystery Seeds
      * Custom Cooking ! 

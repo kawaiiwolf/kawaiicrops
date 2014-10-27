@@ -559,11 +559,11 @@ public class ConfigurationLoader {
 		
 		t.SaplingGrowthChance = config.getFloat("1.Sapling  Growth Chance", category, t.SaplingGrowthChance, 0.0f, 1.0f, "What is the chance per random tick (assuming enough light) for this sapling to grow ?");
 		t.SaplingGrowthChanceBonemeal = config.getFloat("1.Sapling  Growth Chance Bonemeal", category, t.SaplingGrowthChanceBonemeal, 0.0f, 1.0f, "What is the chance per use of bonemeal (assuming enough light) for this sapling to grow ?");
-		t.SaplingGrowsOn = new HashSet<Block>(NamespaceHelper.getBlocksByName(config.getString("1.Sapling  Soil Blocks", category, "minecraft:farmland", "What blocks does this grow on ? Seperate blocks with a space or comma. For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)")));;
+		t.SaplingGrowsOn = new HashSet<Block>(NamespaceHelper.getBlocksByName(config.getString("1.Sapling  Soil Blocks", category, "minecraft:dirt minecraft:grass", "What blocks does this grow on ? Seperate blocks with a space or comma. For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)")));;
 		t.SaplingOreDict = config.getString("1.Sapling  Ore Dictionary Entries", category, t.SaplingOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 		t.SaplingToolTip = config.getString("1.Sapling  Tool Tip Text", category, t.SaplingToolTip, "What is the Tooltip for this sapling in game ?");
 		
-		t.LeafTrunkBlock = NamespaceHelper.getBlockByName(config.getString("2.Leaf  Trunk Block", category, "", "What block acts as a trunk for this tree ?  For a list of blocks, see [DumpNames] setting in General.cfg."));
+		t.LeafTrunkBlock = NamespaceHelper.getBlockByName(config.getString("2.Leaf  Trunk Block", category, "minecraft:log", "What block acts as a trunk for this tree ?  For a list of blocks, see [DumpNames] setting in General.cfg."));
 		t.LeafGrowthMultiplier = config.getFloat("2.Leaf  Growth Multiplier", category, t.LeafGrowthMultiplier, 0.0f, 1000.0f, "How fast does your plant grow ?");
 		t.LeafExternalFruit = config.getBoolean("2.Leaf  External Fruit", category, t.LeafExternalFruit, "Does fruit grow external to the block ?  (If false, fruit grows inside leaf block");
 		t.LeafGravityChance = config.getFloat("2.Leaf  Gravity Chance", category, t.LeafGravityChance, 0.0f, 1.0f, "What is the chance, per tick, that ripe fruit will drop to the ground ?");
