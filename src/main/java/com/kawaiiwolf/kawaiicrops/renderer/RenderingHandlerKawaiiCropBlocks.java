@@ -1,6 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.renderer;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
+import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiTreeBlocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -10,13 +11,13 @@ import net.minecraft.world.IBlockAccess;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
-public class RenderingHandlerKawaiiCropBlock implements ISimpleBlockRenderingHandler {
+public class RenderingHandlerKawaiiCropBlocks implements ISimpleBlockRenderingHandler {
 
 	private static int renderId = 0;
 	
-	public static RenderingHandlerKawaiiCropBlock instance = null;
+	public static RenderingHandlerKawaiiCropBlocks instance = null;
 	
-	public RenderingHandlerKawaiiCropBlock() {
+	public RenderingHandlerKawaiiCropBlocks() {
 		if (instance == null) {
 			instance = this;
 			renderId = RenderingRegistry.getNextAvailableRenderId();
@@ -24,7 +25,7 @@ public class RenderingHandlerKawaiiCropBlock implements ISimpleBlockRenderingHan
 	}
 	
 	public static void register() {
-		new RenderingHandlerKawaiiCropBlock();
+		new RenderingHandlerKawaiiCropBlocks();
 		RenderingRegistry.registerBlockHandler(instance.getRenderId(), instance);
 	}
 
@@ -46,29 +47,66 @@ public class RenderingHandlerKawaiiCropBlock implements ISimpleBlockRenderingHan
 		// TODO Auto-generated method stub
 		
 		if (block != null && block instanceof BlockKawaiiCrop)
-		{
-	        Tessellator tessellator = Tessellator.instance;
-	        
-	        tessellator.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
-	        tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
-	        
-	        IIcon iicon = renderer.getIconSafe(block.getIcon(world, x, y, z, 0));
-
-	        switch (((BlockKawaiiCrop)block).RenderType){
-				case CROSS:
-					drawCross(tessellator, iicon, x, y, z, 1.0f);
-					break;
-				case HASH:
-					drawHash(tessellator, iicon, x, y, z);
-					break;
-				case BLOCK:
-					drawBlock(tessellator, iicon, x, y, z);
-					break;
-				default:
-					break;
-	        }
-		}
+			renderCropBlock(world, x, y, z, (BlockKawaiiCrop)block, modelId, renderer);
+		
+		if (block != null && block instanceof BlockKawaiiTreeBlocks)
+			renderTreeBlock(world, x, y, z, (BlockKawaiiTreeBlocks)block, modelId, renderer);
+		
 		return true;
+	}
+	
+	private void renderTreeBlock(IBlockAccess world, int x, int y, int z, BlockKawaiiTreeBlocks block, int modelId, RenderBlocks renderer) 
+	{
+		Tessellator tessellator = Tessellator.instance;
+        
+        tessellator.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
+        tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
+
+        switch (block.getState(world, x, y, z))
+        {
+        	case SAPLING: 
+        		drawCross(tessellator, renderer.getIconSafe(block.getSaplingIcon()), x, y, z, 1.0f);
+        		break;
+        		
+        	case FRUIT:
+        	case FRUITRIPE:
+        		drawCross(tessellator, renderer.getIconSafe(block.getFruitForStage(world, x, y, z)), x, y, z, 1.0f);
+        		break;
+
+        	case LEAF:
+        		drawBlock(tessellator, renderer.getIconSafe(block.getLeafIcon()), x, y, z);
+        		break;
+
+        	case FRUITLEAF:
+        	case FRUITLEAFRIPE:
+        		drawBlock(tessellator, renderer.getIconSafe(block.getLeafIcon()), x, y, z, 1.0D);
+        		drawBlock(tessellator, renderer.getIconSafe(block.getFruitForStage(world, x, y, z)), x, y, z, 0.875D);
+        		break;
+        }
+	}
+
+	public void renderCropBlock(IBlockAccess world, int x, int y, int z, BlockKawaiiCrop block, int modelId, RenderBlocks renderer)
+	{
+		Tessellator tessellator = Tessellator.instance;
+        
+        tessellator.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
+        tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
+        
+        IIcon iicon = renderer.getIconSafe(block.getIcon(world, x, y, z, 0));
+
+        switch (block.RenderType){
+			case CROSS:
+				drawCross(tessellator, iicon, x, y, z, 1.0f);
+				break;
+			case HASH:
+				drawHash(tessellator, iicon, x, y, z);
+				break;
+			case BLOCK:
+				drawBlock(tessellator, iicon, x, y, z);
+				break;
+			default:
+				break;
+        }
 	}
 	
     public void drawHash(Tessellator tessellator, IIcon iicon, double x, double y, double z)
@@ -94,12 +132,20 @@ public class RenderingHandlerKawaiiCropBlock implements ISimpleBlockRenderingHan
     
     public void drawBlock(Tessellator tessellator, IIcon iicon, double x, double y, double z)
     {
-    	drawFaceSingle(tessellator, iicon, x + 0.0D, y + 0.0D, z + 0.0D, x + 0.0D, y + 1.0D, z + 0.0D, x + 1.0D, y + 1.0D, z + 0.0D);
-    	drawFaceSingle(tessellator, iicon, x + 1.0D, y + 0.0D, z + 0.0D, x + 1.0D, y + 1.0D, z + 0.0D, x + 1.0D, y + 1.0D, z + 1.0D);
-    	drawFaceSingle(tessellator, iicon, x + 1.0D, y + 0.0D, z + 1.0D, x + 1.0D, y + 1.0D, z + 1.0D, x + 0.0D, y + 1.0D, z + 1.0D);
-    	drawFaceSingle(tessellator, iicon, x + 0.0D, y + 0.0D, z + 1.0D, x + 0.0D, y + 1.0D, z + 1.0D, x + 0.0D, y + 1.0D, z + 0.0D);
-    	drawFaceSingle(tessellator, iicon, x + 1.0D, y + 1.0D, z + 1.0D, x + 1.0D, y + 1.0D, z + 0.0D, x + 0.0D, y + 1.0D, z + 0.0D);
-    	drawFaceSingle(tessellator, iicon, x + 0.0D, y + 0.0D, z + 1.0D, x + 0.0D, y + 0.0D, z + 0.0D, x + 1.0D, y + 0.0D, z + 0.0D);
+    	drawBlock (tessellator, iicon, x, y, z, 1.0d);
+    }
+
+    public void drawBlock(Tessellator tessellator, IIcon iicon, double x, double y, double z, double scale)
+    {
+    	double lower = 0.5D - (0.5D * scale);
+    	double upper = 0.5D + (0.5D * scale);
+    	
+    	drawFaceSingle(tessellator, iicon, x + lower, y + lower, z + lower, x + lower, y + upper, z + lower, x + upper, y + upper, z + lower);
+    	drawFaceSingle(tessellator, iicon, x + upper, y + lower, z + lower, x + upper, y + upper, z + lower, x + upper, y + upper, z + upper);
+    	drawFaceSingle(tessellator, iicon, x + upper, y + lower, z + upper, x + upper, y + upper, z + upper, x + lower, y + upper, z + upper);
+    	drawFaceSingle(tessellator, iicon, x + lower, y + lower, z + upper, x + lower, y + upper, z + upper, x + lower, y + upper, z + lower);
+    	drawFaceSingle(tessellator, iicon, x + upper, y + upper, z + upper, x + upper, y + upper, z + lower, x + lower, y + upper, z + lower);
+    	drawFaceSingle(tessellator, iicon, x + lower, y + lower, z + upper, x + lower, y + lower, z + lower, x + upper, y + lower, z + lower);
     }
     
     /*

@@ -29,7 +29,6 @@ public class KawaiiCrops {
     {
     	config = new ConfigurationLoader(event.getSuggestedConfigurationFile().getParent());
     	config.loadConfiguration_PreInit();
-    	
     	ModItems.register();
     }
  
@@ -54,6 +53,13 @@ public class KawaiiCrops {
      * TODO:
      * 
      * Trees
+     *   Spawn Tree from sapling
+     *   onUpdate & bonemeal code
+     *   Drops
+     *   Decay
+     *   Shearing
+     *   
+     * 
      * World Gen & Mystery Seeds
      * Custom Cooking ! 
      */

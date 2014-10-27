@@ -12,7 +12,7 @@ import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeedFood;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.DropTable;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
-import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlock;
+import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -219,7 +219,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	@SideOnly(Side.CLIENT)
     public int getRenderType()
     {
-        return RenderingHandlerKawaiiCropBlock.instance.getRenderId();
+        return RenderingHandlerKawaiiCropBlocks.instance.getRenderId();
     }
 
 	@Override
