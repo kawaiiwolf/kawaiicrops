@@ -16,7 +16,8 @@ public class WorldGenKawaiiTree extends WorldGenAbstractTree {
 
 	private BlockKawaiiTreeBlocks tree = null; 
 	
-	public WorldGenKawaiiTree(BlockKawaiiTreeBlocks tree) {
+	public WorldGenKawaiiTree(BlockKawaiiTreeBlocks tree) 
+	{
 		super(true);
 		
 		this.tree = tree;

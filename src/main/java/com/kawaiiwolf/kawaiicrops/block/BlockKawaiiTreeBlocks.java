@@ -9,6 +9,7 @@ import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeed;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.DropTable;
+import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiTree;
@@ -208,6 +209,18 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
         return RenderingHandlerKawaiiCropBlocks.instance.getRenderId();
     }
 	
+    @SideOnly(Side.CLIENT)
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand)
+    {
+        if (world.canLightningStrikeAt(x, y + 1, z) && !World.doesBlockHaveSolidTopSurface(world, x, y - 1, z) && rand.nextInt(15) == 1)
+        {
+        	double i = (double)((float)x + rand.nextFloat());
+            double j = (double)y - 0.05D;
+            double k = (double)((float)z + rand.nextFloat());
+            world.spawnParticle("dripWater", i, j, k, 0.0D, 0.0D, 0.0D);
+        }
+    }
+	
     /////////////////////////////////////////////////////////////////////////////////////
     // States 
     
@@ -271,7 +284,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	@Override // onBonemeal
 	public void func_149853_b(World world, Random rand,	int x, int y, int z) 
 	{
-		// updateTick(world, x, y, z, rand);
+		//updateTick(world, x, y, z, rand);
 		
 		if (world.getBlockMetadata(x, y, z) == 0)
 			(new WorldGenKawaiiTree(this)).generate(world, rand, x, y, z);
@@ -359,19 +372,80 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     	// Worst case: Cuts spawn chance to 1 in 32
     	
     	// (new WorldGenKawaiiTree(this)).generate(world, rand, x, y, z);
+
+    	// Total value of this crop
+    	float value = 0;
+    	
+    	// Not bright enough for the sapling to grow.
+    	if (world.getBlockLightValue(x, y + 1, z) < 9) 
+    		return true;
+    	
+    	// Radius to check nearby ground blocks.
+    	int r = 2;
+    	for (int i = -r + x; i <= r + x; i++)
+        	for (int k = -r + z; k <= r + z; k++)
+            	for (int j = -2 + y; j <= 0 + y; j++)
+            	{
+            		// Ignore corners, sapling block and mounds next to sapling. Maintain surface gradient!
+            		if (Math.abs(i - x) <= 1 && j == y && Math.abs(k - z) <= 1) continue;
+            		if (i == x && j == (y - 1) && k == z) continue;
+            		if (Math.abs(i - x) == r && Math.abs(k - z) == r) continue;
+            		
+            		Block block = world.getBlock(i, j, k);
+            		Material above = world.getBlock(i, j + 1, k).getMaterial();
+            		if (SaplingGrowsOn.contains(block) && (above == Material.air || above == Material.grass || above == Material.plants || above == Material.snow || above == Material.leaves)) 
+            		{
+            			// Light level above soil
+            			int light = world.getBlockLightValue(i, j + 1, k);
+
+            			// Light is "natural" if consistent over 4 y levels
+            			boolean natural = true;
+            			for (int l = 2; l <= 4; l++)
+            				if (world.getBlockLightValue(i, j + 1, k) != light) 
+            					natural = false;
+            			
+            			value += (float)light * (natural ? 1.0f : 0.75f) * (above == Material.grass || above == Material.snow ? 0.75f : 1.0f) * (above == Material.plants || above == Material.leaves ? 0.5f : 1.0f);
+            			
+            			System.out.println("Soil Block @ " + i + "," + j + "," + k + " - Above: " + NamespaceHelper.getBlockName(world.getBlock(i, j + 1, k)) + "Light: " + light + (natural?", Unnatural":", Natural") + ", Value: " + ((float)light * (natural ? 1.0f : 0.75f) * (above == Material.grass || above == Material.snow ? -.75f : 1.0f) * (above == Material.plants || above == Material.leaves ? 0.5f : 1.0f)));
+            		}
+            	}
+    	
+    	System.out.println("Total Value: " + value);
+    	
+    	// if fancy math & random, return generate()
     	
     	return true;
     }
     
     private boolean growFruit(World world, int x, int y, int z)
     {
-    	// Fertile = leaf, compeition = fruit !
+    	int leaf = 0;
+    	int leaffruit = 0;
+    	int fruit = 0;
     	
+    	for (int i = -1 + x; i <= 1 + x; i++)
+        	for (int k = -1 + z; k <= 1 + z; k++)
+            	for (int j = -1 + y; j <= 1 + y; j++)
+            	{
+            		if (this != world.getBlock(i, j, k)) 
+            			continue;
+            		TreeState state = getState(world, i, j, k);
+            		if (state == TreeState.LEAF)
+            			leaf++;
+            		if (state == TreeState.FRUITLEAF || state == TreeState.FRUITLEAFRIPE)
+            			leaffruit++;
+            		if (state == TreeState.FRUIT || state == TreeState.FRUITRIPE)
+            			fruit++;
+            	}
+    	
+    	// Some kind of formula for possibly spawning fruit    	
     	return true;
     }
     
     private boolean matureFruit(World world, int x, int y, int z)
     {
+    	// Check light level above tree or in block or something ?
+        
     	return true;
     }
     
