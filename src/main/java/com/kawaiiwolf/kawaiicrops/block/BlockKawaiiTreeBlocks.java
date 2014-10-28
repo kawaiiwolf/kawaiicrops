@@ -169,6 +169,26 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     	return getFruitForStage(world.getBlockMetadata(x, y, z));
     }
     
+	@Override
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) 
+    {
+		float f = 0.2F;
+		switch(getState(world,x,y,z))
+		{
+			case FRUIT:
+			case FRUITRIPE:
+				setBlockBounds(0.5F - f, 1 - (f * 3.0F), 0.5F - f, 0.5F + f, 1.0F, 0.5F + f);
+				break;
+			case LEAF:
+			case FRUITLEAF:
+			case FRUITLEAFRIPE:
+				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+				break;
+			case SAPLING:
+				setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f * 3.0F, 0.5F + f);
+				break;
+		}
+    }
     
     @SideOnly(Side.CLIENT)
     public IIcon getFruitForStage(int meta)
@@ -251,6 +271,8 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	@Override // onBonemeal
 	public void func_149853_b(World world, Random rand,	int x, int y, int z) 
 	{
+		// updateTick(world, x, y, z, rand);
+		
 		if (world.getBlockMetadata(x, y, z) == 0)
 			(new WorldGenKawaiiTree(this)).generate(world, rand, x, y, z);
 		
@@ -279,11 +301,110 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     }
     
     @Override
+    public boolean canBlockStay(World world, int x, int y, int z)
+    {
+    	switch(getState(world, x, y, z))
+    	{
+			case FRUIT:
+			case FRUITRIPE:
+				return true;
+			case SAPLING:
+				return super.canBlockStay(world, x, y, z);
+			default:
+				return true;
+    	}
+    }
+
+    @Override
     public void updateTick(World world, int x, int y, int z, Random rand)
     {
     	if(world.isRemote) return;
+    	
+    	switch (getState(world,x,y,z))
+    	{
+    		case SAPLING:
+    			growSapling(world, x, y, z);
+    			break;
+    			
+			case FRUIT:
+				matureFruit(world, x, y, z);
+				break;
+			case FRUITRIPE:
+				gravityFruit(world, x, y, z);
+				break;
+
+			case LEAF:
+				if(!decayLeaves(world, x, y ,z)) return;
+				growFruit(world, x, y, z);
+				break;
+			case FRUITLEAF:
+				if(!decayLeaves(world, x, y ,z)) return;
+				matureFruit(world, x, y, z);
+				break;
+			case FRUITLEAFRIPE:
+				if(!decayLeaves(world, x, y ,z)) return;
+				gravityFruit(world, x, y, z);
+				break;
+    	}
+    	
     }
     
+    private boolean growSapling(World world, int x, int y, int z)
+    {
+    	// x & z from -3 to 3, y from -2 to 4
+    	// Based on: + Fertile blocks with air above & Sufficient light
+    	//           - unnatural lighting (differing values in y ?
+    	// Ideal: Cuts spawn chance to 1 in 4
+    	// Half-coverage: Cuts spawn chance to 1 in 16
+    	// Worst case: Cuts spawn chance to 1 in 32
+    	
+    	// (new WorldGenKawaiiTree(this)).generate(world, rand, x, y, z);
+    	
+    	return true;
+    }
+    
+    private boolean growFruit(World world, int x, int y, int z)
+    {
+    	// Fertile = leaf, compeition = fruit !
+    	
+    	return true;
+    }
+    
+    private boolean matureFruit(World world, int x, int y, int z)
+    {
+    	return true;
+    }
+    
+    private boolean gravityFruit(World world, int x, int y, int z)
+    {
+    	return true;
+    }
 
-	
+    private boolean decayLeaves(World world, int x, int y, int z)
+    {
+    	boolean tree = false, leaf = false;
+    	
+    	for (int i = -3; i <= 3; i++)
+        	for (int j = -3; j <= 3; j++)
+            	for (int k = -3; k <= 3; k++)
+            	{
+            		if (i == j && j == k && k == 0) continue;
+            		Block b = world.getBlock(x + i, y + j, z + k);
+            		
+            		if (Math.abs(i) <= 1 && Math.abs(j) <= 1 && Math.abs(k) <= 1)
+            		{
+                		if (b == LeafTrunkBlock) return true;
+                		TreeState s = getState(world, x, y, z);
+                		if (b == this && (s == TreeState.LEAF || s == TreeState.FRUITLEAF || s == TreeState.FRUITLEAFRIPE))
+                			leaf = true;
+            		}
+            		else if (b == LeafTrunkBlock) tree = true;
+            		if (tree && leaf) return true;
+            	}
+
+    	// Do Decay Drop
+    	world.setBlock(x, y, z, Blocks.air, 0, 3);
+    	
+    	return false;
+    }
 }

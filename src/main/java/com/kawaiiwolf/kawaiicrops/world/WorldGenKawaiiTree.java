@@ -25,6 +25,11 @@ public class WorldGenKawaiiTree extends WorldGenAbstractTree {
 	@Override
     public boolean generate(World world, Random rand, int x, int y, int z)
     {
+		return generateForest(world, rand, x, y, z);
+    }
+    
+    public boolean generateForest(World world, Random rand, int x, int y, int z)
+    {
         int l = rand.nextInt(3) + 5;
 
         if (tree.TreeIsTall)
@@ -84,9 +89,7 @@ public class WorldGenKawaiiTree extends WorldGenAbstractTree {
 
                 if (tree.SaplingGrowsOn.contains(block2) && y < 256 - l - 1)
                 {
-                    block2.onPlantGrow(world, x, y - 1, z, x, y, z);
                     int k2;
-
                     for (k2 = y - 3 + l; k2 <= y + l; ++k2)
                     {
                         j1 = k2 - (y + l);
@@ -106,7 +109,7 @@ public class WorldGenKawaiiTree extends WorldGenAbstractTree {
 
                                     if (block1.isAir(world, l2, k2, i2) || block1.isLeaves(world, l2, k2, i2))
                                     {
-                                    	world.setBlock(x, y, z, tree, 1, 3);
+                                    	world.setBlock(l2, k2, i2, tree, 1, 3);
                                         //this.setBlockAndNotifyAdequately(world, l2, k2, i2, Blocks.leaves, 2);
                                     }
                                 }
@@ -120,11 +123,12 @@ public class WorldGenKawaiiTree extends WorldGenAbstractTree {
 
                         if (block3.isAir(world, x, y + k2, z) || block3.isLeaves(world, x, y + k2, z))
                         {
-                        	world.setBlock(x, y, z, tree.LeafTrunkBlock, 0, 3);
+                        	world.setBlock(x, y + k2, z, tree.LeafTrunkBlock, 0, 3);
                             //this.setBlockAndNotifyAdequately(world, x, y + k2, z, Blocks.log, 2);
                         }
                     }
-
+                    
+                    block2.onPlantGrow(world, x, y - 1, z, x, y, z);
                     return true;
                 }
                 else
