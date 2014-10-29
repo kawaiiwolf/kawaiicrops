@@ -53,7 +53,7 @@ public class KawaiiCrops {
      * TODO:
      * 
      * Trees
-     *   onUpdate & bonemeal code
+     *   bonemeal code
      *   Drops
      *   Shearing
      * 

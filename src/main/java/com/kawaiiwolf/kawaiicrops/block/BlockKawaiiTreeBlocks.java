@@ -41,6 +41,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	
 	public float SaplingGrowthMultiplier = 1.0f;
 	public float SaplingGrowthChanceBonemeal = 0.125f;
+	public int SaplingMinimumLight = 4;
 	public HashSet<Block> SaplingGrowsOn = null;
 	public String SaplingOreDict = "";
 	public String SaplingToolTip = "";
@@ -50,9 +51,11 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	public Boolean LeafExternalFruit = true;
 	public float LeafGravityChance = 0.0f;
 	
+	
 	public Boolean FruitEdible = true;
 	public int FruitHunger = 2;
 	public float FruitSaturation = 0.1f;
+	public float FruitGrowthMultiplier = 1.0f;
 	public PotionEffectHelper FruitPotionEffets = null;
 	public String FruitOreDict = "";
 	public String FruitToolTip = "";
@@ -273,7 +276,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 		// can bonemeal
 		if (LeafExternalFruit && getState(world, x, y, z) == TreeState.LEAF)
 			return (world.getBlock(x, y - 1, z) == Blocks.air);
-		return (world.getBlockMetadata(x, y, z) < 7);
+		return (world.getBlockMetadata(x, y, z) < 8);
 	}
 
 	@Override 
@@ -340,7 +343,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 				matureFruit(world, x, y, z, rand);
 				break;
 			case FRUITRIPE:
-				gravityFruit(world, x, y, z);
+				gravityFruit(world, x, y, z, rand);
 				break;
 
 			case LEAF:
@@ -353,7 +356,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 				break;
 			case FRUITLEAFRIPE:
 				if(!decayLeaves(world, x, y ,z)) return;
-				gravityFruit(world, x, y, z);
+				gravityFruit(world, x, y, z, rand);
 				break;
     	}
     	
@@ -365,7 +368,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     	float value = 0;
     	
     	// Not bright enough for the sapling to grow.
-    	if (world.getBlockLightValue(x, y + 1, z) < 4) 
+    	if (world.getBlockLightValue(x, y + 1, z) < SaplingMinimumLight) 
     		return true;
     	
     	// Radius to check nearby ground blocks.
@@ -404,12 +407,16 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     
     private boolean growFruit(World world, int x, int y, int z, Random rand)
     {
-    	int leaf = 1;
+    	int leaf = 0;
     	int fruit = 0;
     	
     	// If we're to grow fruit beneath and there's no room to grow, abort
     	if (LeafExternalFruit && world.getBlock(x, y - 1, z) != Blocks.air) return true;
-    	
+
+    	// Minimum light to grow
+    	if (world.getBlockLightValue(x, y, z) < SaplingMinimumLight) 
+    		return true;
+
     	// Sum up each leaf & fruit in a 1 block radius
     	for (int i = -1 + x; i <= 1 + x; i++)
         	for (int k = -1 + z; k <= 1 + z; k++)
@@ -428,29 +435,34 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
             			fruit++;
             		}
             	}
-    	if (rand.nextInt((int)(25.0F / (leaf - fruit) / LeafGrowthMultiplier) + 5) == 0)
-    		if (LeafExternalFruit)
-    		{
+    	
+		if (rand.nextInt((int)((35 - leaf + 6 * fruit) / LeafGrowthMultiplier * 15.0f / world.getBlockLightValue(x, y - 1, z)) + 1) == 0)
+		{
+	    	if (LeafExternalFruit)
     			world.setBlock(x, y - 1, z, this, 5, 3);
-    		}
-    		else
+	    	else
     			world.setBlockMetadataWithNotify(x, y, z, 2, 3);
+    	}
     	
     	return true;
     }
     
     private boolean matureFruit(World world, int x, int y, int z, Random rand)
     {
-    	// Slow down update tick with random() ?
+    	int light = world.getBlockLightValue(x, y, z);
+    	if (light < SaplingMinimumLight || rand.nextInt((int)(4.0f / FruitGrowthMultiplier * 15.0f / light) + 1) != 0)
+    		return true;
+    	
     	int meta = world.getBlockMetadata(x, y, z);
-    	if (meta < 7)
-    		world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
+    	if (meta < 8)
+    		world.setBlockMetadataWithNotify(x, y, z, (meta == 4 ? 8 : meta + 1), 2);
         
     	return true;
     }
     
-    private boolean gravityFruit(World world, int x, int y, int z)
+    private boolean gravityFruit(World world, int x, int y, int z, Random rand)
     {
+    	// if (chance) dropBlockAsItem(...params from get drop ? ...)
     	return true;
     }
 

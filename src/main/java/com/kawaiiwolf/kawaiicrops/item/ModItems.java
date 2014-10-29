@@ -19,10 +19,12 @@ public class ModItems {
 	public static ArrayList<ItemKawaiiSeedFood> ModSeedFoods = new ArrayList<ItemKawaiiSeedFood>();
 	
 	public static ItemHungerPotion HungerPotion = new ItemHungerPotion();
+	public static ItemKawaiiStickOfTruth Stick = new ItemKawaiiStickOfTruth();
 	
 	public static void register()
 	{
 		GameRegistry.registerItem(HungerPotion, Constants.MOD_ID + ".hungerpotion");
+		GameRegistry.registerItem(Stick, Constants.MOD_ID + ".stickoftruth");
 	}
 	
 	public static void registerOreDictionary()
