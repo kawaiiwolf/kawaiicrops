@@ -39,7 +39,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	private String name = "";
 	public Boolean Enabled = false;
 	
-	public float SaplingGrowthChance = 0.125f;
+	public float SaplingGrowthMultiplier = 1.0f;
 	public float SaplingGrowthChanceBonemeal = 0.125f;
 	public HashSet<Block> SaplingGrowsOn = null;
 	public String SaplingOreDict = "";
@@ -47,7 +47,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 
 	public Block LeafTrunkBlock = null;
 	public float LeafGrowthMultiplier = 1.0f;
-	public Boolean LeafExternalFruit = false;
+	public Boolean LeafExternalFruit = true;
 	public float LeafGravityChance = 0.0f;
 	
 	public Boolean FruitEdible = true;
@@ -271,6 +271,8 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	public boolean func_149851_a(World world, int x, int y, int z, boolean p_149851_5_) 
 	{
 		// can bonemeal
+		if (LeafExternalFruit && getState(world, x, y, z) == TreeState.LEAF)
+			return (world.getBlock(x, y - 1, z) == Blocks.air);
 		return (world.getBlockMetadata(x, y, z) < 7);
 	}
 
@@ -284,12 +286,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	@Override // onBonemeal
 	public void func_149853_b(World world, Random rand,	int x, int y, int z) 
 	{
-		//updateTick(world, x, y, z, rand);
-		
-		if (world.getBlockMetadata(x, y, z) == 0)
-			(new WorldGenKawaiiTree(this)).generate(world, rand, x, y, z);
-		
-		//world.setBlockMetadataWithNotify(x, y, z, 1 + (world.getBlockMetadata(x, y, z) + 1 ) % 6, 2);
+		updateTick(world, x, y, z, rand);
 	}
 	
     /////////////////////////////////////////////////////////////////////////////////////
@@ -320,7 +317,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     	{
 			case FRUIT:
 			case FRUITRIPE:
-				return true;
+				return ( world.getBlock(x, y + 1, z) == this && getState(world, x, y + 1, z) == TreeState.LEAF ); 
 			case SAPLING:
 				return super.canBlockStay(world, x, y, z);
 			default:
@@ -336,11 +333,11 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     	switch (getState(world,x,y,z))
     	{
     		case SAPLING:
-    			growSapling(world, x, y, z);
+    			growSapling(world, x, y, z,rand);
     			break;
     			
 			case FRUIT:
-				matureFruit(world, x, y, z);
+				matureFruit(world, x, y, z, rand);
 				break;
 			case FRUITRIPE:
 				gravityFruit(world, x, y, z);
@@ -348,11 +345,11 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 
 			case LEAF:
 				if(!decayLeaves(world, x, y ,z)) return;
-				growFruit(world, x, y, z);
+				growFruit(world, x, y, z, rand);
 				break;
 			case FRUITLEAF:
 				if(!decayLeaves(world, x, y ,z)) return;
-				matureFruit(world, x, y, z);
+				matureFruit(world, x, y, z, rand);
 				break;
 			case FRUITLEAFRIPE:
 				if(!decayLeaves(world, x, y ,z)) return;
@@ -362,22 +359,13 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     	
     }
     
-    private boolean growSapling(World world, int x, int y, int z)
+    private boolean growSapling(World world, int x, int y, int z, Random rand)
     {
-    	// x & z from -3 to 3, y from -2 to 4
-    	// Based on: + Fertile blocks with air above & Sufficient light
-    	//           - unnatural lighting (differing values in y ?
-    	// Ideal: Cuts spawn chance to 1 in 4
-    	// Half-coverage: Cuts spawn chance to 1 in 16
-    	// Worst case: Cuts spawn chance to 1 in 32
-    	
-    	// (new WorldGenKawaiiTree(this)).generate(world, rand, x, y, z);
-
     	// Total value of this crop
     	float value = 0;
     	
     	// Not bright enough for the sapling to grow.
-    	if (world.getBlockLightValue(x, y + 1, z) < 9) 
+    	if (world.getBlockLightValue(x, y + 1, z) < 4) 
     		return true;
     	
     	// Radius to check nearby ground blocks.
@@ -393,7 +381,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
             		
             		Block block = world.getBlock(i, j, k);
             		Material above = world.getBlock(i, j + 1, k).getMaterial();
-            		if (SaplingGrowsOn.contains(block) && (above == Material.air || above == Material.grass || above == Material.plants || above == Material.snow || above == Material.leaves)) 
+            		if (SaplingGrowsOn.contains(block) && (above == Material.air || above == Material.vine || above == Material.plants || above == Material.snow || above == Material.leaves)) 
             		{
             			// Light level above soil
             			int light = world.getBlockLightValue(i, j + 1, k);
@@ -404,25 +392,25 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
             				if (world.getBlockLightValue(i, j + 1, k) != light) 
             					natural = false;
             			
-            			value += (float)light * (natural ? 1.0f : 0.75f) * (above == Material.grass || above == Material.snow ? 0.75f : 1.0f) * (above == Material.plants || above == Material.leaves ? 0.5f : 1.0f);
-            			
-            			System.out.println("Soil Block @ " + i + "," + j + "," + k + " - Above: " + NamespaceHelper.getBlockName(world.getBlock(i, j + 1, k)) + "Light: " + light + (natural?", Unnatural":", Natural") + ", Value: " + ((float)light * (natural ? 1.0f : 0.75f) * (above == Material.grass || above == Material.snow ? -.75f : 1.0f) * (above == Material.plants || above == Material.leaves ? 0.5f : 1.0f)));
+            			value += (float)light * (natural ? 1.0f : 0.75f) * (above == Material.plants || above == Material.snow ? 0.75f : 1.0f) * (above == Material.vine || above == Material.leaves ? 0.5f : 1.0f);
             		}
             	}
     	
-    	System.out.println("Total Value: " + value);
-    	
-    	// if fancy math & random, return generate()
+    	if (rand.nextDouble() < (SaplingGrowthMultiplier * 0.25d / Math.pow(2.0d, (300.0d - value) / 75.0d)))
+    		return !(new WorldGenKawaiiTree(this)).generate(world, rand, x, y, z);
     	
     	return true;
     }
     
-    private boolean growFruit(World world, int x, int y, int z)
+    private boolean growFruit(World world, int x, int y, int z, Random rand)
     {
-    	int leaf = 0;
-    	int leaffruit = 0;
+    	int leaf = 1;
     	int fruit = 0;
     	
+    	// If we're to grow fruit beneath and there's no room to grow, abort
+    	if (LeafExternalFruit && world.getBlock(x, y - 1, z) != Blocks.air) return true;
+    	
+    	// Sum up each leaf & fruit in a 1 block radius
     	for (int i = -1 + x; i <= 1 + x; i++)
         	for (int k = -1 + z; k <= 1 + z; k++)
             	for (int j = -1 + y; j <= 1 + y; j++)
@@ -432,19 +420,31 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
             		TreeState state = getState(world, i, j, k);
             		if (state == TreeState.LEAF)
             			leaf++;
-            		if (state == TreeState.FRUITLEAF || state == TreeState.FRUITLEAFRIPE)
-            			leaffruit++;
             		if (state == TreeState.FRUIT || state == TreeState.FRUITRIPE)
             			fruit++;
+            		if (state == TreeState.FRUITLEAF || state == TreeState.FRUITLEAFRIPE)
+            		{
+            			leaf++; 
+            			fruit++;
+            		}
             	}
+    	if (rand.nextInt((int)(25.0F / (leaf - fruit) / LeafGrowthMultiplier) + 5) == 0)
+    		if (LeafExternalFruit)
+    		{
+    			world.setBlock(x, y - 1, z, this, 5, 3);
+    		}
+    		else
+    			world.setBlockMetadataWithNotify(x, y, z, 2, 3);
     	
-    	// Some kind of formula for possibly spawning fruit    	
     	return true;
     }
     
-    private boolean matureFruit(World world, int x, int y, int z)
+    private boolean matureFruit(World world, int x, int y, int z, Random rand)
     {
-    	// Check light level above tree or in block or something ?
+    	// Slow down update tick with random() ?
+    	int meta = world.getBlockMetadata(x, y, z);
+    	if (meta < 7)
+    		world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
         
     	return true;
     }
