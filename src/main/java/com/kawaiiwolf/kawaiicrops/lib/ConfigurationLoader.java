@@ -559,7 +559,7 @@ public class ConfigurationLoader {
 		
 		t.SaplingGrowthMultiplier = config.getFloat("1.Sapling  Growth Multiplier", category, t.SaplingGrowthMultiplier, 0.0001f, 1000.0f, "What growth mutlipler to apply to the growth of this tree ?");
 		t.SaplingGrowthChanceBonemeal = config.getFloat("1.Sapling  Growth Chance Bonemeal", category, t.SaplingGrowthChanceBonemeal, 0.0f, 1.0f, "What is the chance per use of bonemeal (assuming enough light) for this sapling to grow ?");
-		t.SaplingMinimumLight = config.getInt("1.Sapling  Minimum light", category, t.SaplingMinimumLight, 0, 14, "What is the minimum light required to grow this tree and it's fruit ?");
+		t.SaplingMinimumLight = config.getInt("1.Sapling  Minimum light", category, t.SaplingMinimumLight, 1, 14, "What is the minimum light required to grow this tree and it's fruit ?");
 		t.SaplingGrowsOn = new HashSet<Block>(NamespaceHelper.getBlocksByName(config.getString("1.Sapling  Soil Blocks", category, "minecraft:dirt minecraft:grass", "What blocks does this grow on ? Seperate blocks with a space or comma. For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)")));;
 		t.SaplingOreDict = config.getString("1.Sapling  Ore Dictionary Entries", category, t.SaplingOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 		t.SaplingToolTip = config.getString("1.Sapling  Tool Tip Text", category, t.SaplingToolTip, "What is the Tooltip for this sapling in game ?");
@@ -580,7 +580,6 @@ public class ConfigurationLoader {
 		t.LeafDropTableRipeString = config.getString("4.Drops  Ripe Fruit Drop Table", category, t.LeafDropTableDestroyedString, "What is the drop table for Ripe fruit ? Please see General.cfg to see how to use these.");
 		t.LeafDropTableUnripeString = config.getString("4.Drops  Unripe Fruit Drop Table", category, t.LeafDropTableDestroyedString, "What is the drop table for Unripe fruit ? Please see General.cfg to see how to use these.");;
 		t.LeafDropTableDestroyedString = config.getString("4.Drops  Destroyed Leaf Drop Table", category, t.LeafDropTableDestroyedString, "What is the drop table for Leaf Blocks without fruit ? Please see General.cfg to see how to use these.");
-		t.LeafDropTableShearedString = config.getString("4.Drops  Sheared Leaf Drop Table", category, t.LeafDropTableShearedString, "What is the drop table for Leaf Blocks when sheared ? If fruit exists, it will drop this AND the appropriate fruit drops. Please see General.cfg to see how to use these.");
 		
 		t.register();
 		

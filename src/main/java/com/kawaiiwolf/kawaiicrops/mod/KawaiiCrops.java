@@ -54,8 +54,8 @@ public class KawaiiCrops {
      * 
      * Trees
      *   bonemeal code
-     *   Drops
-     *   Shearing
+     *   gravity
+     *   other tree types ?
      * 
      * World Gen & Mystery Seeds
      * Custom Cooking ! 

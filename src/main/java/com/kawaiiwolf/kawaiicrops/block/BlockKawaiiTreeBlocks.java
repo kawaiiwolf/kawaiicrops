@@ -20,11 +20,14 @@ import net.minecraft.block.BlockLeavesBase;
 import net.minecraft.block.BlockSapling;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -34,7 +37,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGrowable {
+public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable {
 
 	private String name = "";
 	public Boolean Enabled = false;
@@ -68,9 +71,6 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	
 	public String LeafDropTableDestroyedString = "";
 	private DropTable LeafDropTableDestroyed = null;
-
-	public String LeafDropTableShearedString = "";
-	private DropTable LeafDropTableSheared = null;
 
 	private Item Sapling;
 	private Item Fruit;
@@ -127,7 +127,6 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 		LeafDropTableRipe = new DropTable(LeafDropTableRipeString, Sapling, Fruit);
 		LeafDropTableUnripe = new DropTable(LeafDropTableUnripeString, Sapling, Fruit);
 		LeafDropTableDestroyed = new DropTable(LeafDropTableDestroyedString, Sapling, Fruit);
-		LeafDropTableSheared = new DropTable(LeafDropTableShearedString, Sapling, Fruit);
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -193,6 +192,20 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 				break;
 		}
     }
+	
+	@Override
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+		switch(getState(world,x,y,z))
+		{
+			case LEAF:
+			case FRUITLEAF:
+			case FRUITLEAFRIPE:
+				return AxisAlignedBB.getBoundingBox((double)x + this.minX, (double)y + this.minY, (double)z + this.minZ, (double)x + this.maxX, (double)y + this.maxY, (double)z + this.maxZ);
+			default:
+				return null;
+		}
+    }
     
     @SideOnly(Side.CLIENT)
     public IIcon getFruitForStage(int meta)
@@ -201,7 +214,6 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     		return icons[meta];
     	if (meta >=5 && meta <= 7)
     		return icons[meta - 3];
-    	
     	return icons[5];
     }
     
@@ -223,7 +235,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
             world.spawnParticle("dripWater", i, j, k, 0.0D, 0.0D, 0.0D);
         }
     }
-	
+    	
     /////////////////////////////////////////////////////////////////////////////////////
     // States 
     
@@ -249,40 +261,21 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
 	    
 	    return TreeState.LEAF;
     }
-    
-    /////////////////////////////////////////////////////////////////////////////////////
-    // IShearable
-
-	@Override
-	public boolean isShearable(ItemStack item, IBlockAccess world, int x, int y, int z) 
-	{
-		return false;
-	}
-
-	@Override
-	public ArrayList<ItemStack> onSheared(ItemStack item, IBlockAccess world, int x, int y, int z, int fortune) 
-	{
-		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-		return ret;
-	}
 
     /////////////////////////////////////////////////////////////////////////////////////
     // IGrowable
     
-	
-	@Override
+	@Override // can bonemeal
 	public boolean func_149851_a(World world, int x, int y, int z, boolean p_149851_5_) 
 	{
-		// can bonemeal
 		if (LeafExternalFruit && getState(world, x, y, z) == TreeState.LEAF)
 			return (world.getBlock(x, y - 1, z) == Blocks.air);
 		return (world.getBlockMetadata(x, y, z) < 8);
 	}
 
-	@Override 
+	@Override // true if during bonemeal event, conditions for growth are acceptable
 	public boolean func_149852_a(World world, Random rand, int x, int y, int z) 
 	{
-		// true if during bonemeal event, conditions for growth are acceptable
 		return true;
 	}
 
@@ -298,19 +291,45 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
-    	// INSIDE UNTOUCHED FROM BLOCK grandparent
         ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
 
-        int count = quantityDropped(metadata, fortune, world.rand);
-        for(int i = 0; i < count; i++)
+        switch(getState(metadata ))
         {
-            Item item = getItemDropped(metadata, world.rand, fortune);
-            if (item != null)
-            {
-                ret.add(new ItemStack(item, 1, damageDropped(metadata)));
-            }
+			case FRUIT:
+				ret.addAll(this.LeafDropTableUnripe.generateLoot(world.rand));
+				break;
+
+			case FRUITRIPE:
+				ret.addAll(this.LeafDropTableRipe.generateLoot(world.rand));
+				break;
+
+			case FRUITLEAF:
+				ret.addAll(this.LeafDropTableDestroyed.generateLoot(world.rand));
+				ret.addAll(this.LeafDropTableUnripe.generateLoot(world.rand));
+				break;
+			case FRUITLEAFRIPE:
+				ret.addAll(this.LeafDropTableDestroyed.generateLoot(world.rand));
+				ret.addAll(this.LeafDropTableRipe.generateLoot(world.rand));
+				break;
+			case LEAF:
+				ret.addAll(this.LeafDropTableDestroyed.generateLoot(world.rand));
+				break;
+
+			case SAPLING:
+				ret.add(new ItemStack(getItemDropped(0,world.rand, 0)));
+				break;
+			default:
+				break;
         }
         return ret;
+    }
+    
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xhit, float yhit, float zhit)
+    {
+    	if (getState(world, x, y, z) == TreeState.FRUITLEAFRIPE)
+    		; // Gravity Drop
+        return false;
     }
     
     @Override
@@ -361,6 +380,9 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     	}
     	
     }
+    
+    /////////////////////////////////////////////////////////////////////////////////////
+    // private Helper Functions 
     
     private boolean growSapling(World world, int x, int y, int z, Random rand)
     {
@@ -414,7 +436,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
     	if (LeafExternalFruit && world.getBlock(x, y - 1, z) != Blocks.air) return true;
 
     	// Minimum light to grow
-    	if (world.getBlockLightValue(x, y, z) < SaplingMinimumLight) 
+    	if (world.getBlockLightValue(x, y - (LeafExternalFruit ? 1 : 0), z) < SaplingMinimumLight) 
     		return true;
 
     	// Sum up each leaf & fruit in a 1 block radius
@@ -436,7 +458,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IShearable, IGro
             		}
             	}
     	
-		if (rand.nextInt((int)((35 - leaf + 6 * fruit) / LeafGrowthMultiplier * 15.0f / world.getBlockLightValue(x, y - 1, z)) + 1) == 0)
+		if (rand.nextInt((int)(35 - leaf + (6 * fruit) / LeafGrowthMultiplier * 15.0f / world.getBlockLightValue(x, y - (LeafExternalFruit ? 1 : 0), z)) + 1) == 0)
 		{
 	    	if (LeafExternalFruit)
     			world.setBlock(x, y - 1, z, this, 5, 3);
