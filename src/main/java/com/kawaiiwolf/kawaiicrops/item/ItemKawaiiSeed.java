@@ -5,7 +5,9 @@ import java.util.List;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiTreeBlocks;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.lib.Pair;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -30,6 +32,7 @@ public class ItemKawaiiSeed extends ItemSeeds {
 	private BlockKawaiiTreeBlocks tree = null;
 	public String OreDict = "";
 	public boolean WaterPlant = false;
+	public int MysterySeedWeight = 0;
 	
 	private enum SeedType { CROP, TREE }
 	
@@ -42,8 +45,6 @@ public class ItemKawaiiSeed extends ItemSeeds {
 		this.name = name;
 		this.plant = plant;
 		this.ToolTipText = toolTip;
-		
-		ModItems.ModSeeds.add(this);
 	}
 	
 	public ItemKawaiiSeed(String name, String toolTip, BlockKawaiiTreeBlocks tree) {
@@ -55,8 +56,25 @@ public class ItemKawaiiSeed extends ItemSeeds {
 		this.name = name;
 		this.tree = tree;
 		this.ToolTipText = toolTip;
+	}
+	
+	private boolean isRegistered = false;
+	public void register()
+	{
+		if (isRegistered) return;
+		isRegistered = true;
 		
 		ModItems.ModSeeds.add(this);
+		GameRegistry.registerItem(this, Constants.MOD_ID + "." + name);
+		
+		System.out.println("New Weight: " + MysterySeedWeight + ", type: " + type + ", plant: " + plant + ", tree:" + tree);
+		if (MysterySeedWeight > 0)
+		{
+			if(type == SeedType.CROP) 
+				ItemKawaiiMysterySeed.SeedList.add(new Pair(plant,MysterySeedWeight));
+			if(type == SeedType.TREE) 
+				ItemKawaiiMysterySeed.SeedList.add(new Pair(tree,MysterySeedWeight));
+		}	
 	}
 	
 	@Override
@@ -88,7 +106,7 @@ public class ItemKawaiiSeed extends ItemSeeds {
         {
             if (	(
             			(type == SeedType.CROP &&   plant.CropGrowsOn.contains(world.getBlock(x, y, z))) ||
-            			(type == SeedType.TREE && tree.SaplingGrowsOn.contains(world.getBlock(x, y, z)))
+            			(type == SeedType.TREE && tree.SaplingSoilBlocks.contains(world.getBlock(x, y, z)))
             		) && world.isAirBlock(x, y + 1, z)
                )
             {

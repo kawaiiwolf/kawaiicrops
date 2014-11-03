@@ -8,6 +8,7 @@ import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.*;
 import com.kawaiiwolf.kawaiicrops.proxies.*;
 import com.kawaiiwolf.kawaiicrops.tileentity.ModTileEntities;
+import com.kawaiiwolf.kawaiicrops.world.ModWorldGen;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -29,7 +30,9 @@ public class KawaiiCrops {
     {
     	config = new ConfigurationLoader(event.getSuggestedConfigurationFile().getParent());
     	config.loadConfiguration_PreInit();
+    	ModBlocks.register();
     	ModItems.register();
+    	ModWorldGen.register();
     }
  
     @Mod.EventHandler
@@ -46,18 +49,10 @@ public class KawaiiCrops {
     	config.loadConfiguration_PostInit(event);
     	ModBlocks.registerDropTables();
     }
-
-    
     
     /**
      * TODO:
      * 
-     * Trees
-     *   bonemeal code
-     *   gravity
-     *   other tree types ?
-     * 
-     * World Gen & Mystery Seeds
-     * Custom Cooking ! 
+     * Custom Cooking !
      */
 }

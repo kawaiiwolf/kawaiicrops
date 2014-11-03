@@ -6,6 +6,7 @@ import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,8 +48,16 @@ public class ItemKawaiiFood extends ItemFood {
 		
 		if (eatAnytime) 
 			setAlwaysEdible();
+	}
+	
+	private boolean isRegistered = false;
+	public void register()
+	{
+		if (isRegistered) return;
+		isRegistered = true;
 		
 		ModItems.ModFoods.add(this);
+		GameRegistry.registerItem(this, Constants.MOD_ID + "." + Name);
 	}
 	
 	@Override

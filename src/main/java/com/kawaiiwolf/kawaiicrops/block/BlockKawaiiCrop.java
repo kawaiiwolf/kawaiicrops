@@ -14,6 +14,9 @@ import com.kawaiiwolf.kawaiicrops.lib.DropTable;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
+import com.kawaiiwolf.kawaiicrops.world.ModWorldGen;
+import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
+import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiCrop;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -127,48 +130,66 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
-	public void register()
+	public void register(WorldGenKawaiiBaseWorldGen.WorldGen gen)
 	{		
 		if (!this.Enabled) return; 
 		GameRegistry.registerBlock(this, this.getUnlocalizedName());
 		
 		if (this.SeedsEnabled) {
 			String seedName = this.Name + ".seed";
-			seed = (Item) (SeedsEdible 
-					? new ItemKawaiiSeedFood(seedName, this.SeedsToolTip, this.SeedsHunger, this.SeedsSaturation, this) 
-					: new ItemKawaiiSeed(seedName, this.SeedsToolTip, this));
+			
+			boolean water = false;
+			for (Block b : CropGrowsOn)
+				if (b.getMaterial() == Material.water || b.getMaterial() == Material.lava)
+					if (SeedsEdible) 
+						water = true;
 			
 			if (SeedsEdible)
-				((ItemKawaiiSeedFood)seed).OreDict = SeedOreDict;
-			else
-				((ItemKawaiiSeed)seed).OreDict = SeedOreDict;
-			
-			for (Block b : CropGrowsOn)
 			{
-				if (b.getMaterial() == Material.water || b.getMaterial() == Material.lava)
-				{
-					if (SeedsEdible) 
-						((ItemKawaiiSeedFood)seed).WaterPlant = true;
-					else
-						((ItemKawaiiSeed)seed).WaterPlant = true;
-				}
+				ItemKawaiiSeedFood seed = new ItemKawaiiSeedFood(seedName, this.SeedsToolTip, this.SeedsHunger, this.SeedsSaturation, this);
+				seed.OreDict = SeedOreDict;
+				seed.WaterPlant = water;
+				seed.MysterySeedWeight = SeedsMysterySeedWeight;
+				seed.register();
+				this.seed = seed;
+			} 
+			else
+			{
+				ItemKawaiiSeed seed = new ItemKawaiiSeed(seedName, this.SeedsToolTip, this);
+				seed.OreDict = SeedOreDict;
+				seed.WaterPlant = water;
+				seed.MysterySeedWeight = SeedsMysterySeedWeight;
+				seed.register();
+				this.seed = seed;
 			}
-			
-			GameRegistry.registerItem(seed, Constants.MOD_ID + "." + seedName);
+		}
+
+		if (CropEnabled)
+		{
+			String cropName = this.Name + ".crop";
+
+			if (CropEdible)
+			{
+				ItemKawaiiFood crop = new ItemKawaiiFood(cropName, this.CropToolTip, this.CropHunger, this.CropSaturation, this.CropPotionEffects);
+				crop.OreDict = CropOreDict;
+				
+				crop.register();
+				this.crop = crop;
+			}
+			else
+			{
+				ItemKawaiiIngredient crop = new ItemKawaiiIngredient(cropName, this.CropToolTip);
+				crop.OreDict = CropOreDict;
+				
+				crop.register();
+				this.crop = crop;
+			}
 		}
 		
-		if (this.CropEnabled) {
-			String cropName = this.Name + ".crop";
-			crop = (Item) (CropEdible
-					? new ItemKawaiiFood(cropName, this.CropToolTip, this.CropHunger, this.CropSaturation, this.CropPotionEffects)
-					: new ItemKawaiiIngredient(cropName, this.CropToolTip));
-			
-			if (CropEdible)
-				((ItemKawaiiFood)crop).OreDict = CropOreDict;
-			else
-				((ItemKawaiiIngredient)crop).OreDict = CropOreDict;
-			
-			GameRegistry.registerItem(crop, Constants.MOD_ID + "." + cropName);
+		if (gen.weight > 0)
+		{
+			gen.generator = new WorldGenKawaiiCrop(this);
+			ModWorldGen.WorldGen.generators.add(gen);
 		}
 		
 		ModBlocks.AllCrops.add(this);

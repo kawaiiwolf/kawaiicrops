@@ -10,6 +10,10 @@ import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiTreeBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
+import com.kawaiiwolf.kawaiicrops.item.ModItems;
+import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
+import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen.WorldGen;
+import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiTree;
 
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -17,8 +21,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.common.DimensionManager;
 
 public class ConfigurationLoader {
 
@@ -287,6 +293,9 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("Reference: Potions Help", REFERENCE_POTION_COMMENT);
 		cfg_general.setCategoryComment("Reference: Ore Dictionary Help", REFERENCE_ORE_COMMENT);
 		DumpIDs = cfg_general.getBoolean("Dump All IDs", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
+		ModItems.HungerPotionEnabled = cfg_general.getBoolean("Hunger Potion", Configuration.CATEGORY_GENERAL, ModItems.HungerPotionEnabled, "Enable the Potion of Hunger ?  This debug item makes you hungrier by drinking it.");
+		ModItems.MysterySeedEnabled = cfg_general.getBoolean("Mystery Seed Enabled", Configuration.CATEGORY_GENERAL, ModItems.MysterySeedEnabled, "Enable the Myster Seed ?  When planted it could grow into just about anything !");
+		ModItems.MysterySeedVanilla = cfg_general.getBoolean("Vanilla Mystery Seed Crops", Configuration.CATEGORY_GENERAL, ModItems.MysterySeedVanilla, "Include Vanilla Crops/Plants in the Mystery Seed's Drop List ?");
 		
 		// Crops
 		
@@ -314,7 +323,7 @@ public class ConfigurationLoader {
 		{
 			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_TREES));
 			cfg.load();
-			cfg.setCategoryComment("0", HEADER_COMMENT);
+			cfg.setCategoryComment("0", HEADER_COMMENT + "\n\nSpecial thanks to mDiyo & the Natura Mod for the tree generation code for type: Eucalyptus & Sakura");
 			for (String tree : treesParsed)
 				loadTree(cfg, tree);
 			cfg.save();
@@ -428,7 +437,7 @@ public class ConfigurationLoader {
 		// Try to clear it out if it exists. Fresh File
 		try { if (f.exists()) f.delete(); } catch (Exception e) { }
 		
-		String blockList = "", itemList = "", oreList = "";
+		String blockList = "", itemList = "", oreList = "", biomeList = "";
 		
 		Iterator<Block> blocks = NamespaceHelper.getBlockIterator();
 		while (blocks.hasNext())
@@ -441,11 +450,18 @@ public class ConfigurationLoader {
 		for (String name : OreDictionary.getOreNames())
 			oreList += name + "\n";
 		
+		for (BiomeGenBase biome : BiomeGenBase.getBiomeGenArray())
+			if (biome != null)
+			biomeList += "\"" + (biome.biomeName + "\"                                                  ").substring(0, 50)
+					+ "  Temperature [" + biome.temperature + "]  Humidity [" + biome.rainfall + "]" + "\n";
+		
+		
 		Configuration config = new Configuration(f);
 		config.load();
 		config.setCategoryComment("Blocks", blockList);
 		config.setCategoryComment("Items", itemList);
 		config.setCategoryComment("OreDictionary", oreList);
+		config.setCategoryComment("Biomes", biomeList);
 		config.save();
 	}
 
@@ -488,6 +504,14 @@ public class ConfigurationLoader {
 		b.DropTableRipeString = config.getString("4.Drops  Ripe Drop Table", category, b.DropTableRipeString, "What is the drop table for Ripe crops ? Please see General.cfg to see how to use these.");
 		b.DropTableUnripeString = config.getString("4.Drops  Unripe Drop Table", category, b.DropTableUnripeString, "What is the drop table for Unripe crops ? Please see General.cfg to see how to use these.");
 		
+		WorldGenKawaiiBaseWorldGen.WorldGen gen = new WorldGen();
+		gen.weight = config.getInt("5.WorldGen  Weight", category, gen.weight, 0, 1000, "How often should this crop attempt to spawn ?  A weight of 1 will attempt to spawn this cropy in every chunk, 5 in every 5 chunks, etc.. A weight of 0 disables world gen for this crop.");
+		gen.minRainfall = config.getFloat("5.WorldGen  Biome Humidity Minimum", category, gen.minRainfall, 0.0f, 1.0f, "What is the minimum Humidity a biome must have to spawn this crop ?");
+		gen.maxRainfall = config.getFloat("5.WorldGen  Biome Humidity Maximum", category, gen.maxRainfall, 0.0f, 1.0f, "What is the maximum Humidity a biome must have to spawn this crop ?");
+		gen.minTemperature = config.getFloat("5.WorldGen  Biome Temperature Minimum", category, gen.minTemperature, -0.5f, 2.0f, "What is the minimum Temperature a biome must have to spawn this crop ?");
+		gen.maxTemperature = config.getFloat("5.WorldGen  Biome Temperature Maximum", category, gen.maxTemperature, -0.5f, 2.0f, "What is the maximum Temperature a biome must have to spawn this crop ?");
+		gen.biomeBlacklist = config.getString("5.WorldGen  Biome Blacklist", category, gen.biomeBlacklist, "What biomes do you not want this to spawn on ?  For a list of biomes and their Humidity/Temperature, see [DumpNames] setting in General.cfg").toLowerCase();
+
 		String comment = "Resource Pack settings for " + name + "\n\nLangage Name: tile.kawaiicrops." + name + ".seed.name\n\n";
 		for (int i = 0; i < (b.MaxHeightRequiredToRipen ? b.MaxHeight : 1); i++)
 			for (int j = 0; j < b.CropStages; j++)
@@ -528,7 +552,7 @@ public class ConfigurationLoader {
 				"Langage Name: item.kawaiicrops." + name + ".crop.name\n" +
 				"Texture Name: textures/items/" + name + ".crop.png");
 		
-		b.register();
+		b.register(gen);
 		
 		return b; 
 	}
@@ -543,11 +567,7 @@ public class ConfigurationLoader {
 		
 		config.setCategoryComment(category, 
 				"Resource Pack settings for " + name + " Tree\n\n" +
-				"Langage Name: tile.kawaiicrops." + name + ".name\n" +
-				"Langage Name: item.kawaiicrops." + name + ".sapling.name\n" +
-				"Langage Name: item.kawaiicrops." + name + ".fruit.name\n\n" +
-				"Texture Name: textures/items/" + name + ".sapling.png\n"+
-				"Texture Name: textures/items/" + name + ".fruit.png\n\n"+
+				"Langage Name: tile.kawaiicrops." + name + ".name\n\n" +
 				"Texture Name: textures/blocks/" + name + ".sapling.png\n"+
 				"Texture Name: textures/blocks/" + name + ".leaf.png\n"+
 				"Texture Name: textures/blocks/" + name + ".fruit.stage_0.png\n"+
@@ -557,31 +577,64 @@ public class ConfigurationLoader {
 		
 		t.Enabled = config.getBoolean("0.  Enabled", category, t.Enabled, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
 		
-		t.SaplingGrowthMultiplier = config.getFloat("1.Sapling  Growth Multiplier", category, t.SaplingGrowthMultiplier, 0.0001f, 1000.0f, "What growth mutlipler to apply to the growth of this tree ?");
-		t.SaplingGrowthChanceBonemeal = config.getFloat("1.Sapling  Growth Chance Bonemeal", category, t.SaplingGrowthChanceBonemeal, 0.0f, 1.0f, "What is the chance per use of bonemeal (assuming enough light) for this sapling to grow ?");
 		t.SaplingMinimumLight = config.getInt("1.Sapling  Minimum light", category, t.SaplingMinimumLight, 1, 14, "What is the minimum light required to grow this tree and it's fruit ?");
-		t.SaplingGrowsOn = new HashSet<Block>(NamespaceHelper.getBlocksByName(config.getString("1.Sapling  Soil Blocks", category, "minecraft:dirt minecraft:grass", "What blocks does this grow on ? Seperate blocks with a space or comma. For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)")));;
+		t.SaplingSoilBlocks = new HashSet<Block>(NamespaceHelper.getBlocksByName(config.getString("1.Sapling  Soil Blocks", category, "minecraft:dirt minecraft:grass", "What blocks does this grow on ? Seperate blocks with a space or comma. For a list of blocks, see [DumpNames] setting in General.cfg. (Note, 'minecraft:water' is an option.)")));;
 		t.SaplingOreDict = config.getString("1.Sapling  Ore Dictionary Entries", category, t.SaplingOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 		t.SaplingToolTip = config.getString("1.Sapling  Tool Tip Text", category, t.SaplingToolTip, "What is the Tooltip for this sapling in game ?");
 		
-		t.LeafTrunkBlock = NamespaceHelper.getBlockByName(config.getString("2.Leaf  Trunk Block", category, "minecraft:log", "What block acts as a trunk for this tree ?  For a list of blocks, see [DumpNames] setting in General.cfg."));
-		t.LeafGrowthMultiplier = config.getFloat("2.Leaf  Growth Multiplier", category, t.LeafGrowthMultiplier, 0.0f, 1000.0f, "What growth multiplier to apply to the generation of fruit ?");
-		t.LeafExternalFruit = config.getBoolean("2.Leaf  External Fruit", category, t.LeafExternalFruit, "Does fruit grow external to the block ?  (If false, fruit grows inside leaf block");
-		t.LeafGravityChance = config.getFloat("2.Leaf  Gravity Chance", category, t.LeafGravityChance, 0.0f, 1.0f, "What is the chance, per tick, that ripe fruit will drop to the ground ?");
+		String shape = config.getString("2.Tree  Tree Shape", category, "Forest", "What shape should the resulting tree be ? Options: [Forest, Taiga, Savanah, Canopy, Eucalyptus, Sakura]");
+		if (shape.toLowerCase().equals("canopy"))
+			t.TreeShape = WorldGenKawaiiTree.TreeShape.CANOPY;
+		else if (shape.toLowerCase().equals("savanah"))
+			t.TreeShape = WorldGenKawaiiTree.TreeShape.SAVANAH;
+		else if (shape.toLowerCase().equals("taiga"))
+			t.TreeShape = WorldGenKawaiiTree.TreeShape.TAIGA;
+		else if (shape.toLowerCase().equals("eucalyptus"))
+			t.TreeShape = WorldGenKawaiiTree.TreeShape.EUCALYPTUS;
+		else if (shape.toLowerCase().equals("sakura"))
+			t.TreeShape = WorldGenKawaiiTree.TreeShape.SAKURA;
+		else
+			t.TreeShape = WorldGenKawaiiTree.TreeShape.FOREST;
 		
-		t.FruitEdible = config.getBoolean("3.Fruit  Edible", category, t.FruitEdible, "Is the fruit also a food ?");
-		t.FruitHunger = config.getInt("3.Fruit  Hunger", category, t.FruitHunger, 0, 20, "If Edible, how many half shanks of food does this restore ?");
-		t.FruitSaturation = config.getFloat("3.Fruit  Saturation", category, t.FruitSaturation, 0.0f, 20.0f, "If Edible, how is the saturating is this food ?");
-		t.FruitGrowthMultiplier = config.getFloat("2.Fruit  Growth Multiplier", category, t.FruitGrowthMultiplier, 0.0f, 1000.0f, "What growth multiplier to apply to the maturation of fruit ?");
-		t.FruitPotionEffets = new PotionEffectHelper(config.getString("3.Fruit  Potion Effects", category, "", "What potion effect do you want triggered on eating this crop ?  Please see General.cfg to see how to use these."));
-		t.FruitOreDict = config.getString("3.Fruit  Ore Dictionary Entries", category, t.FruitOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
-		t.FruitToolTip = config.getString("3.Fruit  Tool Tip Text", category, t.FruitToolTip, "What is the Tooltip for this fruit in game ?");
+		t.TreeTrunkBlock = NamespaceHelper.getBlockByName(config.getString("2.Tree  Trunk Block", category, "minecraft:log", "What block acts as a trunk for this tree ?  For a list of blocks, see [DumpNames] setting in General.cfg."));
+		t.TreeExternalFruit = config.getBoolean("2.Tree  External Fruit", category, t.TreeExternalFruit, "Does fruit grow external to the block ?  (If false, fruit grows inside leaf block");
+		t.TreeGravityChance = config.getFloat("2.Tree  Fruit Gravity Chance", category, t.TreeGravityChance, 0.0f, 1.0f, "What is the chance, per tick, that ripe fruit will drop to the ground ?");
 
-		t.LeafDropTableRipeString = config.getString("4.Drops  Ripe Fruit Drop Table", category, t.LeafDropTableDestroyedString, "What is the drop table for Ripe fruit ? Please see General.cfg to see how to use these.");
-		t.LeafDropTableUnripeString = config.getString("4.Drops  Unripe Fruit Drop Table", category, t.LeafDropTableDestroyedString, "What is the drop table for Unripe fruit ? Please see General.cfg to see how to use these.");;
-		t.LeafDropTableDestroyedString = config.getString("4.Drops  Destroyed Leaf Drop Table", category, t.LeafDropTableDestroyedString, "What is the drop table for Leaf Blocks without fruit ? Please see General.cfg to see how to use these.");
+		t.GrowthMultiplierSapling = config.getFloat("3.Growth  Sapling Growth Multiplier", category, t.GrowthMultiplierSapling, 0.01f, 100.0f, "What growth mutlipler to apply to the growth of this tree ?");
+		t.GrowthMultiplierLeaf = config.getFloat("3.Growth  Fruit Spawn Multiplier", category, t.GrowthMultiplierLeaf, 0.01f, 100.0f, "What growth multiplier to apply to the generation of fruit ?");
+		t.GrowthMultiplierFruit = config.getFloat("3.Growth  Fruit Growth Multiplier", category, t.GrowthMultiplierFruit, 0.01f, 100.0f, "What growth multiplier to apply to the maturation of fruit ?");
 		
-		t.register();
+		t.DropTableRipeString = config.getString("4.Drops  Ripe Fruit Drop Table", category, t.DropTableDestroyedString, "What is the drop table for Ripe fruit ? Please see General.cfg to see how to use these.");
+		t.DropTableUnripeString = config.getString("4.Drops  Unripe Fruit Drop Table", category, t.DropTableDestroyedString, "What is the drop table for Unripe fruit ? Please see General.cfg to see how to use these.");;
+		t.DropTableDestroyedString = config.getString("4.Drops  Destroyed Leaf Drop Table", category, t.DropTableDestroyedString, "What is the drop table for Leaf Blocks without fruit ? Please see General.cfg to see how to use these.");
+		
+		WorldGenKawaiiBaseWorldGen.WorldGen gen = new WorldGen();
+		gen.weight = config.getInt("5.WorldGen  Weight", category, gen.weight, 0, 1000, "How often should this tree attempt to spawn ?  A weight of 1 will attempt to spawn this treey in every chunk, 5 in every 5 chunks, etc.. A weight of 0 disables world gen for this tree.");
+		gen.minRainfall = config.getFloat("5.WorldGen  Biome Humidity Minimum", category, gen.minRainfall, 0.0f, 1.0f, "What is the minimum Humidity a biome must have to spawn this tree ?");
+		gen.maxRainfall = config.getFloat("5.WorldGen  Biome Humidity Maximum", category, gen.maxRainfall, 0.0f, 1.0f, "What is the maximum Humidity a biome must have to spawn this tree ?");
+		gen.minTemperature = config.getFloat("5.WorldGen  Biome Temperature Minimum", category, gen.minTemperature, -0.5f, 2.0f, "What is the minimum Temperature a biome must have to spawn this tree ?");
+		gen.maxTemperature = config.getFloat("5.WorldGen  Biome Temperature Maximum", category, gen.maxTemperature, -0.5f, 2.0f, "What is the maximum Temperature a biome must have to spawn this tree ?");
+		gen.biomeBlacklist = config.getString("5.WorldGen  Biome Blacklist", category, gen.biomeBlacklist, "What biomes do you not want this to spawn on ?  For a list of biomes and their Humidity/Temperature, see [DumpNames] setting in General.cfg").toLowerCase();
+
+		
+		category = "Kawaiicrops: " + name + " tree fruit";
+		
+		config.setCategoryComment(category, 
+				"Resource Pack settings for " + name + " Tree Fruit\n\n" +
+				"Langage Name: item.kawaiicrops." + name + ".sapling.name\n" +
+				"Langage Name: item.kawaiicrops." + name + ".fruit.name\n\n" +
+				"Texture Name: textures/items/" + name + ".sapling.png\n"+
+				"Texture Name: textures/items/" + name + ".fruit.png");
+		
+		t.FruitEdible = config.getBoolean("1.Fruit  Edible", category, t.FruitEdible, "Is the fruit also a food ?");
+		t.FruitHunger = config.getInt("1.Fruit  Hunger", category, t.FruitHunger, 0, 20, "If Edible, how many half shanks of food does this restore ?");
+		t.FruitSaturation = config.getFloat("1.Fruit  Saturation", category, t.FruitSaturation, 0.0f, 20.0f, "If Edible, how is the saturating is this food ?");
+		t.FruitPotionEffets = new PotionEffectHelper(config.getString("2.Other  Potion Effects", category, "", "What potion effect do you want triggered on eating this crop ?  Please see General.cfg to see how to use these."));
+		t.FruitOreDict = config.getString("2.Other  Ore Dictionary Entries", category, t.FruitOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
+		t.FruitToolTip = config.getString("2.Other  Tool Tip Text", category, t.FruitToolTip, "What is the Tooltip for this fruit in game ?");
+		t.SeedsMysterySeedWeight = config.getInt("2.Other  Mystery Seed Weight", category, t.SeedsMysterySeedWeight, 0, 1000, "If mystery seeds enabled, what weight should this have on mystery seed results (0 = None)");
+	
+		t.register(gen);
 		
 		return t;
 	}

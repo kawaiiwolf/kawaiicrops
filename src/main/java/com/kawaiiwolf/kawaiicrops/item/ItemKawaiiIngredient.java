@@ -5,6 +5,7 @@ import java.util.List;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,10 +24,17 @@ public class ItemKawaiiIngredient extends Item {
 		this.setUnlocalizedName(Constants.MOD_ID + "." + name);
 		this.name = name;
 		this.ToolTipText = toolTip;
-		
-		ModItems.ModIngredients.add(this);
 	}
 	
+	private boolean isRegistered = false;
+	public void register()
+	{
+		if (isRegistered) return;
+		isRegistered = true;
+		
+		ModItems.ModIngredients.add(this);
+		GameRegistry.registerItem(this, Constants.MOD_ID + "." + name);
+	}
 	
 	@Override
     @SideOnly(Side.CLIENT)

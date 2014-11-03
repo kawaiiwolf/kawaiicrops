@@ -3,6 +3,8 @@ package com.kawaiiwolf.kawaiicrops.item;
 import java.util.ArrayList;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
@@ -19,12 +21,23 @@ public class ModItems {
 	public static ArrayList<ItemKawaiiSeedFood> ModSeedFoods = new ArrayList<ItemKawaiiSeedFood>();
 	
 	public static ItemHungerPotion HungerPotion = new ItemHungerPotion();
-	public static ItemKawaiiStickOfTruth Stick = new ItemKawaiiStickOfTruth();
+	public static ItemKawaiiMysterySeed MysterySeed = null;
+	
+	public static boolean HungerPotionEnabled = true;
+	public static boolean MysterySeedEnabled = true;
+	public static boolean MysterySeedVanilla = true;
 	
 	public static void register()
 	{
-		GameRegistry.registerItem(HungerPotion, Constants.MOD_ID + ".hungerpotion");
-		GameRegistry.registerItem(Stick, Constants.MOD_ID + ".stickoftruth");
+		if (HungerPotionEnabled)
+			GameRegistry.registerItem(HungerPotion, Constants.MOD_ID + ".hungerpotion");
+
+		if (MysterySeedEnabled)
+		{
+			MysterySeed = new ItemKawaiiMysterySeed(MysterySeedVanilla);
+			GameRegistry.registerItem(MysterySeed, Constants.MOD_ID + ".mysteryseed");
+			MinecraftForge.addGrassSeed(new ItemStack(MysterySeed), 12);
+		}
 	}
 	
 	public static void registerOreDictionary()

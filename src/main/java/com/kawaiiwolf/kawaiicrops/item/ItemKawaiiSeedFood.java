@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.lib.Pair;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -27,6 +29,7 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
 	public PotionEffectHelper potion = null;
 	public String OreDict = "";
 	public boolean WaterPlant = false;
+	public int MysterySeedWeight = 0;
 	
 	public ItemKawaiiSeedFood(String name, String toolTip, int hunger, float saturation, BlockKawaiiCrop plant) 
 	{
@@ -42,9 +45,21 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
 		this.plant = plant;
 		this.ToolTipText = toolTip;
 		this.potion = potion;
+	}
+	
+	private boolean isRegistered = false;
+	public void register()
+	{
+		if (isRegistered) return;
+		isRegistered = true;
 		
 		ModItems.ModSeedFoods.add(this);
+		GameRegistry.registerItem(this, Constants.MOD_ID + "." + name);
+		
+		if (MysterySeedWeight > 0)
+			ItemKawaiiMysterySeed.SeedList.add(new Pair(plant,MysterySeedWeight));
 	}
+
 	
 	@Override
     @SideOnly(Side.CLIENT)

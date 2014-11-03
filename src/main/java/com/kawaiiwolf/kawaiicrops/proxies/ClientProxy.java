@@ -1,5 +1,6 @@
 package com.kawaiiwolf.kawaiicrops.proxies;
 
+import com.kawaiiwolf.kawaiicrops.renderer.RendererKawaiiCuttingBoard;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
 
@@ -11,5 +12,6 @@ public class ClientProxy extends CommonProxy {
 	public void registerRenderers() {
 		
 		RenderingHandlerKawaiiCropBlocks.register();
+		RendererKawaiiCuttingBoard.register();
 	}
 }
