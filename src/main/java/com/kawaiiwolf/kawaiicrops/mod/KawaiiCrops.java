@@ -53,6 +53,23 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
-     * Custom Cooking !
+     * Custom Cooking:
+     *   Custom Recipies
+     *   Add particle effects to base TE & NBT
+     *   Add Block rotation to base TE & NBT 
+     *   Limit stack size to 1
+     *   block on break -> Drop all
+     *   block on place -> determine rotation
+     *   
+     *   OPtions:
+     *   requires bowls
+     *   cook ticks
+     *   burn ticks
+     *   oil/water
+     *   use up fluid
+     *   
+     *   food items: Containers returned on eaten or used to fill stuff ?
+     *   forge dictionary: cooking oil ?
+     *    
      */
 }

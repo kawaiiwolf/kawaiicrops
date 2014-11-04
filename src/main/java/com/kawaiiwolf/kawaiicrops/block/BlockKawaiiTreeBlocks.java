@@ -143,8 +143,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable {
 	/////////////////////////////////////////////////////////////////////////////////////
     // Rendering
 
-	@SideOnly(Side.CLIENT)
-	public IIcon[] icons = new IIcon[6];
+	public IIcon[] icons = null;
 	
 	@Override
     @SideOnly(Side.CLIENT)
@@ -157,6 +156,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable {
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister reg)
     {
+		icons = new IIcon[6];
 		icons[0] = reg.registerIcon(Constants.MOD_ID + ":" + name + ".sapling");
 		icons[1] = reg.registerIcon(Constants.MOD_ID + ":" + name + ".leaf");
 		icons[2] = reg.registerIcon(Constants.MOD_ID + ":" + name + ".fruit.stage_0");

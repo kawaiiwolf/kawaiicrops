@@ -2,6 +2,7 @@ package com.kawaiiwolf.kawaiicrops.renderer;
 
 import java.awt.Color;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
@@ -16,6 +17,7 @@ import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCuttingBoard;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -41,15 +43,20 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float scale)
 	{
 		// Temporary
-		renderItem(new ItemStack(Items.item_frame), x, y, z, 1.0f, 90.0f, 1.0f, 0.0f, 0.0f);
+		renderItem(new ItemStack(Blocks.wooden_pressure_plate), x + 0.0625f, y, z + 0.0625f, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, true);
 
-		renderItem(new ItemStack(Items.porkchop), x + 0.3125d, y + 0.0625d, z + 0.3125d, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f);
-		renderItem(new ItemStack(Items.iron_sword), x, y + 0.0625, z, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f);
+		ItemStack render = null;
+		if (te instanceof TileEntityKawaiiCuttingBoard)
+			render = ((TileEntityKawaiiCuttingBoard)te).getStackInSlot(0);
+		if (render != null)
+			renderItem(new ItemStack(render.getItem()), x + 0.3125d, y + 0.0625d, z + 0.3125d, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f, Block.getBlockFromItem(render.getItem()) != Blocks.air);
+		
+		renderItem(new ItemStack(Items.iron_sword), x, y + 0.0625, z, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f, false);
 	}
 	
-	private void renderItem(ItemStack item, double x, double y, double z, float scale, float angle, float rotatex, float rotatey, float rotatez)
+	private void renderItem(ItemStack item, double x, double y, double z, float scale, float angle, float rotatex, float rotatey, float rotatez, boolean isBlock)
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationItemsTexture);
+		Minecraft.getMinecraft().renderEngine.bindTexture(isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture);
 		IIcon icon = item.getItem().getIcon(item, 0);
 		Color color = new Color(item.getItem().getColorFromItemStack(item, 0));
 

@@ -1,5 +1,9 @@
 package com.kawaiiwolf.kawaiicrops.tileentity;
 
+import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCookingBlock;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -9,6 +13,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public abstract class TileEntityKwaiiCooker extends TileEntity implements IInventory
 {
@@ -16,9 +21,21 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 	ItemStack[] inventorySlots = new ItemStack[getSizeInventory()];
 
 	@Override
-	public void readFromNBT(NBTTagCompound tags) 
+	public int getSizeInventory() 
 	{
-		super.readFromNBT(tags);
+		return getInputSlots() + getOutputSlots();
+	}
+	
+	protected abstract int getInputSlots();
+	
+	protected abstract int getOutputSlots();
+	
+	@Override
+	public void readFromNBT(NBTTagCompound tags) { readFromNBT(tags, true); }
+	protected void readFromNBT(NBTTagCompound tags, boolean callSuper)
+	{
+		if (callSuper)
+			super.readFromNBT(tags);
 		NBTTagList items = tags.getTagList("Items", 10);
 		inventorySlots = new ItemStack[getSizeInventory()];
 		for (int i = 0; i < items.tagCount(); ++i) 
@@ -29,21 +46,13 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 				inventorySlots[slot] = ItemStack.loadItemStackFromNBT(compound);
 		}
 	}
-	
-	@Override
-	public int getSizeInventory() 
-	{
-		return getInputSlots() + getOutputSlots();
-	}
-	
-	protected abstract int getInputSlots();
-	
-	protected abstract int getOutputSlots();
 
 	@Override
-	public void writeToNBT(NBTTagCompound tags) 
+	public void writeToNBT(NBTTagCompound tags) { writeToNBT(tags, true); }
+	protected void writeToNBT(NBTTagCompound tags, boolean callSuper)
 	{
-		super.writeToNBT(tags);
+		if (callSuper)
+			super.writeToNBT(tags);
 		NBTTagList items = new NBTTagList();
 		for (int i = 0; i < inventorySlots.length; ++i) 
 		{
@@ -61,34 +70,87 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack item) 
 	{
-		// TODO Auto-generated method stub
-		
+		if (slot < 0 || slot >= inventorySlots.length) return; 
+		inventorySlots[slot] = item;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slot) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (slot < 0 || slot >= inventorySlots.length)
+			return null;
+		return inventorySlots[slot];
 	}
 
-	
 	@Override
 	public ItemStack decrStackSize(int slot, int amount) {
-		// TODO Auto-generated method stub
-		return null;
+		if (slot < 0 || slot >= inventorySlots.length || inventorySlots[slot] == null || inventorySlots[slot].stackSize < amount)
+			return null;
+		ItemStack ret = new ItemStack(inventorySlots[slot].getItem(), amount);
+		if (inventorySlots[slot].stackSize == amount)
+			inventorySlots[slot] = null;
+		else
+			inventorySlots[slot].stackSize -= amount;
+		return ret;
+	}
+	
+	public ItemStack takeStack(int slot)
+	{
+		if (slot < 0 || slot >= inventorySlots.length || inventorySlots[slot] == null)
+			return null;
+		ItemStack ret = inventorySlots[slot];
+		inventorySlots[slot] = null;
+		return ret;
 	}
 	
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack item) 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		if (slot < 0 || slot >= getInputSlots() || inventorySlots[slot] != null || !itemAllowedByRecipie(item, inventorySlots))
+			return false;
+		
+		return true;
 	}
 	
+	protected abstract boolean itemAllowedByRecipie(ItemStack item, ItemStack[] current);
 	
+	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player);
+	
+	protected int getFirstOpenSlot()
+	{
+		for (int i = 0; i < getInputSlots(); i++)
+			if(inventorySlots[i] == null)
+				return i;
+		return -1;
+	}
+	
+    protected void dropBlockAsItem(World world, int x, int y, int z, ItemStack item)
+    {
+    	Block b = world.getBlock(x, y, z);
+    	if (b instanceof BlockKawaiiCookingBlock)
+    		((BlockKawaiiCookingBlock)b).dropBlockAsItem(world, x, y, z, item);
+    }
 
-	///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // Multi-Player Sync Code - Just make sure to call: world.markBlockForUpdate(x, y, z);
+    
+	@Override
+	public Packet getDescriptionPacket() 
+	{
+		NBTTagCompound nbttagcompound = new NBTTagCompound();
+		writeToNBT(nbttagcompound, false);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
+	{
+		super.onDataPacket(net, packet);
+		readFromNBT(packet.func_148857_g(), false);
+	}
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // Multiplayer Code
 	
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slot) { return null; }
@@ -111,25 +173,4 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 	@Override
 	public void closeInventory() { }
 	
-	/////////////////////////////////////////////////////////
-	
-	/*
-	 * Might possibly need these ? And the read/write don't call super method ? 
-	 * 
-
-	@Override
-	public Packet getDescriptionPacket() 
-	{
-		NBTTagCompound nbttagcompound = new NBTTagCompound();
-		writeToNBT(nbttagcompound);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
-	{
-		super.onDataPacket(net, packet);
-		readFromNBT(packet.func_148857_g());
-	}
-	*/
 }
