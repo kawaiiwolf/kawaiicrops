@@ -47,7 +47,7 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 
 		ItemStack render = null;
 		if (te instanceof TileEntityKawaiiCuttingBoard)
-			render = ((TileEntityKawaiiCuttingBoard)te).getStackInSlot(0);
+			render = ((TileEntityKawaiiCuttingBoard)te).getDisplayItem();
 		if (render != null)
 			renderItem(new ItemStack(render.getItem()), x + 0.3125d, y + 0.0625d, z + 0.3125d, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f, Block.getBlockFromItem(render.getItem()) != Blocks.air);
 		

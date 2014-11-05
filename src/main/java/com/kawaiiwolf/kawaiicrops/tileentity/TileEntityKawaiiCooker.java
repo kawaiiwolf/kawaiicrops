@@ -1,6 +1,8 @@
 package com.kawaiiwolf.kawaiicrops.tileentity;
 
+import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCookingBlock;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
@@ -19,24 +21,22 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public abstract class TileEntityKwaiiCooker extends TileEntity implements IInventory
+public abstract class TileEntityKawaiiCooker extends TileEntity implements IInventory
 {
 
-	ItemStack[] inventorySlots = new ItemStack[getSizeInventory()];
+	private ItemStack[] inventorySlots = new ItemStack[getSizeInventory()];
 
 	@Override
 	public int getSizeInventory() 
 	{
-		return getInputSlots() + getOutputSlots();
+		return getInputSlots() + 1;
 	}
 	
 	protected abstract int getInputSlots();
 	
-	protected abstract int getOutputSlots();
-	
 	@Override
 	public void readFromNBT(NBTTagCompound tags) { readFromNBT(tags, true); }
-	protected void readFromNBT(NBTTagCompound tags, boolean callSuper)
+	private void readFromNBT(NBTTagCompound tags, boolean callSuper)
 	{
 		if (callSuper)
 			super.readFromNBT(tags);
@@ -53,7 +53,7 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 
 	@Override
 	public void writeToNBT(NBTTagCompound tags) { writeToNBT(tags, true); }
-	protected void writeToNBT(NBTTagCompound tags, boolean callSuper)
+	private void writeToNBT(NBTTagCompound tags, boolean callSuper)
 	{
 		if (callSuper)
 			super.writeToNBT(tags);
@@ -75,7 +75,7 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 	public void setInventorySlotContents(int slot, ItemStack item) 
 	{
 		if (slot < 0 || slot >= inventorySlots.length || !isItemValidForSlot(slot, item)) return; 
-		inventorySlots[slot] = item;
+		inventorySlots[slot] = item.copy();
 	}
 
 	@Override
@@ -88,9 +88,9 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 
 	@Override
 	public ItemStack decrStackSize(int slot, int amount) {
-		if (slot < 0 || slot >= inventorySlots.length || inventorySlots[slot] == null || inventorySlots[slot].stackSize < amount)
+		if (slot < 0 || slot >= inventorySlots.length || inventorySlots[0] != null || inventorySlots[slot] == null || inventorySlots[slot].stackSize < amount)
 			return null;
-		ItemStack ret = new ItemStack(inventorySlots[slot].getItem(), amount);
+		ItemStack ret = new ItemStack(inventorySlots[slot].getItem(), amount, inventorySlots[slot].getItemDamage());
 		if (inventorySlots[slot].stackSize == amount)
 			inventorySlots[slot] = null;
 		else
@@ -110,54 +110,82 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack item) 
 	{
-		if (slot < 0 || slot >= getInputSlots() || inventorySlots[slot] != null || !itemAllowedByRecipie(item, inventorySlots))
+		if (slot <= 0 || slot >= inventorySlots.length || item == null || inventorySlots[slot] != null || !itemAllowedByRecipie(item))
 			return false;
 		return true;
 	}
 	
 	protected abstract ArrayList<RecipeKawaiiCookingBase> getRecipies();
 	
-	protected boolean itemAllowedByRecipie(ItemStack item, ItemStack[] current)
+	public boolean itemAllowedByRecipie(ItemStack item)
 	{
-		// Check to see if we have too many ingredients !
-		for(int i = 0, count = 0; i < getInputSlots() ; i++)
-			if (current[i] != null)
-				if (count++ >= getInputSlots())
-					return false;
-		
-		ArrayList<ItemStack> ingredients = new ArrayList<ItemStack>();
-		for (ItemStack ingredient : current)
-			ingredients.add(ingredient);
-		ingredients.add(item);
-		
+		if (inventorySlots[0] != null || getOpenSlots() < 1) return false;
+
+		inventorySlots[0] = item.copy();
+		List<ItemStack> ingredients = Arrays.asList(inventorySlots);
+
+		boolean found = false;
 		for (RecipeKawaiiCookingBase recipe : getRecipies())
-			if (recipe.matches(ingredients) >= 0)
-				return true;
-		
-		return false;
+			if (!found && recipe.matches(ingredients) >= 0)
+			{
+				found = true;
+				break;
+			}
+
+		inventorySlots[0] = null;
+		return found;
 	}
 	
-	protected ItemStack hasCompleteRecipe(ItemStack[] current)
+	public void clearAllItems()
 	{
-		ArrayList<ItemStack> ingredients = new ArrayList<ItemStack>();
-		for (ItemStack ingredient : current)
-			ingredients.add(ingredient);
+		for (int i = 0; i < inventorySlots.length; i++)
+			inventorySlots[i] = null;
+	}	
+	
+	public boolean tryCraft()
+	{
+		ItemStack result = hasCompleteRecipe();
+		if (result == null) 
+			return false;
 		
+		clearAllItems();
+		inventorySlots[0] = result;
+		
+		return true;
+	}
+	
+	public ItemStack hasCompleteRecipe()
+	{
+		if (inventorySlots[0] != null) return null;
+		List<ItemStack> ingredients = Arrays.asList(inventorySlots);
 		for (RecipeKawaiiCookingBase recipe : getRecipies())
-			if (recipe.matches(ingredients) >= 0)
+			if (recipe.matches(ingredients) == 0)
 				return new ItemStack(recipe.output.getItem(), recipe.output.stackSize);
-		
 		return null;
 	}
 	
 	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player);
 	
-	protected int getFirstOpenSlot()
+	public int getFirstOpenSlot()
 	{
-		for (int i = 0; i < getInputSlots(); i++)
+		for (int i = 1; i < inventorySlots.length; i++)
 			if(inventorySlots[i] == null)
 				return i;
 		return -1;
+	}
+	
+	public int getOpenSlots()
+	{
+		int count = 0;
+		for (int i = 1; i < inventorySlots.length; i++)
+			if(inventorySlots[i] == null)
+				count++;
+		return count;
+	}
+
+	public int getOccupiedSlots()
+	{
+		return getInputSlots() - getOpenSlots();
 	}
 	
     protected void dropBlockAsItem(World world, int x, int y, int z, ItemStack item)
@@ -165,6 +193,13 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
     	Block b = world.getBlock(x, y, z);
     	if (b instanceof BlockKawaiiCookingBlock)
     		((BlockKawaiiCookingBlock)b).dropBlockAsItem(world, x, y, z, item);
+    }
+    
+    public void dropAllItems(World world, int x, int y, int z)
+    {
+    	for(int i = 0; i < inventorySlots.length; i++)
+    		if (inventorySlots[i] != null)
+    			dropBlockAsItem(world, x, y, z, inventorySlots[i]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////

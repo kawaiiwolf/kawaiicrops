@@ -2,35 +2,55 @@ package com.kawaiiwolf.kawaiicrops.tileentity;
 
 import java.util.ArrayList;
 
+import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCuttingBoard;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class TileEntityKawaiiCuttingBoard extends TileEntityKwaiiCooker 
+public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCooker 
 {
-
+	public ItemStack getDisplayItem()
+	{
+		ItemStack i = getStackInSlot(1);
+		if (i != null)
+			return i;
+		return getStackInSlot(0);
+	}
+	
 	@Override
 	protected int getInputSlots() { return 1; }
 
 	@Override
-	protected int getOutputSlots() { return 1; }
-
-	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) 
 	{
-		if (isItemValidForSlot(0, player.getCurrentEquippedItem()))
+		if (player.isSneaking())
 		{
-			this.setInventorySlotContents(0, new ItemStack(player.getCurrentEquippedItem().getItem(), 1));
-			player.getCurrentEquippedItem().stackSize--;
+			dropAllItems(world, x, y, z);
+			clearAllItems();
 			world.markBlockForUpdate(x, y, z);
 		}
-		else if (getStackInSlot(0) != null)
+		else if (isItemValidForSlot(1, player.getCurrentEquippedItem()))
 		{
-			dropBlockAsItem(world, x, y, z, takeStack(0));
+			this.setInventorySlotContents(1, new ItemStack(player.getCurrentEquippedItem().getItem(), 1));
+			player.getCurrentEquippedItem().stackSize--;
+			world.markBlockForUpdate(x, y, z);
+		} 
+		else
+		{
+			ItemStack item = hasCompleteRecipe();
+			if (tryCraft())
+				world.playSoundAtEntity(player, Block.soundTypeWood.getBreakSound(), 1.0f, 1.0f);
+			else
+			{
+				dropAllItems(world, x, y, z);
+				clearAllItems();
+			}
 			world.markBlockForUpdate(x, y, z);
 		}
 		return true;

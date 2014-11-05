@@ -2,6 +2,9 @@ package com.kawaiiwolf.kawaiicrops.recipe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
@@ -75,25 +78,23 @@ public abstract class RecipeKawaiiCookingBase
 	
 	/////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean isFullMatch(ArrayList<ItemStack> ingredients)
+	public boolean isFullMatch(List<ItemStack> ingredients)
 	{
 		return matches(ingredients) == 0;
 	}
 	
-	public boolean isPartialMatch(ArrayList<ItemStack> ingredients)
+	public boolean isPartialMatch(List<ItemStack> ingredients)
 	{
 		return matches(ingredients) > 0;
 	}
 	
-	// returns number of matches remaining unmatched, -1 on mismatch
-    public int matches(ArrayList<ItemStack> ingredients)
+	// returns number of ingredients remaining unmatched, -1 on mismatch
+    public int matches(List<ItemStack> ingredients)
     {
         ArrayList<Object> required = new ArrayList<Object>(input);
 
-        for (int i = 0; i < ingredients.size(); i++)
+        for (ItemStack ingredient : ingredients)
         {
-            ItemStack ingredient = ingredients.get(i);
-
             if (ingredient != null)
             {
                 boolean inRecipe = false;
@@ -133,6 +134,6 @@ public abstract class RecipeKawaiiCookingBase
             }
         }
 
-        return input.size() - required.size();
+        return required.size();
     }
 }

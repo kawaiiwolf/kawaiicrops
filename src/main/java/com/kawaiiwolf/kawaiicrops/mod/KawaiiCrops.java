@@ -60,8 +60,6 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
-     * remove output from tecooker array, move to new home
-     * 
      * Custom Cooking:
      *   Custom Recipies
      *   Add particle effects to base TE & NBT

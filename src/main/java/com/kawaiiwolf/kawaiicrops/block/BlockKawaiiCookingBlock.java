@@ -1,7 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
-import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKwaiiCooker;
+import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCooker;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -30,8 +30,8 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitx, float htiy, float hitz)
     {
 		TileEntity te = world.getTileEntity(x, y, z);
-		if (te instanceof TileEntityKwaiiCooker)
-			return ((TileEntityKwaiiCooker)te).onBlockActivated(world, x, y, z, player);
+		if (te instanceof TileEntityKawaiiCooker)
+			return ((TileEntityKawaiiCooker)te).onBlockActivated(world, x, y, z, player);
         return false;
     }
 	
