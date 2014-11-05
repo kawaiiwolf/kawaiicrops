@@ -1,5 +1,10 @@
 package com.kawaiiwolf.kawaiicrops.tileentity;
 
+import java.util.ArrayList;
+
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCuttingBoard;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -15,30 +20,28 @@ public class TileEntityKawaiiCuttingBoard extends TileEntityKwaiiCooker
 	protected int getOutputSlots() { return 1; }
 
 	@Override
-	protected boolean itemAllowedByRecipie(ItemStack item, ItemStack[] current) 
-	{
-		return true;
-	}
-
-	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) 
 	{
 		if (isItemValidForSlot(0, player.getCurrentEquippedItem()))
 		{
-			this.setInventorySlotContents(0, player.getCurrentEquippedItem());
-			player.setCurrentItemOrArmor(0, null);
+			this.setInventorySlotContents(0, new ItemStack(player.getCurrentEquippedItem().getItem(), 1));
+			player.getCurrentEquippedItem().stackSize--;
 			world.markBlockForUpdate(x, y, z);
-			return true;
 		}
-		if (getStackInSlot(0) != null)
+		else if (getStackInSlot(0) != null)
 		{
 			dropBlockAsItem(world, x, y, z, takeStack(0));
 			world.markBlockForUpdate(x, y, z);
-			return true;
 		}
-		return false;
+		return true;
 	}
-
+	
+	@Override
+	protected ArrayList<RecipeKawaiiCookingBase> getRecipies()
+	{
+		return dummy.getAllRecipies();
+	}
+	private static RecipeKawaiiCuttingBoard dummy = new RecipeKawaiiCuttingBoard();
 	
 
 }

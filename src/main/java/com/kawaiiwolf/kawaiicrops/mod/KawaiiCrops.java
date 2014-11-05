@@ -3,10 +3,14 @@ package com.kawaiiwolf.kawaiicrops.mod;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.*;
 import com.kawaiiwolf.kawaiicrops.proxies.*;
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCuttingBoard;
 import com.kawaiiwolf.kawaiicrops.tileentity.ModTileEntities;
 import com.kawaiiwolf.kawaiicrops.world.ModWorldGen;
 
@@ -48,10 +52,15 @@ public class KawaiiCrops {
     {
     	config.loadConfiguration_PostInit(event);
     	ModBlocks.registerDropTables();
+    	
+    	RecipeKawaiiCuttingBoard test = new RecipeKawaiiCuttingBoard(new ItemStack(Items.diamond), new ItemStack(Items.porkchop));
+    	test.register();
     }
     
     /**
      * TODO:
+     * 
+     * remove output from tecooker array, move to new home
      * 
      * Custom Cooking:
      *   Custom Recipies

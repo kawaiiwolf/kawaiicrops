@@ -192,6 +192,10 @@ public class ConfigurationLoader {
 			"  \"vegetables stirFryVegetables saladVegetables\"" +
 			"and use any of those three names in recipies.\n"+
 			"\n"+
+			"\nWarning: Unshaped recipies with different, overlapping ore dictionary references can"+
+			"\nsometimes cause recipies not to be recognized if ingredients are in a certain order."+
+			"\nThis includes custom cooking recipies when using ore dictionary."+
+			"\n"+
 			"To see a list of all Ore Dictionary names, turn on \"Dump All IDs\" and see dump.cfg";
 	
 	

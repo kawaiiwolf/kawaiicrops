@@ -1,6 +1,10 @@
 package com.kawaiiwolf.kawaiicrops.tileentity;
 
+import java.util.ArrayList;
+
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCookingBlock;
+import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -70,7 +74,7 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack item) 
 	{
-		if (slot < 0 || slot >= inventorySlots.length) return; 
+		if (slot < 0 || slot >= inventorySlots.length || !isItemValidForSlot(slot, item)) return; 
 		inventorySlots[slot] = item;
 	}
 
@@ -108,11 +112,43 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 	{
 		if (slot < 0 || slot >= getInputSlots() || inventorySlots[slot] != null || !itemAllowedByRecipie(item, inventorySlots))
 			return false;
-		
 		return true;
 	}
 	
-	protected abstract boolean itemAllowedByRecipie(ItemStack item, ItemStack[] current);
+	protected abstract ArrayList<RecipeKawaiiCookingBase> getRecipies();
+	
+	protected boolean itemAllowedByRecipie(ItemStack item, ItemStack[] current)
+	{
+		// Check to see if we have too many ingredients !
+		for(int i = 0, count = 0; i < getInputSlots() ; i++)
+			if (current[i] != null)
+				if (count++ >= getInputSlots())
+					return false;
+		
+		ArrayList<ItemStack> ingredients = new ArrayList<ItemStack>();
+		for (ItemStack ingredient : current)
+			ingredients.add(ingredient);
+		ingredients.add(item);
+		
+		for (RecipeKawaiiCookingBase recipe : getRecipies())
+			if (recipe.matches(ingredients) >= 0)
+				return true;
+		
+		return false;
+	}
+	
+	protected ItemStack hasCompleteRecipe(ItemStack[] current)
+	{
+		ArrayList<ItemStack> ingredients = new ArrayList<ItemStack>();
+		for (ItemStack ingredient : current)
+			ingredients.add(ingredient);
+		
+		for (RecipeKawaiiCookingBase recipe : getRecipies())
+			if (recipe.matches(ingredients) >= 0)
+				return new ItemStack(recipe.output.getItem(), recipe.output.stackSize);
+		
+		return null;
+	}
 	
 	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player);
 	
@@ -150,7 +186,7 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 	}
 
     /////////////////////////////////////////////////////////////////////////////////////////
-    // Multiplayer Code
+    // Other Tile Entity Stuff
 	
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slot) { return null; }
@@ -162,7 +198,7 @@ public abstract class TileEntityKwaiiCooker extends TileEntity implements IInven
 	public boolean hasCustomInventoryName() { return false; }
 
 	@Override
-	public int getInventoryStackLimit() { return 64; }
+	public int getInventoryStackLimit() { return 1; }
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer p) { return true; }
