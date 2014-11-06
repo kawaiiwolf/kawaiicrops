@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCooker 
+public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCookingBlock 
 {
 	public ItemStack getDisplayItem()
 	{
@@ -30,16 +30,11 @@ public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCooker
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) 
 	{
 		if (player.isSneaking())
-		{
 			dropAllItems(world, x, y, z);
-			clearAllItems();
-			world.markBlockForUpdate(x, y, z);
-		}
 		else if (isItemValidForSlot(1, player.getCurrentEquippedItem()))
 		{
 			this.setInventorySlotContents(1, new ItemStack(player.getCurrentEquippedItem().getItem(), 1));
 			player.getCurrentEquippedItem().stackSize--;
-			world.markBlockForUpdate(x, y, z);
 		} 
 		else
 		{
@@ -47,12 +42,9 @@ public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCooker
 			if (tryCraft())
 				world.playSoundAtEntity(player, Block.soundTypeWood.getBreakSound(), 1.0f, 1.0f);
 			else
-			{
 				dropAllItems(world, x, y, z);
-				clearAllItems();
-			}
-			world.markBlockForUpdate(x, y, z);
 		}
+		world.markBlockForUpdate(x, y, z);
 		return true;
 	}
 	

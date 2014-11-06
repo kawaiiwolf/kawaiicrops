@@ -21,7 +21,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public abstract class TileEntityKawaiiCooker extends TileEntity implements IInventory
+public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements IInventory
 {
 
 	private ItemStack[] inventorySlots = new ItemStack[getSizeInventory()];
@@ -200,6 +200,7 @@ public abstract class TileEntityKawaiiCooker extends TileEntity implements IInve
     	for(int i = 0; i < inventorySlots.length; i++)
     		if (inventorySlots[i] != null)
     			dropBlockAsItem(world, x, y, z, inventorySlots[i]);
+    	clearAllItems();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////

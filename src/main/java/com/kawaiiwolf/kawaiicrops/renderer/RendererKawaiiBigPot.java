@@ -2,6 +2,12 @@ package com.kawaiiwolf.kawaiicrops.renderer;
 
 import java.awt.Color;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiBigPot;
+
+import cpw.mods.fml.client.registry.ClientRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -14,19 +20,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+public class RendererKawaiiBigPot extends TileEntitySpecialRenderer 
+{
 
-import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
-import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCuttingBoard;
-
-import cpw.mods.fml.client.registry.ClientRegistry;
-
-public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
-
-	public static RendererKawaiiCuttingBoard instance = null;
+	public static RendererKawaiiBigPot instance = null;
 	
-	public RendererKawaiiCuttingBoard()
+	public RendererKawaiiBigPot()
 	{
 		if (instance == null) {
 			instance = this;
@@ -35,8 +34,8 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 	
 	public static void register() 
 	{
-		new RendererKawaiiCuttingBoard();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKawaiiCuttingBoard.class, instance);
+		new RendererKawaiiBigPot();
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKawaiiBigPot.class, instance);
 	}
 
 	@Override
@@ -48,8 +47,8 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 		renderItem(new ItemStack(Blocks.wooden_pressure_plate), x, y, z, meta, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, true);
 
 		ItemStack render = null;
-		if (te instanceof TileEntityKawaiiCuttingBoard)
-			render = ((TileEntityKawaiiCuttingBoard)te).getDisplayItem();
+		if (te instanceof TileEntityKawaiiBigPot)
+			render = ((TileEntityKawaiiBigPot)te).getDisplayItem();
 		if (render != null)
 			renderItem(new ItemStack(render.getItem()), x - 0.0625d * ((meta & 2) == 2 ? 1.0d : -1.0d), y + 0.0625, z - 0.0625d * (((meta & 1) != ((meta >> 1) & 1)) ? 1.0d : -1.0d), meta, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f, Block.getBlockFromItem(render.getItem()) != Blocks.air);
 		

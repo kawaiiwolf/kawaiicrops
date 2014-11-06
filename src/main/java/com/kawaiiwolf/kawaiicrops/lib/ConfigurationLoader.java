@@ -286,6 +286,19 @@ public class ConfigurationLoader {
 			"\"minecraft:stick 1 minecraft:sapling \"\n"+
 			"Smelting a sapling ";
 	
+	public static final String REFERENCE_RECIPES_CUST_CUTTING_BOARD = "" +
+			"Format for Cutting Board Crafting Recipies:\n"+
+			"\n"+
+			"\"<result item/block name> <number crafted> <1> \"\n"+
+			"\n"+
+			"Where <1> is the name of the block, item or ore dictonary name for the\n"+
+			"ingredient to be chopped into the result.\n"+
+			"For a list of all valid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
+			"\n"+
+			"Example:\n"+
+			"\n"+
+			"\"minecraft:stick 3 minecraft:sapling \"\n"+
+			"\nChops a sapling into 3 sticks.";
 	
 	public void loadConfiguration_PreInit() 
 	{
@@ -394,41 +407,50 @@ public class ConfigurationLoader {
 		String category = "0 Main Settings";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES);
 		
-		int recipes2 = cfg.getInt("2 by 2", category, 10, 0, 10000, "Number of 2x2 Shaped crafting recipies ?");
-		int recipes3 = cfg.getInt("3 by 3", category, 10, 0, 10000, "Number of 3x3 Shaped crafting recipies ?");
-		int recipesU = cfg.getInt("Unshaped", category, 10, 0, 10000, "Number of Unshaped crafting recipies ?");
-		int recipesS = cfg.getInt("Smelting", category, 10, 0, 10000, "Number of Smelting crafting recipies ?");
+		int recipes2 = cfg.getInt("2 by 2", category, 10, 0, 10000, "Number of 2x2 Shaped crafting recipes ?");
+		int recipes3 = cfg.getInt("3 by 3", category, 10, 0, 10000, "Number of 3x3 Shaped crafting recipes ?");
+		int recipesU = cfg.getInt("Unshaped", category, 10, 0, 10000, "Number of Unshaped crafting recipes ?");
+		int recipesS = cfg.getInt("Smelting", category, 10, 0, 10000, "Number of Smelting crafting recipes ?");
+		int recipesC_cut = cfg.getInt("Kawaiicraft Cutting Board", category, 10, 0, 10000, "Number of Kawaiicraft Cutting Board crafting recipes ?");
 		
-		category = "2 by 2 Shaped Crafting Recipies";
+		category = "2 by 2 Shaped Crafting Recipes";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES_2);
 		for (int i = 0; i < recipes2; i++)
 		{
 			String recipe = cfg.getString("" + i, category, "", "");
-			RecipeHelper.register2x2recipie(recipe);
+			RecipeHelper.register2x2recipe(recipe);
 		}
 
-		category = "3 by 3 Shaped Crafting Recipies";
+		category = "3 by 3 Shaped Crafting Recipes";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES_3);
 		for (int i = 0; i < recipes3; i++)
 		{
 			String recipe = cfg.getString("" + i, category, "", "");
-			RecipeHelper.register3x3recipie(recipe);
+			RecipeHelper.register3x3recipe(recipe);
 		}
 		
-		category = "Shapeless Crafting Recipies";
+		category = "Shapeless Crafting Recipes";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES_U);
 		for (int i = 0; i < recipesU; i++)
 		{
 			String recipe = cfg.getString("" + i, category, "", "");
-			RecipeHelper.registerShapelessRecipie(recipe);
+			RecipeHelper.registerShapelessRecipe(recipe);
 		}
 		
-		category = "Smelting Crafting Recipies";
+		category = "Smelting Crafting Recipes";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES_S);
 		for (int i = 0; i < recipesS; i++)
 		{
 			String recipe = cfg.getString("" + i, category, "", "");
-			RecipeHelper.registerSmeltingRecipie(recipe);
+			RecipeHelper.registerSmeltingRecipe(recipe);
+		}
+		
+		category = "Kawaiicraft Cutting Board Recipes";
+		cfg.setCategoryComment(category, this.REFERENCE_RECIPES_CUST_CUTTING_BOARD);
+		for (int i = 0; i < recipesC_cut; i++)
+		{
+			String recipe = cfg.getString("" + i, category, "", "");
+			RecipeHelper.registerCustomCuttingBoardRecpie(recipe);
 		}
 
 		cfg.save();

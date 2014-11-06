@@ -2,6 +2,8 @@ package com.kawaiiwolf.kawaiicrops.lib;
 
 import java.util.ArrayList;
 
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCuttingBoard;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -12,9 +14,9 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class RecipeHelper {
 
-	public static boolean register2x2recipie(String recipe)
+	public static boolean register2x2recipe(String recipe)
 	{
-		String[] parts = recipe.replaceAll("  ", " ").split("[ ]");
+		String[] parts = recipe.trim().replaceAll("  ", " ").split("[ ]");
 		if (parts.length != 6) 
 			return false;
 		
@@ -69,11 +71,10 @@ public class RecipeHelper {
 		
 		return true;
 	}
-
 		
-	public static boolean register3x3recipie(String recipe)
+	public static boolean register3x3recipe(String recipe)
 	{
-		String[] parts = recipe.replaceAll("  ", " ").split("[ ]");
+		String[] parts = recipe.trim().replaceAll("  ", " ").split("[ ]");
 		if (parts.length != 11) 
 			return false;
 		
@@ -130,9 +131,9 @@ public class RecipeHelper {
 		return true;
 	}
 	
-	public static boolean registerShapelessRecipie(String recipe)
+	public static boolean registerShapelessRecipe(String recipe)
 	{
-		String[] parts = recipe.replaceAll("  ", " ").split("[ ]");
+		String[] parts = recipe.trim().replaceAll("  ", " ").split("[ ]");
 		if (parts.length < 3) 
 			return false;
 		
@@ -167,9 +168,9 @@ public class RecipeHelper {
 		return true;
 	}
 	
-	public static boolean registerSmeltingRecipie(String recipe)
+	public static boolean registerSmeltingRecipe(String recipe)
 	{
-		String[] parts = recipe.replaceAll("  ", " ").split("[ ]");
+		String[] parts = recipe.trim().replaceAll("  ", " ").split("[ ]");
 		if (parts.length != 3) 
 			return false;
 		
@@ -204,6 +205,39 @@ public class RecipeHelper {
 		return true;
 	}
 
+	public static boolean registerCustomCuttingBoardRecpie(String recipe)
+	{
+		String[] parts = recipe.trim().replaceAll("  ", " ").split("[ ]");
+		if (parts.length != 3) 
+			return false;
+		
+		// Parse Output Type
+		IngredientType outputType = parseIngredientType(parts[0]);
+		if (outputType != IngredientType.ITEM && outputType != IngredientType.BLOCK)
+			return false;
+		
+		// Parse Output Number
+		int outputNum;
+		try {
+			outputNum = Integer.parseInt(parts[1]);
+		} catch (NumberFormatException e) { return false; }
+		if (outputNum < 1 || outputNum > 64) return false;
+
+		
+		// Parse Output Type
+		IngredientType inputType = parseIngredientType(parts[2]);
+		if (inputType == IngredientType.ERROR)
+			return false;
+		
+		ItemStack output = (outputType == IngredientType.ITEM ? 
+				new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
+				new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+		
+		(new RecipeKawaiiCuttingBoard(output, parseIngredient(parts[2]))).register();
+		
+		return true;
+	}
+	
 	private enum IngredientType { ITEM, BLOCK, ORE, ERROR };
 	
 	private static IngredientType parseIngredientType(String name)
