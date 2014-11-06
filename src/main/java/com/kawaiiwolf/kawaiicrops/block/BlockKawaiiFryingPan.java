@@ -10,7 +10,7 @@ public class BlockKawaiiFryingPan extends BlockKawaiiCookingBlock {
 
 	protected BlockKawaiiFryingPan() 
 	{
-		super(Material.iron, "frypan");
+		super(Material.iron, "fryingpan");
 	}
 
 	@Override
