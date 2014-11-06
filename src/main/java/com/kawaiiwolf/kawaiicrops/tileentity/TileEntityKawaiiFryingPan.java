@@ -7,30 +7,39 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 
 public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock {
 
 	@Override
-	protected int getInputSlots() {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) 
+	{
+		if (player.isSneaking())
+		{
+			dropAllItems(world, x, y, z);
+		}
+		else
+		{
+			int slot = getFirstOpenSlot();
+			if (slot == -1) 
+				return true;
+			getDisplayItems()[slot] = new ItemStack(player.getCurrentEquippedItem().getItem(), 1);
+			player.getCurrentEquippedItem().stackSize--;
+		}
+		
+		return true;
 	}
 
 	@Override
-	protected ArrayList<RecipeKawaiiCookingBase> getRecipies() {
-		// TODO Auto-generated method stub
-		return null;
+	protected int getInputSlots() 
+	{
+		return 3;
 	}
-
+	
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) {
-		// TODO Auto-generated method stub
-		return false;
+	protected ArrayList<RecipeKawaiiCookingBase> getRecipies() 
+	{
+		return dummy.getAllRecipies();
 	}
-
-	public ItemStack getDisplayItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	private static RecipeKawaiiFryingPan dummy = new RecipeKawaiiFryingPan();
 }

@@ -6,21 +6,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiBigPot;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 
 public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock 
 {
 
 	@Override
-	protected int getInputSlots() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	protected ArrayList<RecipeKawaiiCookingBase> getRecipies() {
-		// TODO Auto-generated method stub
-		return null;
+	protected int getInputSlots() 
+	{
+		return 6;
 	}
 
 	@Override
@@ -29,11 +24,12 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	public ItemStack getDisplayItem() 
+	
+	@Override
+	protected ArrayList<RecipeKawaiiCookingBase> getRecipies() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return dummy.getAllRecipies();
 	}
+	private static RecipeKawaiiBigPot dummy = new RecipeKawaiiBigPot();
 
 }

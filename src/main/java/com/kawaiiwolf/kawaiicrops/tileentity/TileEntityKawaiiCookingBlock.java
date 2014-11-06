@@ -202,6 +202,11 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
     			dropBlockAsItem(world, x, y, z, inventorySlots[i]);
     	clearAllItems();
     }
+    
+    public ItemStack[] getDisplayItems()
+    {
+    	return inventorySlots;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////
     // Multi-Player Sync Code - Just make sure to call: world.markBlockForUpdate(x, y, z);

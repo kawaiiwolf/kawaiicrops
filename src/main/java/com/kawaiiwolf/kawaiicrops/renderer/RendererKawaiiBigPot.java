@@ -48,7 +48,7 @@ public class RendererKawaiiBigPot extends TileEntitySpecialRenderer
 
 		ItemStack render = null;
 		if (te instanceof TileEntityKawaiiBigPot)
-			render = ((TileEntityKawaiiBigPot)te).getDisplayItem();
+			render = ((TileEntityKawaiiBigPot)te).getDisplayItems()[0];
 		if (render != null)
 			renderItem(new ItemStack(render.getItem()), x - 0.0625d * ((meta & 2) == 2 ? 1.0d : -1.0d), y + 0.0625, z - 0.0625d * (((meta & 1) != ((meta >> 1) & 1)) ? 1.0d : -1.0d), meta, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f, Block.getBlockFromItem(render.getItem()) != Blocks.air);
 		
