@@ -53,6 +53,7 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 			for (ItemStack item : itemsToRender)
 				itemCount++;
 			//renderItem
+			
 		}
 	}
 
@@ -75,19 +76,20 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 	}
 
 	
-	private void renderItem(ItemStack item, double x, double y, double z, int meta, float scale, float angle, float rotatex, float rotatey, float rotatez, boolean isBlock)
+	private void renderItem(ItemStack item, double x, double y, double z, int no, int max, boolean isBlock)
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture(isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture);
 		IIcon icon = item.getItem().getIcon(item, 0);
 		Color color = new Color(item.getItem().getColorFromItemStack(item, 0));
 
+		float scale = 0.66f;
+		
 		GL11.glPushMatrix();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glTranslated(x + 0.5d, y, z + 0.5d);
-		GL11.glRotatef((meta * 90.0f), 0.0f, 1.0f, 0.0f);
+		GL11.glRotatef(0.0f, 0.0f, 1.0f, 0.0f);
 		GL11.glScalef(scale, scale, scale);
 		GL11.glTranslated(-0.5d, 0.0d, -0.5d);
-		GL11.glRotatef(angle, rotatex, rotatey, rotatez);
 		GL11.glColor3ub((byte) color.getRed(), (byte) color.getGreen(), (byte) color.getBlue());
 		ItemRenderer.renderItemIn2D(Tessellator.instance, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 1.0f / 16.0f);
 		GL11.glPopMatrix();
