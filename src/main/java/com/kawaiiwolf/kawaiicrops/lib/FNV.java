@@ -2,7 +2,12 @@ package com.kawaiiwolf.kawaiicrops.lib;
 
 import java.nio.ByteBuffer;
 
-public class FNV {
+/**
+ * Fowler–Noll–Vo (FNV) Hash
+ */
+
+public class FNV 
+{
 
 	private static final int INIT = 0x811c9dc5;
 	private static final int PRIME = 0x01000193;

@@ -11,10 +11,12 @@ import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 
 public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock {
 
+	public boolean jitter = false;
+	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) 
 	{
-		if (player.isSneaking())
+		if (player.isSneaking() || player.getCurrentEquippedItem() == null)
 		{
 			dropAllItems(world, x, y, z);
 		}

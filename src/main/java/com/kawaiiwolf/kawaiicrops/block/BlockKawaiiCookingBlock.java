@@ -47,6 +47,11 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer {
     		((TileEntityKawaiiCookingBlock)te).dropAllItems(world, x, y, z);
     }
 
+    @Override
+    public boolean canHarvestBlock(EntityPlayer player, int meta)
+    {
+    	return true;
+    }
 	
 	@Override
 	public void registerBlockIcons(IIconRegister par1IconRegister) { }

@@ -51,7 +51,7 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 		if (te instanceof TileEntityKawaiiCuttingBoard)
 			render = ((TileEntityKawaiiCuttingBoard)te).getDisplayItem();
 		if (render != null)
-			renderItem(new ItemStack(render.getItem()), x - 0.0625d * ((meta & 2) == 2 ? 1.0d : -1.0d), y + 0.0625, z - 0.0625d * (((meta & 1) != ((meta >> 1) & 1)) ? 1.0d : -1.0d), meta, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f, Block.getBlockFromItem(render.getItem()) != Blocks.air);
+			renderItem(new ItemStack(render.getItem()), x - 0.0625d * ((meta & 2) == 2 ? 1.0d : -1.0d), y + 0.0625, z - 0.0625d * (((meta & 1) != ((meta >> 1) & 1)) ? 1.0d : -1.0d), meta, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f, NamespaceHelper.isItemBlock(render));
 		
 		renderItem(new ItemStack(Items.iron_sword), x + 0.3125d * ((meta & 2) == 2 ? 1.0d : -1.0d), y + 0.0625, z + 0.3125d * (((meta & 1) != ((meta >> 1) & 1)) ? 1.0d : -1.0d), meta, 0.5f, 90.0f, 1.0f, 0.0f, 0.0f, false);
 	}

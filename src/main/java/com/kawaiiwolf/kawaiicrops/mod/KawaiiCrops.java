@@ -50,18 +50,26 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
+     * Config:
+     *   Cooking heat source blocks
+     *   Oil Items for Frying Pan
+     *   Water Items for Big Pot
+     *   Oil Items for Big Pot
+     * 
      * Custom Cooking:
      *   Add particle effects to base TE & NBT
      *   
-     *   OPtions:
+     *   Options:
      *   requires bowls
+     *   requires bottle
      *   cook ticks
      *   burn ticks
      *   oil/water
      *   use up fluid
+     *   Pot/Pan finished cooking special texture ?
      *   
-     *   food items: Containers returned on eaten or used to fill stuff ?
-     *   forge dictionary: cooking oil ?
+     * food items: Containers returned on eaten or used to fill stuff ?
+     * Ore Dict - add external items to dictionary
      *    
      */
 }

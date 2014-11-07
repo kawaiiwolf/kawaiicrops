@@ -11,6 +11,9 @@ public class BlockKawaiiFryingPan extends BlockKawaiiCookingBlock {
 	protected BlockKawaiiFryingPan() 
 	{
 		super(Material.iron, "fryingpan");
+		maxY = 0.125d;
+		minX = minZ = 0.0625d;
+		maxX = maxZ = 1.0d - minX;
 	}
 
 	@Override

@@ -5,7 +5,9 @@ import java.util.Iterator;
 
 import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class NamespaceHelper {
 	
@@ -36,7 +38,9 @@ public class NamespaceHelper {
 		return GameData.getBlockRegistry().iterator();
 	}
 	
-	public static String getItemName(Item item) {
+	public static String getItemName(ItemStack item) { return getItemName (item.getItem()); }
+	public static String getItemName(Item item) 
+	{
 		if (item == null) return null;
 		return GameData.getItemRegistry().getNameForObject(item);
 	}
@@ -61,8 +65,14 @@ public class NamespaceHelper {
 		return items;
 	}
 	
-	public static Iterator<Item> getItemIterator() {
+	public static Iterator<Item> getItemIterator() 
+	{
 		return GameData.getItemRegistry().iterator();
 	}
 	
+	public static boolean isItemBlock(ItemStack item) { return isItemBlock(item.getItem()); }
+	public static boolean isItemBlock(Item item) 
+	{
+		return Block.getBlockFromItem(item) != Blocks.air;
+	}
 }
