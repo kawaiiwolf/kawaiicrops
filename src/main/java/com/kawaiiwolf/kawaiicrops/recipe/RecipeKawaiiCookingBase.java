@@ -75,7 +75,7 @@ public abstract class RecipeKawaiiCookingBase
 	
 	protected abstract void setOptions(ArrayList<String> options);
 	
-	public abstract ArrayList<RecipeKawaiiCookingBase> getAllRecipies();
+	public abstract ArrayList<RecipeKawaiiCookingBase> getAllRecipes();
 	
 	public abstract void register();
 	

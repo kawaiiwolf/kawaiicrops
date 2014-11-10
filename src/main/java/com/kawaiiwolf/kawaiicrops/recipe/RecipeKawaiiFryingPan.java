@@ -9,7 +9,9 @@ import net.minecraft.item.ItemStack;
 
 public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase 
 {
-	private static ArrayList<RecipeKawaiiCookingBase> allRecipies = new ArrayList<RecipeKawaiiCookingBase>();
+	private static ArrayList<RecipeKawaiiCookingBase> allRecipes = new ArrayList<RecipeKawaiiCookingBase>();
+	private static ArrayList<RecipeKawaiiCookingBase> oilRecipes = new ArrayList<RecipeKawaiiCookingBase>();
+	private static ArrayList<RecipeKawaiiCookingBase> cleanRecipes = new ArrayList<RecipeKawaiiCookingBase>();
 	
 	public static String CookingOilItemsString = "";
 	public static ArrayList<Item> CookingOilItems = new ArrayList<Item>();
@@ -71,15 +73,27 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 	}
 
 	@Override
-	public ArrayList<RecipeKawaiiCookingBase> getAllRecipies() 
+	public ArrayList<RecipeKawaiiCookingBase> getAllRecipes() 
 	{
-		return allRecipies;
+		return allRecipes;
+	}
+	
+	public ArrayList<RecipeKawaiiCookingBase> getFilteredRecipes(boolean oil)
+	{
+		if (oil)
+			return oilRecipes;
+		else
+			return cleanRecipes;
 	}
 
 	@Override
 	public void register() 
 	{
-		allRecipies.add(this);
+		allRecipes.add(this);
+		if(this.oil)
+			this.oilRecipes.add(this);
+		else
+			this.cleanRecipes.add(this);
 	}
 
 }

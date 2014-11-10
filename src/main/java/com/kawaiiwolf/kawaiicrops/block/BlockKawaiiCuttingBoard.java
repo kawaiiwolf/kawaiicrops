@@ -14,7 +14,7 @@ import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCuttingBoard;
 public class BlockKawaiiCuttingBoard extends BlockKawaiiCookingBlock {
 
 	protected BlockKawaiiCuttingBoard() {
-		super(Material.wood, "cuttingboard");
+		super(Material.wood, "cuttingboard", false);
 		maxY = 0.125d;
 		minX = minZ = 0.0625d;
 		maxX = maxZ = 1.0d - minX;

@@ -21,7 +21,7 @@ public class RecipeKawaiiCuttingBoard extends RecipeKawaiiCookingBase
 	protected void setOptions(ArrayList<String> options) { }
 
 	@Override
-	public ArrayList<RecipeKawaiiCookingBase> getAllRecipies() 
+	public ArrayList<RecipeKawaiiCookingBase> getAllRecipes() 
 	{
 		return allRecipies;
 	}

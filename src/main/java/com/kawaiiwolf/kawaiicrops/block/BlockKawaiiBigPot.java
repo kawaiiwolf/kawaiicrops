@@ -11,7 +11,7 @@ public class BlockKawaiiBigPot extends BlockKawaiiCookingBlock
 {
 	protected BlockKawaiiBigPot()
 	{
-		super(Material.iron, "bigpot");
+		super(Material.iron, "bigpot", true);
 		
 		this.setBlockTextureName(Constants.MOD_ID + ":bigpot");
 	}

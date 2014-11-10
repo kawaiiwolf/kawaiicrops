@@ -26,9 +26,9 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 	}
 	
 	@Override
-	protected ArrayList<RecipeKawaiiCookingBase> getRecipies() 
+	protected ArrayList<RecipeKawaiiCookingBase> getRecipes(String filter) 
 	{
-		return dummy.getAllRecipies();
+		return dummy.getAllRecipes();
 	}
 	private static RecipeKawaiiBigPot dummy = new RecipeKawaiiBigPot();
 

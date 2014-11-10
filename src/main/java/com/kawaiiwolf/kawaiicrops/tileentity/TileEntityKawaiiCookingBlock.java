@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCookingBlock;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
@@ -122,7 +123,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 		return true;
 	}
 	
-	protected abstract ArrayList<RecipeKawaiiCookingBase> getRecipies();
+	protected abstract ArrayList<RecipeKawaiiCookingBase> getRecipes(String filter);
 	
 	public boolean itemAllowedByRecipie(ItemStack item)
 	{
@@ -132,7 +133,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 		List<ItemStack> ingredients = Arrays.asList(inventorySlots);
 
 		boolean found = false;
-		for (RecipeKawaiiCookingBase recipe : getRecipies())
+		for (RecipeKawaiiCookingBase recipe : getRecipes(state))
 			if (!found && recipe.matches(ingredients) >= 0)
 			{
 				found = true;
@@ -165,13 +166,17 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 	{
 		if (inventorySlots[0] != null) return null;
 		List<ItemStack> ingredients = Arrays.asList(inventorySlots);
-		for (RecipeKawaiiCookingBase recipe : getRecipies())
+		for (RecipeKawaiiCookingBase recipe : getRecipes(state))
 			if (recipe.matches(ingredients) == 0)
 				return new ItemStack(recipe.output.getItem(), recipe.output.stackSize);
 		return null;
 	}
 	
 	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player);
+	
+	public void onRandomTick(World world, int x, int y, int z, Random rand) { }
+	
+	public void onRandomDisplayTick(World world, int x, int y, int z, Random rand) { }
 	
 	public int getFirstOpenSlot()
 	{

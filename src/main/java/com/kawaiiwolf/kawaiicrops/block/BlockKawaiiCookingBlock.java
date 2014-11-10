@@ -1,9 +1,13 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
+import java.util.Random;
+
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCookingBlock;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -21,12 +25,13 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer {
 
 	public String Name = "";
 	
-	protected BlockKawaiiCookingBlock(Material material, String name) 
+	protected BlockKawaiiCookingBlock(Material material, String name, boolean randomTick) 
 	{
 		super(material);
 		this.Name = name;
 		setBlockName(Constants.MOD_ID + "." + name);
 		setHardness(1.0f);
+		setTickRandomly(randomTick);
 	}
 	
 	@Override
@@ -88,6 +93,23 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer {
 	{
 		super.dropBlockAsItem(world, x, y, z, item);
 	}
+	
+	@Override
+	public void updateTick(World world, int x, int y, int z, Random rand)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityKawaiiCookingBlock && !world.isRemote)
+			((TileEntityKawaiiCookingBlock) te).onRandomTick(world, x, y, z, rand);
+	}
+	
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) 
+    {
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityKawaiiCookingBlock)
+			((TileEntityKawaiiCookingBlock) te).onRandomDisplayTick(world, x, y, z, rand);   	
+    }
 
 	private boolean isRegistered = false;
 	public void register()
