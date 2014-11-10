@@ -22,6 +22,8 @@ public class ModItems {
 	
 	public static ItemHungerPotion HungerPotion = new ItemHungerPotion();
 	public static ItemKawaiiMysterySeed MysterySeed = null;
+	public static ItemKawaiiIngredient BurntFood = new ItemKawaiiIngredient("burntfood"," Beyond Unappetizing");
+	public static ItemKawaiiIngredient CookingOil = new ItemKawaiiIngredient("cookingoil", "Perfect for frying or greasing a pan.");
 	
 	public static boolean HungerPotionEnabled = true;
 	public static boolean MysterySeedEnabled = true;
@@ -38,6 +40,9 @@ public class ModItems {
 			GameRegistry.registerItem(MysterySeed, Constants.MOD_ID + ".mysteryseed");
 			MinecraftForge.addGrassSeed(new ItemStack(MysterySeed), 12);
 		}
+		
+		GameRegistry.registerItem(BurntFood, Constants.MOD_ID + ".burntfood");
+		GameRegistry.registerItem(CookingOil, Constants.MOD_ID + ".cookingoil");
 	}
 	
 	public static void registerOreDictionary()

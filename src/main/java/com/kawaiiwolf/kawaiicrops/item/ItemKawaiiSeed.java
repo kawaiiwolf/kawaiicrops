@@ -67,7 +67,6 @@ public class ItemKawaiiSeed extends ItemSeeds {
 		ModItems.ModSeeds.add(this);
 		GameRegistry.registerItem(this, Constants.MOD_ID + "." + name);
 		
-		System.out.println("New Weight: " + MysterySeedWeight + ", type: " + type + ", plant: " + plant + ", tree:" + tree);
 		if (MysterySeedWeight > 0)
 		{
 			if(type == SeedType.CROP) 

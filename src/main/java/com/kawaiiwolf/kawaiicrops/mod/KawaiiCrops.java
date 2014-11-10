@@ -45,28 +45,22 @@ public class KawaiiCrops {
     {
     	config.loadConfiguration_PostInit(event);
     	ModBlocks.registerDropTables();
+    	ModBlocks.registerCookingBlockLists();
     }
     
     /**
      * TODO:
      * 
-     * Config:
-     *   Cooking heat source blocks
-     *   Oil Items for Frying Pan
-     *   Water Items for Big Pot
-     *   Oil Items for Big Pot
+     * Frying Pan Behavior
+     * 
+     * Big Pot Behavior
+     * Big Pot Recipes
      * 
      * Custom Cooking:
      *   Add particle effects to base TE & NBT
      *   
      *   Options:
-     *   requires bowls
-     *   requires bottle
-     *   cook ticks
-     *   burn ticks
-     *   oil/water
      *   use up fluid
-     *   Pot/Pan finished cooking special texture ?
      *   
      * food items: Containers returned on eaten or used to fill stuff ?
      * Ore Dict - add external items to dictionary

@@ -1,5 +1,6 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
+import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiFryingPan;
 
 import net.minecraft.block.material.Material;
@@ -14,6 +15,8 @@ public class BlockKawaiiFryingPan extends BlockKawaiiCookingBlock {
 		maxY = 0.125d;
 		minX = minZ = 0.0625d;
 		maxX = maxZ = 1.0d - minX;
+		
+		this.setBlockTextureName(Constants.MOD_ID + ":fryingpan");
 	}
 
 	@Override

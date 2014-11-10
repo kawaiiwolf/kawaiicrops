@@ -17,6 +17,9 @@ public abstract class RecipeKawaiiCookingBase
 {
     public ItemStack output = null;
     public ArrayList<Object> input = new ArrayList<Object>();
+    
+    public static String CookingHeatSourcesString = "";
+    public static ArrayList<Block> CookingHeatSources = new ArrayList<Block>();
 
     protected RecipeKawaiiCookingBase() { }
 	protected RecipeKawaiiCookingBase(ItemStack result, Object... recipe)
@@ -42,7 +45,9 @@ public abstract class RecipeKawaiiCookingBase
             }
             else if (in instanceof String)
             {
-            	if (!onOptions && OreDictionary.getOres((String)in) != null)
+            	if ((String)in == "|")
+            		onOptions = true;
+            	else if (!onOptions && OreDictionary.getOres((String)in) != null)
             		input.add(OreDictionary.getOres((String)in));
             	else
             	{
@@ -52,11 +57,9 @@ public abstract class RecipeKawaiiCookingBase
             }
             else
             {
-                String ret = "Invalid shapeless ore recipe: ";
+                String ret = "Invalid recipe: ";
                 for (Object tmp :  recipe)
-                {
                     ret += tmp + ", ";
-                }
                 ret += output;
                 throw new RuntimeException(ret);
             }

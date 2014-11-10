@@ -54,16 +54,6 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer {
     }
 	
 	@Override
-	public void registerBlockIcons(IIconRegister par1IconRegister) { }
-	
-
-	@Override
-	public IIcon getIcon(int par1, int par2) 
-	{
-		return Blocks.planks.getIcon(par1, par2);
-	}
-	
-	@Override
 	public boolean isOpaqueCube() 
 	{
 		return false;

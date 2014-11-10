@@ -1,5 +1,6 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
+import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiBigPot;
 
 import net.minecraft.block.material.Material;
@@ -11,6 +12,8 @@ public class BlockKawaiiBigPot extends BlockKawaiiCookingBlock
 	protected BlockKawaiiBigPot()
 	{
 		super(Material.iron, "bigpot");
+		
+		this.setBlockTextureName(Constants.MOD_ID + ":bigpot");
 	}
 
 	@Override

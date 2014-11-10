@@ -23,11 +23,11 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock {
 		else
 		{
 			int slot = getFirstOpenSlot();
-			if (slot == -1) 
+			if (slot == -1)
 				return true;
-			getDisplayItems()[slot] = new ItemStack(player.getCurrentEquippedItem().getItem(), 1);
+			inventorySlots[slot] = new ItemStack(player.getCurrentEquippedItem().getItem(), 1);
 			player.getCurrentEquippedItem().stackSize--;
-		}
+		} 
 		
 		return true;
 	}

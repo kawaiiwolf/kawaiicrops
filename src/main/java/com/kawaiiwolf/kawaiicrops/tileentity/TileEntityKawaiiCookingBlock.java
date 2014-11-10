@@ -1,5 +1,6 @@
 package com.kawaiiwolf.kawaiicrops.tileentity;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,9 @@ import net.minecraft.world.World;
 public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements IInventory
 {
 
-	private ItemStack[] inventorySlots = new ItemStack[getSizeInventory()];
+	protected ItemStack[] inventorySlots = new ItemStack[getSizeInventory()];
+	protected int cookTime = 0;
+	protected String state = "";
 
 	@Override
 	public int getSizeInventory() 
@@ -49,6 +52,8 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 			if (slot >= 0 && slot < inventorySlots.length)
 				inventorySlots[slot] = ItemStack.loadItemStackFromNBT(compound);
 		}
+		cookTime = tags.getInteger("CookTicks");
+		state= tags.getString("CookState");
 	}
 
 	@Override
@@ -69,6 +74,8 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 			}
 		}
 		tags.setTag("Items", items);
+		tags.setInteger("CookTicks", cookTime);
+		tags.setString("CookState", state);
 	}
 	
 	@Override

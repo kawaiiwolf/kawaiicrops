@@ -11,6 +11,9 @@ import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiTreeBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiBigPot;
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen.WorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiTree;
@@ -299,6 +302,43 @@ public class ConfigurationLoader {
 			"\n"+
 			"\"minecraft:stick 3 minecraft:sapling \"\n"+
 			"\nChops a sapling into 3 sticks.";
+
+	public static final String REFERENCE_RECIPES_CUST_FRYING_PAN = "" +
+			"Format for Frying Pan Crafting Recipies:\n"+
+			"\n"+
+			"\"<result item/block name> <number crafted> <1> [<2> <3>] <cook time> <burn time> <options>\"\n"+
+			"\n"+
+			"Where <1>, <2> and <3> are the names of the block, item or ore dictonary names for the\n"+
+			"ingredients to be cooked into the result. You can provide between 1 and 3 ingredients.\n"+
+			"For a list of all valid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
+			"\n"+
+			"\n<cook time> is the number of random ticks it will take for the recipe to finish cooking."+
+			"\n  A number less than 1 indicates it cooks instantly if the pan is hot ( at least one "+
+			"\n  random tick ontop of a heat source block)"+
+			"\n"+
+			"\n<burn time> is the number of random ticks it will take for the recipie to be ruined by"+
+			"\n  overcooking. A number less than 1 indicates the food will never burn."+
+			"\n"+
+			"\nOptions: The following options can be provided or ommited to change the nature of the"+
+			"\nrecipe."+
+			"\n  - \"oil\": Recipies require some sort of oil to be added to the pan before you can add"+
+			"\n           other ingredeints. See general.cfg to see a list of items that count as a type"+
+			"\n           of oil."+
+			"\n  - \"texture\": On a completed recipie, render a different texture in the pan. The file"+
+			"\n               for this texture sould be named the same as the item plus \".fryingpan\""+
+			"\n  - <Item Name>: Harvesting a complete recipe requires this item and will use it up."+
+			"\n"+
+			"\n"+
+			"\nExample:"+
+			"\n"+
+			"\n\"minecraft:cooked_porkchop 1 minecraft:porkchop 1 4 oil\""+
+			"\nCooks a porkchop in 1 random tick that will burn after 4 more random ticks"+
+			"\n"+
+			"\n\"minecraft:mushroom_stew 2 minecraft:brown_mushroom minecraft:red_mushroom 6 0 texture minecraft:bowl\""+
+			"\ncooks 2 mushroom stews after 4 random ticks with no chance of burning. You must click on the pan with a"+
+			"\nwooden bowl in hand to harvest the soup. Additionally, once fully cooked, instead of rendering a"+
+			"\nmushroom stew in the pan, it will instead display the texture found at"+
+			"\n  kawaiicrops\\textures\\items\\mushroom_stew.fryingpan.png";
 	
 	public void loadConfiguration_PreInit() 
 	{
@@ -309,10 +349,18 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("Reference: Drop Table Help", REFERENCE_DROPTABLES_COMMENT);
 		cfg_general.setCategoryComment("Reference: Potions Help", REFERENCE_POTION_COMMENT);
 		cfg_general.setCategoryComment("Reference: Ore Dictionary Help", REFERENCE_ORE_COMMENT);
-		DumpIDs = cfg_general.getBoolean("Dump All IDs", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
-		ModItems.HungerPotionEnabled = cfg_general.getBoolean("Hunger Potion", Configuration.CATEGORY_GENERAL, ModItems.HungerPotionEnabled, "Enable the Potion of Hunger ?  This debug item makes you hungrier by drinking it.");
-		ModItems.MysterySeedEnabled = cfg_general.getBoolean("Mystery Seed Enabled", Configuration.CATEGORY_GENERAL, ModItems.MysterySeedEnabled, "Enable the Myster Seed ?  When planted it could grow into just about anything !");
-		ModItems.MysterySeedVanilla = cfg_general.getBoolean("Vanilla Mystery Seed Crops", Configuration.CATEGORY_GENERAL, ModItems.MysterySeedVanilla, "Include Vanilla Crops/Plants in the Mystery Seed's Drop List ?");
+		
+		DumpIDs = cfg_general.getBoolean("0.General  Dump All IDs", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
+		ModItems.HungerPotionEnabled = cfg_general.getBoolean("0.General  Hunger Potion", Configuration.CATEGORY_GENERAL, ModItems.HungerPotionEnabled, "Enable the Potion of Hunger ?  This debug item makes you hungrier by drinking it.");
+		ModItems.MysterySeedEnabled = cfg_general.getBoolean("0.General  Mystery Seed Enabled", Configuration.CATEGORY_GENERAL, ModItems.MysterySeedEnabled, "Enable the Myster Seed ?  When planted it could grow into just about anything !");
+		ModItems.MysterySeedVanilla = cfg_general.getBoolean("0.General  Vanilla Mystery Seed Crops", Configuration.CATEGORY_GENERAL, ModItems.MysterySeedVanilla, "Include Vanilla Crops/Plants in the Mystery Seed's Drop List ?");
+		
+		RecipeKawaiiCookingBase.CookingHeatSourcesString = cfg_general.getString("1.Cooking  Heat Sources", Configuration.CATEGORY_GENERAL, "minecraft:lava minecraft:fire minecraft:lit_furnace ", "Which blocks act as heat sources on which cooking blocks (pots/pans/etc) can cook ontop of ?  Please separate blocks with spaces. Enable \"Dump All IDs\" to see a list of valid block names.");
+		RecipeKawaiiFryingPan.CookingOilItemsString = cfg_general.getString("2.Cooking  Frying Pan Oil Items", Configuration.CATEGORY_GENERAL, "kawaiicrops:kawaiicrops.cookingoil", "What items can be used as a cooking oil for frying pan recipes ?  Please separate items with spaces.");
+		RecipeKawaiiBigPot.CookingOilItemsString = cfg_general.getString("3.Cooking  Big Pot Oil Items", Configuration.CATEGORY_GENERAL, "kawaiicrops:kawaiicrops.cookingoil", "What items can be used as a cooking oil for Big Pot recipes ?  Please separate items with spaces.");
+		RecipeKawaiiBigPot.CookingWaterItemsString = cfg_general.getString("3.Cooking  Big Pot Water Items", Configuration.CATEGORY_GENERAL, "minecraft:water_bucket", "What items can be used as water for Big Pot recipes ?  Please separate items with spaces.");
+		
+		//cfg_general.getString("1.Cooking  ", Configuration.CATEGORY_GENERAL, "", "");
 		
 		// Crops
 		
@@ -407,11 +455,13 @@ public class ConfigurationLoader {
 		String category = "0 Main Settings";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES);
 		
-		int recipes2 = cfg.getInt("2 by 2", category, 10, 0, 10000, "Number of 2x2 Shaped crafting recipes ?");
-		int recipes3 = cfg.getInt("3 by 3", category, 10, 0, 10000, "Number of 3x3 Shaped crafting recipes ?");
-		int recipesU = cfg.getInt("Unshaped", category, 10, 0, 10000, "Number of Unshaped crafting recipes ?");
-		int recipesS = cfg.getInt("Smelting", category, 10, 0, 10000, "Number of Smelting crafting recipes ?");
-		int recipesC_cut = cfg.getInt("Kawaiicraft Cutting Board", category, 10, 0, 10000, "Number of Kawaiicraft Cutting Board crafting recipes ?");
+		int defaultRecipies = 10;
+		int recipes2 = cfg.getInt("2 by 2", category, defaultRecipies, 0, 10000, "Number of 2x2 Shaped crafting recipes ?");
+		int recipes3 = cfg.getInt("3 by 3", category, defaultRecipies, 0, 10000, "Number of 3x3 Shaped crafting recipes ?");
+		int recipesU = cfg.getInt("Unshaped", category, defaultRecipies, 0, 10000, "Number of Unshaped crafting recipes ?");
+		int recipesS = cfg.getInt("Smelting", category, defaultRecipies, 0, 10000, "Number of Smelting crafting recipes ?");
+		int recipesC_cut = cfg.getInt("Kawaiicraft Cutting Board", category, defaultRecipies, 0, 10000, "Number of Kawaiicraft Cutting Board crafting recipes ?");
+		int recipesC_fry = cfg.getInt("Kawaiicraft Frying Pan", category, defaultRecipies, 0, 10000, "Number of Kawaiicraft Frying Pan crafting recipes ?");
 		
 		category = "2 by 2 Shaped Crafting Recipes";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES_2);
@@ -453,6 +503,14 @@ public class ConfigurationLoader {
 			RecipeHelper.registerCustomCuttingBoardRecpie(recipe);
 		}
 
+		category = "Kawaiicraft Frying Pan Recipes";
+		cfg.setCategoryComment(category, this.REFERENCE_RECIPES_CUST_FRYING_PAN);
+		for (int i = 0; i < recipesC_fry; i++)
+		{
+			String recipe = cfg.getString("" + i, category, "", "");
+			RecipeHelper.registerCustomFryingPanRecipe(recipe);
+		}
+		
 		cfg.save();
 	}
 	
