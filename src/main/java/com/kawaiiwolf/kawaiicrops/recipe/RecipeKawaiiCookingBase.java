@@ -17,6 +17,7 @@ public abstract class RecipeKawaiiCookingBase
 {
     public ItemStack output = null;
     public ArrayList<Object> input = new ArrayList<Object>();
+    protected ArrayList<String> options = null;
     
     public static String CookingHeatSourcesString = "";
     public static ArrayList<Block> CookingHeatSources = new ArrayList<Block>();
@@ -25,7 +26,7 @@ public abstract class RecipeKawaiiCookingBase
 	protected RecipeKawaiiCookingBase(ItemStack result, Object... recipe)
     {
         output = result.copy();
-        ArrayList<String> options = new ArrayList<String>();
+        options = new ArrayList<String>();
         boolean onOptions = false;
         int ingredientCount = 0;
         
@@ -67,8 +68,8 @@ public abstract class RecipeKawaiiCookingBase
             if (ingredientCount >= getMaxIngredients())
             	onOptions = true;
         }
-        
-        setOptions(options);
+        // Because java is dumb, make sure children call:
+        //   setOptions(options);
     }
 	
 	protected abstract int getMaxIngredients();
@@ -136,7 +137,37 @@ public abstract class RecipeKawaiiCookingBase
                 }
             }
         }
-
+        
         return required.size();
     }
+    
+    @Override
+    public String toString()
+    {
+    	String code = NamespaceHelper.getItemName(output.getItem()) + " [" + output.stackSize + "] = ";
+    	for (int i = 0; i < input.size(); i++)
+    	{
+    		Object o = input.get(i);
+    		if (o instanceof ItemStack)
+    			code += NamespaceHelper.getItemName((ItemStack) o);
+    		else if (o instanceof Block)
+    			code += NamespaceHelper.getBlockName((Block) o);
+    		else if (o instanceof Item)
+    			code += NamespaceHelper.getItemName((Item) o);
+    		else
+    			code += o.toString();
+    		if (i + 1 != input.size())
+    			code += ", ";
+    	}
+    	return code;
+    }
+    		
+	@Override
+	public int hashCode()
+	{
+		if (cashedHashCode == null)
+			cashedHashCode = toString().hashCode();
+		return cashedHashCode.intValue();
+	}
+	private Integer cashedHashCode = null;
 }

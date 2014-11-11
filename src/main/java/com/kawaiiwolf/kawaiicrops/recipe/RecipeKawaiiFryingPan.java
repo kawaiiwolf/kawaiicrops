@@ -19,6 +19,7 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 	public int cookTime = 0;
 	public int burnTime = 0;
 	public boolean oil = false;
+	public boolean greasy = false;
 	public boolean texture = false;
 	public Item harvest = null;
 
@@ -26,6 +27,8 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 	public RecipeKawaiiFryingPan(ItemStack output, Object... input) 
 	{
 		super(output,input);
+		setOptions(options);
+		options = null;
 	}
 
 	@Override
@@ -36,8 +39,8 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 	{ 
 		try
 		{
-			cookTime = Integer.parseInt(options.get(0));
-			burnTime = Integer.parseInt(options.get(1));
+			this.cookTime = Integer.parseInt(options.get(0));
+			this.burnTime = Integer.parseInt(options.get(1));
 
 			for (int i = 2; i < options.size(); i++)
 			{
@@ -48,6 +51,8 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 					oil = true;
 				else if (option.equals("texture"))
 					texture = true;
+				else if (option.equals("greasy"))
+					greasy = true;
 				else
 				{
 					Item item = NamespaceHelper.getItemByName(option);
@@ -95,5 +100,16 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 		else
 			this.cleanRecipes.add(this);
 	}
-
+	
+	@Override
+	public String toString()
+	{
+		return super.toString() +
+				" | Cook: " + cookTime + 
+				" | Burn: " + burnTime + 
+				" | Oil: " + (oil ? "true" : "false") + 
+				" | Texture: " + (texture ? "true" : "false") +
+				" | Greasy: " + (greasy ? "true" : "false") +
+				" | Harvest: " + (harvest == null ? "null" : NamespaceHelper.getItemName(harvest));
+	}
 }

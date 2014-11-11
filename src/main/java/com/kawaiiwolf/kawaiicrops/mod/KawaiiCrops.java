@@ -51,9 +51,8 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
-     * CookingBlock - Write Recipe to NBT ?
-     * 
      * Frying Pan Behavior
+     *   - particles & special texture. TO THE RENDERER BATMAN !
      * 
      * Big Pot Behavior
      * Big Pot Recipes

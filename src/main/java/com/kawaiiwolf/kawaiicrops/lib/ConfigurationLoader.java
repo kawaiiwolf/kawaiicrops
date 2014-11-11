@@ -324,6 +324,7 @@ public class ConfigurationLoader {
 			"\n  - \"oil\": Recipies require some sort of oil to be added to the pan before you can add"+
 			"\n           other ingredeints. See general.cfg to see a list of items that count as a type"+
 			"\n           of oil."+
+			"\n  - \"greasy\": Oil the pan after cooking this dish"+
 			"\n  - \"texture\": On a completed recipie, render a different texture in the pan. The file"+
 			"\n               for this texture sould be named the same as the item plus \".fryingpan\""+
 			"\n  - <Item Name>: Harvesting a complete recipe requires this item and will use it up."+

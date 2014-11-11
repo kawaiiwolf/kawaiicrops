@@ -319,7 +319,8 @@ public class RecipeHelper {
 					new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
 					new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
 			
-			(new RecipeKawaiiFryingPan(output,params.toArray())).register();
+			RecipeKawaiiFryingPan r = new RecipeKawaiiFryingPan(output,params.toArray());
+			r.register();
 		} 
 		catch (Exception exception) 
 		{ 

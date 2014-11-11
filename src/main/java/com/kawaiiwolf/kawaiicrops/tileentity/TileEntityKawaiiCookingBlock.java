@@ -29,6 +29,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 	protected ItemStack[] inventorySlots = new ItemStack[getSizeInventory()];
 	protected int cookTime = 0;
 	protected String state = "";
+	protected int recipeHash = 0;
 
 	@Override
 	public int getSizeInventory() 
@@ -54,7 +55,8 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 				inventorySlots[slot] = ItemStack.loadItemStackFromNBT(compound);
 		}
 		cookTime = tags.getInteger("CookTicks");
-		state= tags.getString("CookState");
+		state = tags.getString("CookState");
+		recipeHash = tags.getInteger("Recipe");
 	}
 
 	@Override
@@ -77,6 +79,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 		tags.setTag("Items", items);
 		tags.setInteger("CookTicks", cookTime);
 		tags.setString("CookState", state);
+		tags.setInteger("Recipe", recipeHash);
 	}
 	
 	@Override
@@ -180,16 +183,14 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 		return null;
 	}
 	
-	
-	public RecipeKawaiiCookingBase getReverseRecipe()
+	public RecipeKawaiiCookingBase getCurrentRecipe()
 	{
-		if (inventorySlots[0] != null) return null;
-		List<ItemStack> ingredients = Arrays.asList(inventorySlots);
-		for (RecipeKawaiiCookingBase recipe : getRecipes(state))
-			if (recipe.matches(ingredients) == 0)
-				return recipe;
+		if (recipeHash != 0)
+			for (RecipeKawaiiCookingBase recipe : getRecipes(state))
+				if (recipe.hashCode() == recipeHash)
+					return recipe;
 		return null;
-	}	
+	}
 	
 	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player);
 	
