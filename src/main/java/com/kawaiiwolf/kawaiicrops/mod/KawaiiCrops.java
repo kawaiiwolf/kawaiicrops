@@ -51,8 +51,7 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
-     * CookingBlock - Write harvest Item ID to NBT ?
-     * Burn time = negative ?
+     * CookingBlock - Write Recipe to NBT ?
      * 
      * Frying Pan Behavior
      * 

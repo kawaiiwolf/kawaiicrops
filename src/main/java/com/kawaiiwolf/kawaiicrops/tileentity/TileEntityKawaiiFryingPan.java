@@ -69,6 +69,20 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 		if(RecipeKawaiiCookingBase.CookingHeatSources.contains(world.getBlock(x, y - 1, z)))
 		{
 			System.out.println("Random Tick: Heat source below me.");
+			
+			if (cookTime == 0)
+			{
+				System.out.println("Pan is all heated up");
+				cookTime++;
+			}
+			else if (cookTime == 1)
+			{
+				RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCompleteRecipe();
+				if (recipe != null)
+				{
+					System.out.println("Full Recipe in pan. Sizzle Sizzle Sizzle");
+				}
+			}
 		}
 		else System.out.println("Random Tick: NO HEAT SOURCE FOUND.");
 	}

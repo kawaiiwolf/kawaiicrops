@@ -164,13 +164,32 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 	
 	public ItemStack hasCompleteRecipe()
 	{
+		RecipeKawaiiCookingBase recipe = getCompleteRecipe();
+		if (recipe == null)
+			return null;
+		return new ItemStack(recipe.output.getItem(), recipe.output.stackSize);
+	}
+	
+	public RecipeKawaiiCookingBase getCompleteRecipe()
+	{
 		if (inventorySlots[0] != null) return null;
 		List<ItemStack> ingredients = Arrays.asList(inventorySlots);
 		for (RecipeKawaiiCookingBase recipe : getRecipes(state))
 			if (recipe.matches(ingredients) == 0)
-				return new ItemStack(recipe.output.getItem(), recipe.output.stackSize);
+				return recipe;
 		return null;
 	}
+	
+	
+	public RecipeKawaiiCookingBase getReverseRecipe()
+	{
+		if (inventorySlots[0] != null) return null;
+		List<ItemStack> ingredients = Arrays.asList(inventorySlots);
+		for (RecipeKawaiiCookingBase recipe : getRecipes(state))
+			if (recipe.matches(ingredients) == 0)
+				return recipe;
+		return null;
+	}	
 	
 	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player);
 	
