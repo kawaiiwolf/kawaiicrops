@@ -239,6 +239,24 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
     {
     	return inventorySlots;
     }
+    
+    public void particleBlast(World world, double x, double y, double z, String name, int min, int max)
+    {
+    	if (max < min) max = min;
+    	double motionX, motionY, motionZ;
+    	
+    	for (int i = world.rand.nextInt(1 + max - min) + min; i > 0; i--)
+    	{
+    		worldObj.spawnParticle(
+    			name,
+    			x + world.rand.nextFloat(), 
+    		    y + world.rand.nextFloat() * 0.2D, 
+    		    z + world.rand.nextFloat(),
+    		    0.0d,
+    		    Math.abs(world.rand.nextGaussian()) * 0.02D,
+    		    0.0d);
+    	}
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////
     // Multi-Player Sync Code - Just make sure to call: world.markBlockForUpdate(x, y, z);

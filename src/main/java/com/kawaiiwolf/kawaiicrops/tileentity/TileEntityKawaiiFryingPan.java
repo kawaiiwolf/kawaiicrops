@@ -27,7 +27,6 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) 
 	{
 		// If we're done cooking, pop off items ! 
-		
 		if (player.getCurrentEquippedItem() == null)
 		{
 			if (player.isSneaking())
@@ -35,6 +34,8 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				clearAllItems();
 				state = "clean";
 				cookTime = 0;
+				
+				particleBlast(world, x, y, z, "happyVillager", 8, 12);
 			}
 			// Haven't started cooking yet ! Pull recipe items.
 			else if (cookTime <= 1)
@@ -52,12 +53,9 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 		}
 		else
 		{
-			// DEBUG !
-			if (player.getCurrentEquippedItem().getItem() == Items.stick)
-			{
-				this.onRandomTick(world, x, y, z, world.rand);
-			}
-			else if (cookTime <= 1)
+			// DEBUG: Stick = fast cook
+			//if (player.getCurrentEquippedItem().getItem() == Items.stick) { this.onRandomTick(world, x, y, z, world.rand); } else 
+			if (cookTime <= 1)
 			{
 				int slot = getFirstOpenSlot();
 				if(state.equals("clean") && RecipeKawaiiFryingPan.CookingOilItems.contains(player.getCurrentEquippedItem().getItem()))
@@ -65,12 +63,10 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					player.getCurrentEquippedItem().stackSize--;
 					state = "oiled";
 					
-					System.out.println("Oiling Pan");
+					particleBlast(world, x, y, z, "instantSpell", 8, 12);
 				}
 				else if (slot != -1 && isItemValidForSlot(slot, player.getCurrentEquippedItem()))
 				{
-					System.out.println("Adding " + NamespaceHelper.getItemName(player.getCurrentEquippedItem()) + " to the frying pan.");
-
 					setInventorySlotContents(slot, new ItemStack(player.getCurrentEquippedItem().getItem(), 1));
 					player.getCurrentEquippedItem().stackSize--;
 				}
@@ -112,6 +108,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				if (recipe != null)
 				{
 					recipeHash = recipe.hashCode();
+					state = "cooking";
 					world.markBlockForUpdate(x, y, z);
 				}
 			}
@@ -142,7 +139,8 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					for (int i = 0; i < inventorySlots.length; i++)
 						inventorySlots[i] = null;
 					inventorySlots[0] = recipe.output.copy();
-					
+					if (recipe.burnTime > 0)
+						state = "burning";
 					
 					world.markBlockForUpdate(x, y, z);
 				}
@@ -153,8 +151,14 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 	@Override
 	public void onRandomDisplayTick(World world, int x, int y, int z, Random rand) 
 	{ 
-		if (cookTime > 1)
-			jitter = true;
+		jitter = state.equals("cooking");
+		if (rand.nextFloat() > 0.66f)
+		{
+			if (state.equals("cooking"))
+				this.particleBlast(world, x, y, z, "explode", 1, 1);
+			if (state.equals("burning"))
+				this.particleBlast(world, x, y, z, "smoke", 1, 1);
+		}
 	}
 	
 	@Override
