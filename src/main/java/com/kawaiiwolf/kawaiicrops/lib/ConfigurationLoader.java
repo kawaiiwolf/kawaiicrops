@@ -327,6 +327,7 @@ public class ConfigurationLoader {
 			"\n  - \"greasy\": Oil the pan after cooking this dish"+
 			"\n  - \"texture\": On a completed recipie, render a different texture in the pan. The file"+
 			"\n               for this texture sould be named the same as the item plus \".fryingpan\""+
+			"\n               (minus the mod id) and placed in the kawaiicrops\\textures\\blocks folder."+
 			"\n  - <Item Name>: Harvesting a complete recipe requires this item and will use it up."+
 			"\n"+
 			"\n"+
@@ -338,8 +339,8 @@ public class ConfigurationLoader {
 			"\n\"minecraft:mushroom_stew 2 minecraft:brown_mushroom minecraft:red_mushroom 6 0 texture minecraft:bowl\""+
 			"\ncooks 2 mushroom stews after 4 random ticks with no chance of burning. You must click on the pan with a"+
 			"\nwooden bowl in hand to harvest the soup. Additionally, once fully cooked, instead of rendering a"+
-			"\nmushroom stew in the pan, it will instead display the texture found at"+
-			"\n  kawaiicrops\\textures\\items\\mushroom_stew.fryingpan.png";
+			"\nbowl of mushroom stew in the pan, it will instead display the texture found at"+
+			"\n  kawaiicrops\\textures\\blocks\\mushroom_stew.fryingpan.png";
 	
 	public void loadConfiguration_PreInit() 
 	{

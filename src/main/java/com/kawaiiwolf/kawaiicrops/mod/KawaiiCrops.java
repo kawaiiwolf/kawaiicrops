@@ -52,7 +52,7 @@ public class KawaiiCrops {
      * TODO:
      * 
      * Frying Pan Behavior
-     *   - particles & special texture. TO THE RENDERER BATMAN !
+     *   - special texture. TO THE RENDERER BATMAN !
      * 
      * Big Pot Behavior
      * Big Pot Recipes

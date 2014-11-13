@@ -6,12 +6,14 @@ import java.util.Random;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
+import com.kawaiiwolf.kawaiicrops.renderer.TexturedIcon;
 
 public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 {
@@ -26,6 +28,8 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) 
 	{
+		System.out.println("Starting Cook Click, state: " + state + ", cookTime: " + cookTime);
+		
 		// If we're done cooking, pop off items ! 
 		if (player.getCurrentEquippedItem() == null)
 		{
@@ -43,14 +47,17 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			{
 				dropAllItems(world, x, y, z);
 				state = "clean";
+				cookTime = 0;
 			}
 			// Haven't started cooking yet ! Pull recipe items.
-			else if (cookTime <= 1)
+			else if (cookTime <= 1 && recipeHash == 0)
 				dropAllItems(world, x, y, z);
+			
+			// Pull out cooked recipe
 			else if (recipeHash != 0)
 			{
 				RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) this.getCurrentRecipe();
-				if (recipe.harvest == null && cookTime > recipe.cookTime)
+				if (recipe != null && recipe.harvest == null && cookTime > recipe.cookTime)
 				{
 					dropAllItems(world, x, y, z);
 					state = (recipe.greasy ? "oiled" : "clean");
@@ -61,10 +68,14 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 		else
 		{
 			// DEBUG: Stick = fast cook
-			//if (player.getCurrentEquippedItem().getItem() == Items.stick) { this.onRandomTick(world, x, y, z, world.rand); } else 
+			if (player.getCurrentEquippedItem().getItem() == Items.stick) { this.onRandomTick(world, x, y, z, world.rand); } else
+			
+			// We haven't started cooking just yet, but the pan could be heated
 			if (cookTime <= 1)
 			{
 				int slot = getFirstOpenSlot();
+				
+				// Check to grease up the pan
 				if(state.equals("clean") && RecipeKawaiiFryingPan.CookingOilItems.contains(player.getCurrentEquippedItem().getItem()))
 				{
 					player.getCurrentEquippedItem().stackSize--;
@@ -72,13 +83,15 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					
 					particleBlast(world, x, y, z, "mobSpell", 8, 12, 1, 1, .6d);
 				}
+				
+				// Check for valid ingredient
 				else if (slot != -1 && isItemValidForSlot(slot, player.getCurrentEquippedItem()))
 				{
 					setInventorySlotContents(slot, new ItemStack(player.getCurrentEquippedItem().getItem(), 1));
 					player.getCurrentEquippedItem().stackSize--;
 				}
 				
-				
+				// If the pan is heated, start checking for recipes
 				if (cookTime == 1 && recipeHash == 0)
 				{
 					RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCompleteRecipe();
@@ -86,10 +99,18 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					{
 						recipeHash = recipe.hashCode();
 						state = "cooking";
-						world.markBlockForUpdate(x, y, z);
+						
+						// Check for explicit instant cook
+						if (recipe.cookTime == 0)
+						{
+							for (int i = 0; i < inventorySlots.length; i++)
+								inventorySlots[i] = null;
+							inventorySlots[0] = recipe.output.copy();
+						}
 					}
 				}
 			}
+			// Else we're cooking. Check to see if we've got the correct item to harvest
 			else
 			{
 				RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) this.getCurrentRecipe();
@@ -103,12 +124,15 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					{
 						inventorySlots[0] = null;
 						state = (recipe.greasy ? "oiled" : "clean");
-						cookTime = 1;
+						cookTime = 0;
 					}
 				}
 			}
 		}
 		world.markBlockForUpdate(x, y, z);
+		
+		System.out.println("Ending Cook Click, state: " + state + ", cookTime: " + cookTime);
+
 		return true;
 	}
 
@@ -160,8 +184,6 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					for (int i = 0; i < inventorySlots.length; i++)
 						inventorySlots[i] = null;
 					inventorySlots[0] = recipe.output.copy();
-					
-					particleBlast(world, x, y, z, "happyVillager", 8, 12);
 					
 					world.markBlockForUpdate(x, y, z);
 				}
@@ -220,4 +242,13 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 		return dummy.getAllRecipes();
 	}
 	private static RecipeKawaiiFryingPan dummy = new RecipeKawaiiFryingPan();
+
+	private TexturedIcon[] display = new TexturedIcon[getInputSlots() + 1];
+	@Override
+	public TexturedIcon[] getDisplayItems() 
+	{
+		for (int i = 0; i < inventorySlots.length && i < display.length; i++)
+			display[i] = inventorySlots[i] == null ? null : new TexturedIcon(inventorySlots[i]);
+		return display;
+	}
 }

@@ -21,6 +21,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 
 public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer 
 {
@@ -44,33 +45,32 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 	{
 		int meta = te.getBlockMetadata();
 		int itemCount = 0, itemCurrent = 1;
-		ItemStack[] itemsToRender;
+		float rotation, jitter, spin;
+		TexturedIcon[] icons;
 		
 		// Temporary
-		renderBaseItem(new ItemStack(Blocks.wooden_pressure_plate), x, y, z, meta, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, true);
+		renderBaseItem(Blocks.wooden_pressure_plate.getIcon(0, 0), x, y, z, meta, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, TextureMap.locationBlocksTexture);
 
 		if (te instanceof TileEntityKawaiiFryingPan)
 		{
-			itemsToRender = ((TileEntityKawaiiFryingPan)te).getDisplayItems();
-			for (ItemStack item : itemsToRender)
-				if (item != null)
+			icons = ((TileEntityKawaiiFryingPan)te).getDisplayItems();
+			for (TexturedIcon icon : icons)
+				if (icon != null)
 					itemCount++;
-			for (ItemStack item : itemsToRender)
-				if (item != null)
+			for (TexturedIcon icon : icons)
+				if (icon != null)
 				{
-					float rotation = itemCurrent++ / (float)itemCount;
-					float jitter = ((TileEntityKawaiiFryingPan)te).jitter ? ((Math.abs(Minecraft.getSystemTime() + itemCurrent * 13) / 12) % 21 - 10) / 40.0f : 0.0f;
-					float spin = (float)FNV.rand(te.xCoord, te.yCoord, te.zCoord, 360);
-					this.renderItem(item, x, y, z, rotation, jitter, spin);
+					rotation = itemCurrent++ / (float)itemCount;
+					jitter = ((TileEntityKawaiiFryingPan)te).jitter ? ((Math.abs(Minecraft.getSystemTime() + itemCurrent * 13) / 12) % 21 - 10) / 40.0f : 0.0f;
+					spin = (float)FNV.rand(te.xCoord, te.yCoord, te.zCoord, 360);
+					renderItem(icon.icon, x, y, z, rotation, jitter, spin, icon.texture);
 				}
 		}
 	}
 
-	private void renderBaseItem(ItemStack item, double x, double y, double z, int meta, float scale, float angle, float rotatex, float rotatey, float rotatez, boolean isBlock)
+	private void renderBaseItem(IIcon icon, double x, double y, double z, int meta, float scale, float angle, float rotatex, float rotatey, float rotatez, ResourceLocation texture)
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture(isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture);
-		IIcon icon = item.getItem().getIcon(item, 0);
-		Color color = new Color(item.getItem().getColorFromItemStack(item, 0));
+		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -79,23 +79,19 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		GL11.glScalef(scale, scale, scale);
 		GL11.glTranslated(-0.5d, 0.0d, -0.5d);
 		GL11.glRotatef(angle, rotatex, rotatey, rotatez);
-		GL11.glColor3ub((byte) color.getRed(), (byte) color.getGreen(), (byte) color.getBlue());
 		ItemRenderer.renderItemIn2D(Tessellator.instance, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 1.0f / 16.0f);
 		GL11.glPopMatrix();
 	}
 
 	
-	private void renderItem(ItemStack item, double x, double y, double z, float rotation, float jitter, float spin)
+	private void renderItem(IIcon icon, double x, double y, double z, float rotation, float jitter, float spin, ResourceLocation texture)
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture(NamespaceHelper.isItemBlock(item) ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture);
-		IIcon icon = item.getItem().getIcon(item, 0);
-		Color color = new Color(item.getItem().getColorFromItemStack(item, 0));
+		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
 		float scale = 0.3f;
 		
 		GL11.glPushMatrix();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glColor3ub((byte) color.getRed(), (byte) color.getGreen(), (byte) color.getBlue());
 		
 		// Set Position
 		GL11.glTranslated(x + 0.5d, y + 0.0625d - scale/2.0d, z + 0.5d);
@@ -119,5 +115,4 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		ItemRenderer.renderItemIn2D(Tessellator.instance, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 1.0f / 16.0f);
 		GL11.glPopMatrix();
 	}
-
 }

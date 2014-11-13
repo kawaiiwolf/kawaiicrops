@@ -9,6 +9,7 @@ import java.util.Random;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCookingBlock;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
+import com.kawaiiwolf.kawaiicrops.renderer.TexturedIcon;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -21,6 +22,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements IInventory
@@ -235,10 +237,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
     	clearAllItems();
     }
     
-    public ItemStack[] getDisplayItems()
-    {
-    	return inventorySlots;
-    }
+    public abstract TexturedIcon[] getDisplayItems();
     
     public void particleBlast(World world, double x, double y, double z, String name, int min, int max)
     {

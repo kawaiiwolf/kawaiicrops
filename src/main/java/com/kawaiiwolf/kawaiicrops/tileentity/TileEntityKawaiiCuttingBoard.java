@@ -5,22 +5,30 @@ import java.util.ArrayList;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCuttingBoard;
+import com.kawaiiwolf.kawaiicrops.renderer.TexturedIcon;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCookingBlock 
 {
-	public ItemStack getDisplayItem()
+	public TexturedIcon[] display = new TexturedIcon[1];
+			
+	@Override
+	public TexturedIcon[] getDisplayItems()
 	{
-		ItemStack i = getStackInSlot(1);
-		if (i != null)
-			return i;
-		return getStackInSlot(0);
+		if (getStackInSlot(1) != null)
+			display[0] = new TexturedIcon(getStackInSlot(1));
+		else if (getStackInSlot(0) != null)
+			display[0] = new TexturedIcon(getStackInSlot(0));
+		else
+			display = null;
+		return display;
 	}
 	
 	@Override

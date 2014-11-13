@@ -45,6 +45,13 @@ public class NamespaceHelper {
 		return GameData.getItemRegistry().getNameForObject(item);
 	}
 	
+	public static String getItemShortName(ItemStack item) { return getItemShortName(item.getItem()); }
+	public static String getItemShortName(Item item) 
+	{
+		String s = getItemName(item);
+		return s.substring(s.indexOf(":") + 1);
+	}
+	
 	public static Item getItemByName(String name) {
 		if (name == null) return null;
 		return GameData.getItemRegistry().getObject(name);

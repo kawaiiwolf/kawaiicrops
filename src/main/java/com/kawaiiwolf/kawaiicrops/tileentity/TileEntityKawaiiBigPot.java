@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiBigPot;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
+import com.kawaiiwolf.kawaiicrops.renderer.TexturedIcon;
 
 public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock 
 {
@@ -31,5 +33,12 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 		return dummy.getAllRecipes();
 	}
 	private static RecipeKawaiiBigPot dummy = new RecipeKawaiiBigPot();
+	
+	
+	@Override
+	public TexturedIcon[] getDisplayItems() 
+	{
+		return null;
+	}
 
 }
