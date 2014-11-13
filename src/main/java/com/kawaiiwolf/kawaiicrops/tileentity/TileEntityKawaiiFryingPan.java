@@ -3,12 +3,14 @@ package com.kawaiiwolf.kawaiicrops.tileentity;
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiFryingPan;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
@@ -244,9 +246,19 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 	private static RecipeKawaiiFryingPan dummy = new RecipeKawaiiFryingPan();
 
 	private TexturedIcon[] display = new TexturedIcon[getInputSlots() + 1];
+	private TexturedIcon[] fullIcon = new TexturedIcon[1];
 	@Override
 	public TexturedIcon[] getDisplayItems() 
 	{
+		if (recipeHash != 0)
+		{
+			RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCurrentRecipe();
+			if (recipe != null && recipe.texture)
+			{
+				fullIcon[0] = new TexturedIcon(BlockKawaiiFryingPan.FoodTextures.get(recipe), TextureMap.locationBlocksTexture);
+				return fullIcon;
+			}
+		}
 		for (int i = 0; i < inventorySlots.length && i < display.length; i++)
 			display[i] = inventorySlots[i] == null ? null : new TexturedIcon(inventorySlots[i]);
 		return display;

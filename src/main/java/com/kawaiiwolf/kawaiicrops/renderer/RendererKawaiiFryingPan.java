@@ -54,17 +54,24 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		if (te instanceof TileEntityKawaiiFryingPan)
 		{
 			icons = ((TileEntityKawaiiFryingPan)te).getDisplayItems();
-			for (TexturedIcon icon : icons)
-				if (icon != null)
-					itemCount++;
-			for (TexturedIcon icon : icons)
-				if (icon != null)
-				{
-					rotation = itemCurrent++ / (float)itemCount;
-					jitter = ((TileEntityKawaiiFryingPan)te).jitter ? ((Math.abs(Minecraft.getSystemTime() + itemCurrent * 13) / 12) % 21 - 10) / 40.0f : 0.0f;
-					spin = (float)FNV.rand(te.xCoord, te.yCoord, te.zCoord, 360);
-					renderItem(icon.icon, x, y, z, rotation, jitter, spin, icon.texture);
-				}
+			if (icons.length == 1 && icons[0] != null)
+			{
+				renderBaseItem(icons[0].icon, x, y + 0.0625, z, meta, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, icons[0].texture);
+			}
+			else
+			{
+				for (TexturedIcon icon : icons)
+					if (icon != null)
+						itemCount++;
+				for (TexturedIcon icon : icons)
+					if (icon != null)
+					{
+						rotation = itemCurrent++ / (float)itemCount;
+						jitter = ((TileEntityKawaiiFryingPan)te).jitter ? ((Math.abs(Minecraft.getSystemTime() + itemCurrent * 13) / 12) % 21 - 10) / 40.0f : 0.0f;
+						spin = (float)FNV.rand(te.xCoord, te.yCoord, te.zCoord, 360);
+						renderItem(icon.icon, x, y, z, rotation, jitter, spin, icon.texture);
+					}
+			}
 		}
 	}
 

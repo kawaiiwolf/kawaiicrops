@@ -12,7 +12,7 @@ public class TexturedIcon
 	IIcon icon;
 	ResourceLocation texture;
 	
-	TexturedIcon(IIcon icon, ResourceLocation texture)
+	public TexturedIcon(IIcon icon, ResourceLocation texture)
 	{
 		this.icon = icon;
 		this.texture = texture;
