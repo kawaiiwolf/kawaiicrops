@@ -30,8 +30,6 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) 
 	{
-		System.out.println("Starting Cook Click, state: " + state + ", cookTime: " + cookTime);
-		
 		// If we're done cooking, pop off items ! 
 		if (player.getCurrentEquippedItem() == null)
 		{
@@ -93,22 +91,17 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					player.getCurrentEquippedItem().stackSize--;
 				}
 				
-				// If the pan is heated, start checking for recipes
+				// If the pan is heated, start checking for instant cook recipes
 				if (cookTime == 1 && recipeHash == 0)
 				{
 					RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCompleteRecipe();
-					if (recipe != null)
+					if (recipe != null && recipe.cookTime == 0)
 					{
 						recipeHash = recipe.hashCode();
 						state = "cooking";
-						
-						// Check for explicit instant cook
-						if (recipe.cookTime == 0)
-						{
-							for (int i = 0; i < inventorySlots.length; i++)
-								inventorySlots[i] = null;
-							inventorySlots[0] = recipe.output.copy();
-						}
+						for (int i = 0; i < inventorySlots.length; i++)
+							inventorySlots[i] = null;
+						inventorySlots[0] = recipe.output.copy();
 					}
 				}
 			}
@@ -132,8 +125,6 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			}
 		}
 		world.markBlockForUpdate(x, y, z);
-		
-		System.out.println("Ending Cook Click, state: " + state + ", cookTime: " + cookTime);
 
 		return true;
 	}

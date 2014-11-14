@@ -2,6 +2,7 @@ package com.kawaiiwolf.kawaiicrops.lib;
 
 import java.util.ArrayList;
 
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiBigPot;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCuttingBoard;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 
@@ -320,6 +321,97 @@ public class RecipeHelper {
 					new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
 			
 			RecipeKawaiiFryingPan r = new RecipeKawaiiFryingPan(output,params.toArray());
+			r.register();
+		} 
+		catch (Exception exception) 
+		{ 
+			return false; 
+		}
+		
+		return true;
+	}
+	
+	public static boolean registerCustomBigPotRecipe(String recipe)
+	{
+		String[] parts = recipe.trim().replaceAll("  ", " ").split("[ ]");
+		if (parts.length < 5) 
+			return false;
+		
+		// Parse Output Type
+		IngredientType outputType = parseIngredientType(parts[0]);
+		if (outputType != IngredientType.ITEM && outputType != IngredientType.BLOCK)
+			return false;
+		
+		// Parse Output Number
+		int outputNum;
+		try {
+			outputNum = Integer.parseInt(parts[1]);
+		} catch (NumberFormatException e) { return false; }
+		if (outputNum < 1 || outputNum > 64) return false;
+
+		int ingredients = 0;
+		boolean onOptions = false;
+		ArrayList<Object> params = new ArrayList<Object>();
+		
+		for (int i = 2; i < parts.length; i++)
+		{
+			IngredientType type = parseIngredientType(parts[i]);
+			
+			// Items can be either ingredients or options (harvest item)
+			if (type == IngredientType.ITEM)
+			{
+				if (!onOptions)
+				{
+					params.add(NamespaceHelper.getItemByName(parts[i]));
+					ingredients++;
+				}
+				else
+					params.add(parts[i]);
+			}
+			// BLocks can only be ingredients
+			else if (!onOptions && type == IngredientType.BLOCK)
+			{
+				params.add(NamespaceHelper.getBlockByName(parts[i]));
+				ingredients++;
+			}
+			else 
+			{
+				// If not block or item, and it's an ore type, add it as an ingredient. 
+				if (!onOptions && type == IngredientType.ORE && !isNumber(parts[i]))
+				{
+					params.add(parts[i]);
+					ingredients++;
+				}
+				// The first two options MUST be numbers, the cook times
+				else if (!onOptions && isNumber(parts[i]))
+				{
+					if (i + 1 >= parts.length || !isNumber(parts[i + 1]))
+						return false;
+					params.add("|");
+					params.add(parts[i++]);
+					params.add(parts[i]);
+					onOptions = true;
+				}
+				// Options ! It's not valid unless the first were numbers
+				else
+				{
+					if(!onOptions) 
+						return false;
+					params.add(parts[i]);
+				}
+			}
+		}
+		
+		if (ingredients < 1 || ingredients > 6)
+			return false;
+		
+		try
+		{
+			ItemStack output = (outputType == IngredientType.ITEM ? 
+					new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
+					new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+			
+			RecipeKawaiiBigPot r = new RecipeKawaiiBigPot(output,params.toArray());
 			r.register();
 		} 
 		catch (Exception exception) 

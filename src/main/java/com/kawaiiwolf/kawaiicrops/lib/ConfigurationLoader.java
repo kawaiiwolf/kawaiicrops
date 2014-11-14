@@ -308,9 +308,9 @@ public class ConfigurationLoader {
 			"\n"+
 			"\"<result item/block name> <number crafted> <1> [<2> <3>] <cook time> <burn time> <options>\"\n"+
 			"\n"+
-			"Where <1>, <2> and <3> are the names of the block, item or ore dictonary names for the\n"+
-			"ingredients to be cooked into the result. You can provide between 1 and 3 ingredients.\n"+
-			"For a list of all valid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
+			"\nWhere <1>, <2> and <3> are the names of the block, item or ore dictonary names for the"+
+			"\ningredients to be cooked into the result. You can provide between 1 and 3 ingredients."+
+			"\nFor a list of all valid IDs, turn on \"Dump All IDs\" in general.cfg"+
 			"\n"+
 			"\n<cook time> is the number of random ticks it will take for the recipe to finish cooking."+
 			"\n  A number less than 1 indicates it cooks instantly if the pan is hot ( at least one "+
@@ -336,7 +336,49 @@ public class ConfigurationLoader {
 			"\n\"minecraft:cooked_porkchop 1 minecraft:porkchop 1 4 oil\""+
 			"\nCooks a porkchop in 1 random tick that will burn after 4 more random ticks"+
 			"\n"+
-			"\n\"minecraft:mushroom_stew 2 minecraft:brown_mushroom minecraft:red_mushroom 6 0 texture minecraft:bowl\""+
+			"\n\"minecraft:mushroom_stew 2 minecraft:brown_mushroom minecraft:red_mushroom 4 0 texture minecraft:bowl\""+
+			"\ncooks 2 mushroom stews after 4 random ticks with no chance of burning. You must click on the pan with a"+
+			"\nwooden bowl in hand to harvest the soup. Additionally, once fully cooked, instead of rendering a"+
+			"\nbowl of mushroom stew in the pan, it will instead display the texture found at"+
+			"\n  kawaiicrops\\textures\\blocks\\mushroom_stew.fryingpan.png";
+	
+	public static final String REFERENCE_RECIPES_CUST_BIG_POT = "" +
+			"Format for Big Pot Crafting Recipies:\n"+
+			"\n"+
+			"\n\"<result item/block name> <number crafted> <1> [<2> ... <6>] <cook time> <burn time> <options>\""+
+			"\n"+
+			"\nWhere <1>, <2> ... <3> are the names of the block, item or ore dictonary names for the"+
+			"\ningredients to be cooked into the result. You can provide between 1 and 6 ingredients."+
+			"\nFor a list of all valid IDs, turn on \"Dump All IDs\" in general.cfg"+
+			"\n"+
+			"\n<cook time> is the number of random ticks it will take for the recipe to finish cooking."+
+			"\n  A number less than 1 indicates it cooks instantly if the pan is hot ( at least one "+
+			"\n  random tick ontop of a heat source block)"+
+			"\n"+
+			"\n<burn time> is the number of random ticks it will take for the recipie to be ruined by"+
+			"\n  overcooking. A number less than 1 indicates the food will never burn."+
+			"\n"+
+			"\nOptions: The following options can be provided or ommited to change the nature of the"+
+			"\nrecipe."+
+			"\n  - \"water\": Recipies require some water to be added to the pot before you can add"+
+			"\n             other ingredeints. See general.cfg to see a list of items that add water "+
+			"\n             to the pot. If oil is not set, this option is assumed."+
+			"\n  - \"oil\": Recipies require some sort of oil to be added to the pot before you can add"+
+			"\n           other ingredeints. See general.cfg to see a list of items that count as a type"+
+			"\n           of oil."+
+			"\n  - \"keep\": Liquids in this pot remain after cooking this dish"+
+			"\n  - \"texture\": On a completed recipie, render a different texture in the pan. The file"+
+			"\n               for this texture sould be named the same as the item plus \".bigpot\""+
+			"\n               (minus the mod id) and placed in the kawaiicrops\\textures\\blocks folder."+
+			"\n  - <Item Name>: Harvesting a complete recipe requires this item and will use it up."+
+			"\n"+
+			"\n"+
+			"\nExample:"+
+			"\n"+
+			"\n\"minecraft:cooked_porkchop 1 minecraft:porkchop 1 4 oil\""+
+			"\nCooks a porkchop in 1 random tick that will burn after 4 more random ticks"+
+			"\n"+
+			"\n\"minecraft:mushroom_stew 2 minecraft:brown_mushroom minecraft:red_mushroom 4 0 texture minecraft:bowl\""+
 			"\ncooks 2 mushroom stews after 4 random ticks with no chance of burning. You must click on the pan with a"+
 			"\nwooden bowl in hand to harvest the soup. Additionally, once fully cooked, instead of rendering a"+
 			"\nbowl of mushroom stew in the pan, it will instead display the texture found at"+
@@ -464,6 +506,7 @@ public class ConfigurationLoader {
 		int recipesS = cfg.getInt("Smelting", category, defaultRecipies, 0, 10000, "Number of Smelting crafting recipes ?");
 		int recipesC_cut = cfg.getInt("Kawaiicraft Cutting Board", category, defaultRecipies, 0, 10000, "Number of Kawaiicraft Cutting Board crafting recipes ?");
 		int recipesC_fry = cfg.getInt("Kawaiicraft Frying Pan", category, defaultRecipies, 0, 10000, "Number of Kawaiicraft Frying Pan crafting recipes ?");
+		int recipesC_pot = cfg.getInt("Kawaiicraft Big Pot", category, defaultRecipies, 0, 10000, "Number of Kawaiicraft Big Pot crafting recipes ?");
 		
 		category = "2 by 2 Shaped Crafting Recipes";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES_2);
@@ -511,6 +554,14 @@ public class ConfigurationLoader {
 		{
 			String recipe = cfg.getString("" + i, category, "", "");
 			RecipeHelper.registerCustomFryingPanRecipe(recipe);
+		}
+		
+		category = "Kawaiicraft Big Pot Recipes";
+		cfg.setCategoryComment(category, this.REFERENCE_RECIPES_CUST_BIG_POT);
+		for (int i = 0; i < recipesC_fry; i++)
+		{
+			String recipe = cfg.getString("" + i, category, "", "");
+			RecipeHelper.registerCustomBigPotRecipe(recipe);
 		}
 		
 		cfg.save();
