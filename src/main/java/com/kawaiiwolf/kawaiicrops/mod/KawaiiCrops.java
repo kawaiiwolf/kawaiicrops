@@ -60,9 +60,6 @@ public class KawaiiCrops {
      * Custom Cooking:
      *   Add particle effects to base TE & NBT
      *   
-     *   Options:
-     *   use up fluid
-     *   
      * food items: Containers returned on eaten or used to fill stuff ?
      * Ore Dict - add external items to dictionary
      *    

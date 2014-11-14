@@ -40,7 +40,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			{
 				clearAllItems();
 				state = "clean";
-				cookTime = 0;
+				cookTime = recipeHash = 0;
 				
 				particleBlast(world, x, y, z, "mobSpellAmbient", 8, 12, 0.1d, 0.1d, 1.0d);
 			}
@@ -49,7 +49,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			{
 				dropAllItems(world, x, y, z);
 				state = "clean";
-				cookTime = 0;
+				cookTime = recipeHash =0;
 			}
 			// Haven't started cooking yet ! Pull recipe items.
 			else if (cookTime <= 1 && recipeHash == 0)
@@ -63,7 +63,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				{
 					dropAllItems(world, x, y, z);
 					state = (recipe.greasy ? "oiled" : "clean");
-					cookTime = 1;
+					cookTime = recipeHash = 1;
 				}
 			}
 		}
@@ -126,7 +126,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					{
 						inventorySlots[0] = null;
 						state = (recipe.greasy ? "oiled" : "clean");
-						cookTime = 0;
+						cookTime = recipeHash = 0;
 					}
 				}
 			}
@@ -253,7 +253,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 		if (recipeHash != 0)
 		{
 			RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCurrentRecipe();
-			if (recipe != null && recipe.texture)
+			if (recipe != null && recipe.texture && cookTime > recipe.cookTime)
 			{
 				fullIcon[0] = new TexturedIcon(BlockKawaiiFryingPan.FoodTextures.get(recipe), TextureMap.locationBlocksTexture);
 				return fullIcon;
