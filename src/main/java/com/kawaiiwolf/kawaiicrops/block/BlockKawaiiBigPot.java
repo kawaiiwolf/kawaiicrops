@@ -20,6 +20,9 @@ import net.minecraft.world.World;
 public class BlockKawaiiBigPot extends BlockKawaiiCookingBlock 
 {
 	public static HashMap<RecipeKawaiiBigPot,IIcon> FoodTextures;
+	public static IIcon MilkTexture;
+	public static IIcon OilTexture;
+	public static IIcon WaterTexture;
 	
 	protected BlockKawaiiBigPot()
 	{
@@ -41,6 +44,10 @@ public class BlockKawaiiBigPot extends BlockKawaiiCookingBlock
 		super.registerBlockIcons(register);
 		
 		FoodTextures = new HashMap<RecipeKawaiiBigPot,IIcon>();
+		
+		MilkTexture = register.registerIcon(Constants.MOD_ID + ":liquid.milk");
+		OilTexture = register.registerIcon(Constants.MOD_ID + ":liquid.oil");
+		WaterTexture = register.registerIcon(Constants.MOD_ID + ":liquid.water");
 		
 		for (RecipeKawaiiCookingBase base : (new RecipeKawaiiBigPot()).getAllRecipes())
 		{

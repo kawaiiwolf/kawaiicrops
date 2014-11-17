@@ -30,24 +30,20 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player) 
 	{
-		// If we're done cooking, pop off items ! 
+		// If clicking with an empty hand 
 		if (player.getCurrentEquippedItem() == null)
 		{
 			// Clean out & Dump pan
-			if (player.isSneaking())
+			if (player.isSneaking() || state.equals("ruined"))
 			{
-				clearAllItems();
+				if (state.equals("ruined"))
+					dropAllItems(world, x, y, z);
+				else
+					clearAllItems();
 				state = "clean";
 				cookTime = recipeHash = 0;
 				
 				particleBlast(world, x, y, z, "mobSpellAmbient", 8, 12, 0.1d, 0.1d, 1.0d);
-			}
-			// Clean out ruined foods !
-			else if (state.equals("ruined"))
-			{
-				dropAllItems(world, x, y, z);
-				state = "clean";
-				cookTime = recipeHash =0;
 			}
 			// Haven't started cooking yet ! Pull recipe items.
 			else if (cookTime <= 1 && recipeHash == 0)
@@ -78,7 +74,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				// Check to grease up the pan
 				if(state.equals("clean") && RecipeKawaiiFryingPan.CookingOilItems.contains(player.getCurrentEquippedItem().getItem()))
 				{
-					player.getCurrentEquippedItem().stackSize--;
+					takeCurrentItemContainer(player);
 					state = "oiled";
 					
 					particleBlast(world, x, y, z, "mobSpell", 8, 12, 1, 1, .6d);
@@ -87,8 +83,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				// Check for valid ingredient
 				else if (slot != -1 && isItemValidForSlot(slot, player.getCurrentEquippedItem()))
 				{
-					setInventorySlotContents(slot, new ItemStack(player.getCurrentEquippedItem().getItem(), 1));
-					player.getCurrentEquippedItem().stackSize--;
+					setInventorySlotContents(slot, takeCurrentItemContainer(player));
 				}
 				
 				// If the pan is heated, start checking for instant cook recipes

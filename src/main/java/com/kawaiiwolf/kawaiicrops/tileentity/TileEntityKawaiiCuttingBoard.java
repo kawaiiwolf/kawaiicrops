@@ -27,7 +27,7 @@ public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCookingBlock
 		else if (getStackInSlot(0) != null)
 			display[0] = new TexturedIcon(getStackInSlot(0));
 		else
-			display = null;
+			display[0] = null;
 		return display;
 	}
 	
@@ -41,8 +41,7 @@ public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCookingBlock
 			dropAllItems(world, x, y, z);
 		else if (isItemValidForSlot(1, player.getCurrentEquippedItem()))
 		{
-			this.setInventorySlotContents(1, new ItemStack(player.getCurrentEquippedItem().getItem(), 1));
-			player.getCurrentEquippedItem().stackSize--;
+			setInventorySlotContents(1, takeCurrentItemContainer(player));
 		} 
 		else
 		{

@@ -18,8 +18,6 @@ import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen.WorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiTree;
 
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -36,6 +34,7 @@ public class ConfigurationLoader {
 	
 	// Dump a list of Block/Item names to a config file.
 	private static boolean DumpIDs = false;
+	private static boolean BonusOres = false;
 	
 	public ConfigurationLoader(String configFolder) {
 		this.configFolder = configFolder;
@@ -202,6 +201,24 @@ public class ConfigurationLoader {
 			"To see a list of all Ore Dictionary names, turn on \"Dump All IDs\" and see dump.cfg";
 	
 	
+	public static final String REFERENCE_BONUS_ORE_COMMENT = "" +
+			"\nUse these fields to add existing items from Vanilla minecraft or other mods to the Ore"+
+			"\nDictionary. Please see the note on the Ore Dictionary in general.cfg to see how to use"+
+			"\nthe Ore Dictionary."+
+			"\n"+
+			"\nFormat:"+
+			"\n  <item> <ore name> ... <ore name>"+
+			"\n"+
+			"\nWhere <item> is the name of the item to add to the ore dictionary, and ore names are" +
+			"\nspace separated ore dictionary names. See general.cfg and dump.cfg to get a list of"+
+			"\nall item names."+
+			"\n"+
+			"\nExamples:"+
+			"\n"+
+			"\n  minecraft:carrot veggieAll veggieRaw veggieSalad"+
+			"\nAdds the vanilla carrot to the veggieAll, veggieRaw and veggieSalad ore dictionary groups.";
+	
+	
 	public static final String REFERENCE_RECIPES = "" +
 			"These values control the number of recipies to be parsed. If it's not enough\n" +
 			"simply increase these numbers and load up the game to automatically create\n" +
@@ -363,6 +380,9 @@ public class ConfigurationLoader {
 			"\n  - \"water\": Recipies require some water to be added to the pot before you can add"+
 			"\n             other ingredeints. See general.cfg to see a list of items that add water "+
 			"\n             to the pot. If oil is not set, this option is assumed."+
+			"\n  - \"milk\": Recipies require some sort of milk to be added to the pot before you can add"+
+			"\n            other ingredeints. See general.cfg to see a list of items that count as a type"+
+			"\n            of milk."+
 			"\n  - \"oil\": Recipies require some sort of oil to be added to the pot before you can add"+
 			"\n           other ingredeints. See general.cfg to see a list of items that count as a type"+
 			"\n           of oil."+
@@ -395,6 +415,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("Reference: Ore Dictionary Help", REFERENCE_ORE_COMMENT);
 		
 		DumpIDs = cfg_general.getBoolean("0.General  Dump All IDs", Configuration.CATEGORY_GENERAL, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
+		BonusOres = cfg_general.getBoolean("0.General  Bonus Ore Dictionary", Configuration.CATEGORY_GENERAL, false, "Add items from other mods to ore dictionary references ?  If enabled, see ore.cfg");
 		ModItems.HungerPotionEnabled = cfg_general.getBoolean("0.General  Hunger Potion", Configuration.CATEGORY_GENERAL, ModItems.HungerPotionEnabled, "Enable the Potion of Hunger ?  This debug item makes you hungrier by drinking it.");
 		ModItems.MysterySeedEnabled = cfg_general.getBoolean("0.General  Mystery Seed Enabled", Configuration.CATEGORY_GENERAL, ModItems.MysterySeedEnabled, "Enable the Myster Seed ?  When planted it could grow into just about anything !");
 		ModItems.MysterySeedVanilla = cfg_general.getBoolean("0.General  Vanilla Mystery Seed Crops", Configuration.CATEGORY_GENERAL, ModItems.MysterySeedVanilla, "Include Vanilla Crops/Plants in the Mystery Seed's Drop List ?");
@@ -403,6 +424,7 @@ public class ConfigurationLoader {
 		RecipeKawaiiFryingPan.CookingOilItemsString = cfg_general.getString("2.Cooking  Frying Pan Oil Items", Configuration.CATEGORY_GENERAL, "kawaiicrops:kawaiicrops.cookingoil", "What items can be used as a cooking oil for frying pan recipes ?  Please separate items with spaces.");
 		RecipeKawaiiBigPot.CookingOilItemsString = cfg_general.getString("3.Cooking  Big Pot Oil Items", Configuration.CATEGORY_GENERAL, "kawaiicrops:kawaiicrops.cookingoil", "What items can be used as a cooking oil for Big Pot recipes ?  Please separate items with spaces.");
 		RecipeKawaiiBigPot.CookingWaterItemsString = cfg_general.getString("3.Cooking  Big Pot Water Items", Configuration.CATEGORY_GENERAL, "minecraft:water_bucket", "What items can be used as water for Big Pot recipes ?  Please separate items with spaces.");
+		RecipeKawaiiBigPot.CookingMilkItemsString = cfg_general.getString("3.Cooking  Big Pot Milk Items", Configuration.CATEGORY_GENERAL, "minecraft:milk_bucket", "What items can be used as milk for Big Pot recipes ?  Please separate items with spaces.");
 		
 		//cfg_general.getString("1.Cooking  ", Configuration.CATEGORY_GENERAL, "", "");
 		
@@ -489,7 +511,35 @@ public class ConfigurationLoader {
 		cfg_general.save();
 	}
 	
-	public void loadConfiguration_PostInit(FMLPostInitializationEvent event) 
+	public void loadConfiguration_Init()
+	{
+		if (BonusOres)
+		{
+			Configuration cfg = new Configuration(new File(configFolder+ Constants.CONFIG_ORES));
+			cfg.load();
+
+			cfg.setCategoryComment("0 General", "Number of Ore Dictionary References");
+			int ores = cfg.getInt("Number of references", "0 General", 3, 1, 10000, "");
+			String ore, name, dict;
+			
+			cfg.setCategoryComment("Ore Dictionary References", REFERENCE_BONUS_ORE_COMMENT);
+			for (int i = 1; i <= ores; i++)
+			{
+				ore = cfg.getString("" + i, "Ore Dictionary References", "", "");
+				try
+				{
+					name = ore.substring(0, ore.indexOf(" ")).trim();
+					dict = ore.substring(ore.indexOf(" ")).trim();
+					
+					ModItems.OreDictionaryBonus.put(name, dict);
+				} 
+				catch (Exception e) { }
+			}
+			cfg.save();
+		}
+	}
+	
+	public void loadConfiguration_PostInit() 
 	{
 		if (DumpIDs) dumpIDs();
 		
@@ -819,6 +869,7 @@ public class ConfigurationLoader {
 		String toolTipText = config.getString("2.Other  Tool Tip Text", category, "", "What is the Tooltip for this food ?");
 		PotionEffectHelper potion = new PotionEffectHelper(config.getString("2.Other  Potion Effect", category, "", "What potion effect do you want triggered on eating this food ?  Please see General.cfg to see how to use these."));
 		String oreDict = config.getString("2.Other  Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
+		String container = config.getString("2.Other  Container Item", category, "", "What item is used to hold this food, which might be returned upon eating it (Ex: minecraft:bowl) ?  Please see General.cfg and enable Dump to get a list of all items.");
 		
 		config.setCategoryComment(category, 
 				"Resource Pack settings for " + name + "\n\n" +
@@ -827,6 +878,8 @@ public class ConfigurationLoader {
 		
 		ItemKawaiiFood food = new ItemKawaiiFood(name, toolTipText, hunger, saturation, potion);
 		food.OreDict = oreDict;
+		food.ContainerItemString = container;
+
 		if (enabled)
 			GameRegistry.registerItem(food, Constants.MOD_ID + "." + name);
 		
@@ -842,6 +895,7 @@ public class ConfigurationLoader {
 		boolean enabled = config.getBoolean("0.  Enabled", category, false, "Is this an item in minecraft ? Defaults to false to allow you to configure before putting it in the game.");
 		String toolTipText = config.getString("2.Other  Tool Tip Text", category, "", "What is the Tooltip for this food ?");
 		String oreDict = config.getString("2.Other  Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
+		String container = config.getString("2.Other  Container Item", category, "", "What item is used to hold this food, which might be returned upon eating it (Ex: minecraft:bowl) ?  Please see General.cfg and enable Dump to get a list of all items.");
 		
 		config.setCategoryComment(category, 
 				"Resource Pack settings for " + name + "\n\n" +
@@ -850,6 +904,7 @@ public class ConfigurationLoader {
 		
 		ItemKawaiiIngredient ingredient = new ItemKawaiiIngredient(name, toolTipText);
 		ingredient.OreDict = oreDict;
+		ingredient.ContainerItemString = container;
 		
 		if (enabled)
 			GameRegistry.registerItem(ingredient, Constants.MOD_ID + "." + name);		

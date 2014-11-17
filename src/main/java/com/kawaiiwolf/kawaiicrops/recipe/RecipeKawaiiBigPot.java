@@ -12,6 +12,7 @@ public class RecipeKawaiiBigPot extends RecipeKawaiiCookingBase
 	private static ArrayList<RecipeKawaiiCookingBase> allRecipes = new ArrayList<RecipeKawaiiCookingBase>();
 	private static ArrayList<RecipeKawaiiCookingBase> oilRecipes = new ArrayList<RecipeKawaiiCookingBase>();
 	private static ArrayList<RecipeKawaiiCookingBase> waterRecipes = new ArrayList<RecipeKawaiiCookingBase>();
+	private static ArrayList<RecipeKawaiiCookingBase> milkRecipes = new ArrayList<RecipeKawaiiCookingBase>();
 	
 	public static String CookingOilItemsString = "";
 	public static ArrayList<Item> CookingOilItems = new ArrayList<Item>();
@@ -19,9 +20,14 @@ public class RecipeKawaiiBigPot extends RecipeKawaiiCookingBase
 	public static String CookingWaterItemsString = "";
 	public static ArrayList<Item> CookingWaterItems = new ArrayList<Item>();
 	
+	public static String CookingMilkItemsString = "";
+	public static ArrayList<Item> CookingMilkItems = new ArrayList<Item>();
+	
 	public int cookTime = 0;
 	public int burnTime = 0;
 	public boolean oil = false;
+	public boolean water = true;
+	public boolean milk = false;
 	public boolean keepLiquid = false;
 	public boolean texture = false;
 	public Item harvest = null;
@@ -51,9 +57,20 @@ public class RecipeKawaiiBigPot extends RecipeKawaiiCookingBase
 				if (option == null || option.isEmpty() || option.equals("|"))
 					continue;
 				else if (options.equals("water"))
-					oil = false;
+				{
+					water = true;
+					oil = milk = false;
+				}
 				else if (option.equals("oil"))
+				{
 					oil = true;
+					milk = water = false;
+				}
+				else if (option.equals("milk"))
+				{
+					milk = true;
+					oil = water = false;
+				}
 				else if (option.equals("texture"))
 					texture = true;
 				else if (option.equals("keep"))
@@ -88,12 +105,16 @@ public class RecipeKawaiiBigPot extends RecipeKawaiiCookingBase
 		return allRecipes;
 	}
 	
-	public ArrayList<RecipeKawaiiCookingBase> getFilteredRecipes(boolean oil)
+	public ArrayList<RecipeKawaiiCookingBase> getFilteredRecipes(String liquid)
 	{
-		if (oil)
+		if (liquid.equals("oil"))
 			return oilRecipes;
-		else
+		if (liquid.equals("water"))
 			return waterRecipes;
+		if (liquid.equals("milk"))
+			return milkRecipes;
+		
+		return allRecipes;
 	}
 
 	@Override

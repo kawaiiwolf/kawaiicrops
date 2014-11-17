@@ -35,6 +35,7 @@ public class KawaiiCrops {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) 
     {
+    	config.loadConfiguration_Init();
     	proxy.registerRenderers();
     	ModTileEntities.register();
     	ModItems.registerOreDictionary();
@@ -43,25 +44,16 @@ public class KawaiiCrops {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) 
     {
-    	config.loadConfiguration_PostInit(event);
+    	config.loadConfiguration_PostInit();
     	ModBlocks.registerDropTables();
     	ModBlocks.registerCookingBlockLists();
     }
     
     /**
      * TODO:
-     * 
-     * Frying Pan Behavior
-     *   - special texture. TO THE RENDERER BATMAN !
-     * 
-     * Big Pot Behavior
-     * Big Pot Recipes
-     * 
-     * Custom Cooking:
-     *   Add particle effects to base TE & NBT
      *   
-     * food items: Containers returned on eaten or used to fill stuff ?
-     * Ore Dict - add external items to dictionary
+     * NEI Integration.
+     * TEST TEST TEST
      *    
      */
 }

@@ -38,5 +38,6 @@ public class ModBlocks {
 		RecipeKawaiiFryingPan.CookingOilItems = NamespaceHelper.getItemsByName(RecipeKawaiiFryingPan.CookingOilItemsString);
 		RecipeKawaiiBigPot.CookingOilItems = NamespaceHelper.getItemsByName(RecipeKawaiiBigPot.CookingOilItemsString);
 		RecipeKawaiiBigPot.CookingWaterItems = NamespaceHelper.getItemsByName(RecipeKawaiiBigPot.CookingWaterItemsString);
+		RecipeKawaiiBigPot.CookingMilkItems = NamespaceHelper.getItemsByName(RecipeKawaiiBigPot.CookingMilkItemsString);
 	}
 }

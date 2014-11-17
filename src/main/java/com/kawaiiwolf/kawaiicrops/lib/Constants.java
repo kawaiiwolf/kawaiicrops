@@ -14,6 +14,6 @@ public class Constants {
 	public static final String CONFIG_RECIPES = CONFIG_FOLDER + "/recipes.cfg";
 	public static final String CONFIG_TREES = CONFIG_FOLDER + "/trees.cfg";
 	public static final String CONFIG_DUMP = CONFIG_FOLDER + "/dump.cfg";
-	
+	public static final String CONFIG_ORES = CONFIG_FOLDER + "/ore.cfg";
 	
 }

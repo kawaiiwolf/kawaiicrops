@@ -1,6 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.item;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,8 @@ public class ModItems {
 	public static ArrayList<ItemKawaiiIngredient> ModIngredients = new ArrayList<ItemKawaiiIngredient>();
 	public static ArrayList<ItemKawaiiSeed> ModSeeds = new ArrayList<ItemKawaiiSeed>();
 	public static ArrayList<ItemKawaiiSeedFood> ModSeedFoods = new ArrayList<ItemKawaiiSeedFood>();
+	
+	public static HashMap<String,String> OreDictionaryBonus = new HashMap<String,String>();
 	
 	public static ItemHungerPotion HungerPotion = new ItemHungerPotion();
 	public static ItemKawaiiMysterySeed MysterySeed = null;
@@ -61,6 +64,9 @@ public class ModItems {
 		
 		for (ItemKawaiiSeedFood seedFood : ModSeedFoods)
 			insertIntoOreDictionary(seedFood, seedFood.OreDict);
+		
+		for (String key : OreDictionaryBonus.keySet())
+			insertIntoOreDictionary(NamespaceHelper.getItemByName(key), OreDictionaryBonus.get(key));
 	}
 	
 	private static void insertIntoOreDictionary(Item item, String oreEntries)
@@ -73,7 +79,7 @@ public class ModItems {
 			return;
 		
 		for (String ore : oreEntries.split("[ ]"))
-			if (ore != null && ore.length() >= 0)
+			if (ore != null && ore.length() > 0)
 				OreDictionary.registerOre(ore, item);
 	}
 }

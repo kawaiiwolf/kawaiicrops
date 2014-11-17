@@ -224,7 +224,6 @@ public class RecipeHelper {
 			outputNum = Integer.parseInt(parts[1]);
 		} catch (NumberFormatException e) { return false; }
 		if (outputNum < 1 || outputNum > 64) return false;
-
 		
 		// Parse Input Type
 		IngredientType inputType = parseIngredientType(parts[2]);

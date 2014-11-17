@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -18,8 +19,11 @@ public class ItemKawaiiIngredient extends Item {
 	private String name = "";
 	public String OreDict = "";
 
-	public ItemKawaiiIngredient(String name, String toolTip) {
-		
+	public String ContainerItemString = "";
+	public Item ContainerItem;
+	
+	public ItemKawaiiIngredient(String name, String toolTip) 
+	{
 		this.setTextureName(Constants.MOD_ID + ":" + name);
 		this.setUnlocalizedName(Constants.MOD_ID + "." + name);
 		this.name = name;
@@ -42,4 +46,20 @@ public class ItemKawaiiIngredient extends Item {
 		if (ToolTipText.length() > 0)
 			list.add(ToolTipText);
 	}
+	
+	@Override
+    public Item getContainerItem()
+    {
+		if (super.getContainerItem() == null && ContainerItemString.length() > 0)
+			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString));
+        return super.getContainerItem();
+    }
+	
+	@Override
+    public ItemStack getContainerItem(ItemStack stack)
+    {
+		if (super.getContainerItem(stack) == null && ContainerItemString.length() > 0)
+			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString));
+        return super.getContainerItem(stack);
+    }
 }

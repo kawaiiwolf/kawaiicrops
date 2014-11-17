@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -139,11 +140,13 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 
 		boolean found = false;
 		for (RecipeKawaiiCookingBase recipe : getRecipes(state))
+		{
 			if (!found && recipe.matches(ingredients) >= 0)
 			{
 				found = true;
 				break;
 			}
+		}
 
 		inventorySlots[0] = null;
 		return found;
@@ -232,7 +235,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
     public void dropAllItems(World world, int x, int y, int z)
     {
     	for(int i = 0; i < inventorySlots.length; i++)
-    		if (inventorySlots[i] != null)
+    		if (inventorySlots[i] != null && inventorySlots[i].getItem().getContainerItem() == null)
     			dropBlockAsItem(world, x, y, z, inventorySlots[i]);
     	clearAllItems();
     }
@@ -249,6 +252,22 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
     	if (max < min) max = min;
     	for (int i = world.rand.nextInt(1 + max - min) + min; i > 0; i--)
     		worldObj.spawnParticle(name, x + world.rand.nextFloat(), y + world.rand.nextFloat() * 0.2D, z + world.rand.nextFloat(), mx, my, mz);
+    }
+    
+    public ItemStack takeCurrentItemContainer(EntityPlayer player)
+    {
+    	if (player.getCurrentEquippedItem() == null)
+    		return null;
+    	
+    	ItemStack ret = new ItemStack(player.getCurrentEquippedItem().getItem(), 1);
+    	player.getCurrentEquippedItem().stackSize--;
+    	
+    	Item container = ret.getItem().getContainerItem();
+    	if (container != null)
+    		player.inventory.addItemStackToInventory(new ItemStack(container, 1));
+    	
+    	return ret;
+    	
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////
