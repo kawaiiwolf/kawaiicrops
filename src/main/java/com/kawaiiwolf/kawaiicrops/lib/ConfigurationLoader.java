@@ -64,7 +64,7 @@ public class ConfigurationLoader {
 			"Bad Name: Cherry\n"+
 			"Good Name: cherry\n"+
 			"\n"+
-			"S:Cakes=strawberryshort chocolate carrot";	
+			"S:Cakes=cherry lemon walnut";	
 
 	
 	public static final String GENERAL_CAKE_COMMENT = "" + 

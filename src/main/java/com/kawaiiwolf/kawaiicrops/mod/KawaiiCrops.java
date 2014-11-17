@@ -14,7 +14,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 
-@Mod(modid = Constants.MOD_ID, name = Constants.MOD_NAME, version = Constants.VERSION)
+@Mod(modid = Constants.MOD_ID, name = Constants.MOD_NAME, version = Constants.VERSION_FULL)
 public class KawaiiCrops {
 	
 	@SidedProxy(clientSide="com.kawaiiwolf.kawaiicrops.proxies.ClientProxy", serverSide="com.kawaiiwolf.kawaiicrops.proxies.CommonProxy")
@@ -30,6 +30,8 @@ public class KawaiiCrops {
     	ModBlocks.register();
     	ModItems.register();
     	ModWorldGen.register();
+    	
+    	event.getModMetadata().version = Constants.VERSION;
     }
  
     @Mod.EventHandler
@@ -51,8 +53,12 @@ public class KawaiiCrops {
     
     /**
      * TODO:
-     *   
+     * 
+     * itemGroup.kawaiicrops= TO en_US.lang
+     * 
      * NEI Integration.
+     *   GUI asset
+     *   Subclass the cachedrecipe to store cooking block & liquid
      * TEST TEST TEST
      *    
      */

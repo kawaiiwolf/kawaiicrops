@@ -2,6 +2,7 @@ package com.kawaiiwolf.kawaiicrops.block;
 
 import java.util.Random;
 
+import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCookingBlock;
 
@@ -32,6 +33,8 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer {
 		setBlockName(Constants.MOD_ID + "." + name);
 		setHardness(1.0f);
 		setTickRandomly(randomTick);
+		
+		setCreativeTab(ModItems.KawaiiCreativeTab);
 	}
 	
 	@Override

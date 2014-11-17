@@ -23,6 +23,7 @@ public class ItemKawaiiCake extends ItemReed {
 		this.setUnlocalizedName(Constants.MOD_ID + "." + cake.Name + ".cake");
 		this.cake = cake;
 		
+		setCreativeTab(ModItems.KawaiiCreativeTab);
 		ModItems.ModCakes.add(this);
 	}
 	

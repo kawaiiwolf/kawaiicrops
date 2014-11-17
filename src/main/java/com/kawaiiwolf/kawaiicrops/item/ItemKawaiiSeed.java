@@ -45,6 +45,8 @@ public class ItemKawaiiSeed extends ItemSeeds {
 		this.name = name;
 		this.plant = plant;
 		this.ToolTipText = toolTip;
+		
+		setCreativeTab(ModItems.KawaiiCreativeTab);
 	}
 	
 	public ItemKawaiiSeed(String name, String toolTip, BlockKawaiiTreeBlocks tree) {
@@ -56,6 +58,8 @@ public class ItemKawaiiSeed extends ItemSeeds {
 		this.name = name;
 		this.tree = tree;
 		this.ToolTipText = toolTip;
+		
+		setCreativeTab(ModItems.KawaiiCreativeTab);
 	}
 	
 	private boolean isRegistered = false;

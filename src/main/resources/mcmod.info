@@ -3,14 +3,10 @@
   "modid": "kawaiicrops",
   "name": "A Kawaii Crop Mod",
   "description": "If you can read me, I exist !",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
+  "version": "xxx",
+  "mcversion": "$mcversion",
   "authorList": ["kawaiiwolf"],
   "credits": "Kawaiiwolf & Sasha",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
+  "logoFile": ""
 }
 ]

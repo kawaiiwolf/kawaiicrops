@@ -13,8 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class ItemKawaiiIngredient extends Item {
-
+public class ItemKawaiiIngredient extends Item 
+{
 	public String ToolTipText = "";
 	private String name = "";
 	public String OreDict = "";
@@ -24,10 +24,12 @@ public class ItemKawaiiIngredient extends Item {
 	
 	public ItemKawaiiIngredient(String name, String toolTip) 
 	{
-		this.setTextureName(Constants.MOD_ID + ":" + name);
-		this.setUnlocalizedName(Constants.MOD_ID + "." + name);
+		setTextureName(Constants.MOD_ID + ":" + name);
+		setUnlocalizedName(Constants.MOD_ID + "." + name);
 		this.name = name;
-		this.ToolTipText = toolTip;
+		ToolTipText = toolTip;
+		
+		setCreativeTab(ModItems.KawaiiCreativeTab);
 	}
 	
 	private boolean isRegistered = false;

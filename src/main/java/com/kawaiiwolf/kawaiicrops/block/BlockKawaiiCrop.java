@@ -51,7 +51,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
 	public String Name = "";
 	
 	// Don't register if false
-	public boolean Enabled = true;
+	public boolean Enabled = false;
 	
 	// Number of crop stages
 	public int CropStages = 8;

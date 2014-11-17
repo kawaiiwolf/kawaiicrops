@@ -20,6 +20,8 @@ public class ItemHungerPotion extends ItemFood {
 		setUnlocalizedName(Constants.MOD_ID + ".hungerpotion");
 		setTextureName("potion_bottle_drinkable");
 		setAlwaysEdible();
+		
+		setCreativeTab(ModItems.KawaiiCreativeTab);
 	}
 	
 	@Override

@@ -45,6 +45,8 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
 		this.plant = plant;
 		this.ToolTipText = toolTip;
 		this.potion = potion;
+		
+		setCreativeTab(ModItems.KawaiiCreativeTab);
 	}
 	
 	private boolean isRegistered = false;

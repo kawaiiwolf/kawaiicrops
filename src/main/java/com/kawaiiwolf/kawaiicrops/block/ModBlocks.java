@@ -7,8 +7,8 @@ import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiBigPot;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 
-public class ModBlocks {
-	
+public class ModBlocks 
+{
 	public static ArrayList<BlockKawaiiCrop> AllCrops = new ArrayList<BlockKawaiiCrop>();
 	public static ArrayList<BlockKawaiiTreeBlocks> AllTrees = new ArrayList<BlockKawaiiTreeBlocks>();
 	

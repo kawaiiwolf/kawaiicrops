@@ -50,6 +50,8 @@ public class ItemKawaiiFood extends ItemFood
 		this.DrinkEffect = drink;
 		this.EatAnytime = eatAnytime;
 		
+		setCreativeTab(ModItems.KawaiiCreativeTab);
+		
 		if (eatAnytime) 
 			setAlwaysEdible();
 	}

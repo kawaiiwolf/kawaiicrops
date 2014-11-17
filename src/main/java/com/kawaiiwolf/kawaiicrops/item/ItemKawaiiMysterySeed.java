@@ -20,11 +20,14 @@ public class ItemKawaiiMysterySeed extends ItemSeeds {
 
 	public static ArrayList<Pair<Block,Integer>> SeedList = new ArrayList<Pair<Block,Integer>>(); 
 	
-	public ItemKawaiiMysterySeed(boolean vanilla) {
+	public ItemKawaiiMysterySeed(boolean vanilla) 
+	{
 		super(null, null);
 
 		setUnlocalizedName(Constants.MOD_ID + ".mysteryseed");
 		setTextureName(Constants.MOD_ID + ":mysteryseed");
+		
+		setCreativeTab(ModItems.KawaiiCreativeTab);
 		
 		if (vanilla)
 		{

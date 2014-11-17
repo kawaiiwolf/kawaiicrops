@@ -3,6 +3,7 @@ package com.kawaiiwolf.kawaiicrops.item;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,9 +13,19 @@ import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ModItems {
 
+	public static CreativeTabs KawaiiCreativeTab = new CreativeTabs("kawaiicrops") {
+	    @Override
+	    @SideOnly(Side.CLIENT)
+	    public Item getTabIconItem() {
+	        return MysterySeed;
+	    }
+	};
+	
 	public static ArrayList<ItemKawaiiCake> ModCakes = new ArrayList<ItemKawaiiCake>();
 	public static ArrayList<ItemKawaiiFood> ModFoods = new ArrayList<ItemKawaiiFood>();
 	public static ArrayList<ItemKawaiiIngredient> ModIngredients = new ArrayList<ItemKawaiiIngredient>();
@@ -37,12 +48,11 @@ public class ModItems {
 		if (HungerPotionEnabled)
 			GameRegistry.registerItem(HungerPotion, Constants.MOD_ID + ".hungerpotion");
 
+		MysterySeed = new ItemKawaiiMysterySeed(MysterySeedVanilla);
+		GameRegistry.registerItem(MysterySeed, Constants.MOD_ID + ".mysteryseed");
+
 		if (MysterySeedEnabled)
-		{
-			MysterySeed = new ItemKawaiiMysterySeed(MysterySeedVanilla);
-			GameRegistry.registerItem(MysterySeed, Constants.MOD_ID + ".mysteryseed");
 			MinecraftForge.addGrassSeed(new ItemStack(MysterySeed), 12);
-		}
 		
 		GameRegistry.registerItem(BurntFood, Constants.MOD_ID + ".burntfood");
 		GameRegistry.registerItem(CookingOil, Constants.MOD_ID + ".cookingoil");
