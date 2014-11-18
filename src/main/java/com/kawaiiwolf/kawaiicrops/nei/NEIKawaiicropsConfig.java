@@ -22,6 +22,9 @@ public class NEIKawaiicropsConfig implements IConfigureNEI
 		
 		for (BlockKawaiiTreeBlocks block : ModBlocks.AllTrees)
 			API.hideItem(new ItemStack((Block)block));
+		
+		API.registerRecipeHandler(new NEIRecipeHandlerKawaiiCuttingBoard());
+		API.registerUsageHandler(new NEIRecipeHandlerKawaiiCuttingBoard());
 	}
 
 	@Override

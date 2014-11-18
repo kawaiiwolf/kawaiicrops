@@ -1,5 +1,10 @@
 
-kawaiicrops.hungerpotion.name=Potion of Hunger
+itemGroup.kawaiicrops=Kawaii Crops
+
+item.kawaiicrops.hungerpotion.name=Potion of Hunger
+item.kawaiicrops.burntfood.name=Burnt Food
+item.kawaiicrops.cookingoil.name=Cooking Oil
+
 tile.kawaiicrops.cuttingboard.name=Cutting Board
 tile.kawaiicrops.bigpot.name=Big Iron Pot
 tile.kawaiicrops.fryingpan.name=Frying Pan

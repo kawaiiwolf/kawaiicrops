@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 public class RecipeKawaiiCuttingBoard extends RecipeKawaiiCookingBase 
 {
-	private static ArrayList<RecipeKawaiiCookingBase> allRecipies = new ArrayList<RecipeKawaiiCookingBase>();
+	public static ArrayList<RecipeKawaiiCookingBase> allRecipies = new ArrayList<RecipeKawaiiCookingBase>();
 	
 	public RecipeKawaiiCuttingBoard() { }
 	public RecipeKawaiiCuttingBoard(ItemStack result, Object... recipe) 

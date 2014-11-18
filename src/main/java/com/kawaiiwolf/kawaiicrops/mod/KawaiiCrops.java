@@ -54,8 +54,6 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
-     * itemGroup.kawaiicrops= TO en_US.lang
-     * 
      * NEI Integration.
      *   GUI asset
      *   Subclass the cachedrecipe to store cooking block & liquid
