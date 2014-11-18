@@ -79,28 +79,28 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 				// Fill the pot with Oil
 				if(state.equals("clean") && RecipeKawaiiBigPot.CookingOilItems.contains(player.getCurrentEquippedItem().getItem()))
 				{
-					takeCurrentItemContainer(player);
+					takeCurrentItemContainer(world, x, y, z, player);
 					state = "oil";
 				}
 				
 				// Fill the pot with Milk
 				else if(state.equals("clean") && RecipeKawaiiBigPot.CookingMilkItems.contains(player.getCurrentEquippedItem().getItem()))
 				{
-					takeCurrentItemContainer(player);
+					takeCurrentItemContainer(world, x, y, z, player);
 					state = "milk";
 				}
 				
 				// Fill the pot with Water
 				else if(state.equals("clean") && RecipeKawaiiBigPot.CookingWaterItems.contains(player.getCurrentEquippedItem().getItem()))
 				{
-					takeCurrentItemContainer(player);
+					takeCurrentItemContainer(world, x, y, z, player);
 					state = "water";
 				}
 				
 				// Check for valid ingredient
 				else if (slot != -1 && isItemValidForSlot(slot, player.getCurrentEquippedItem()))
 				{
-					setInventorySlotContents(slot, takeCurrentItemContainer(player));
+					setInventorySlotContents(slot, takeCurrentItemContainer(world, x, y, z, player));
 				}
 				
 				// If the pot is heated, start checking for instant cook recipes
@@ -149,7 +149,7 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 	{
 		if(RecipeKawaiiCookingBase.CookingHeatSources.contains(world.getBlock(x, y - 1, z)))
 		{
-			if (cookTime == 0)
+			if (cookTime == 0 && !state.equals("clean"))
 				cookTime++;
 			
 			// Pot hot & no set recipe, try to start cooking
@@ -212,7 +212,7 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 		{
 			if (rand.nextFloat() > 0.66f)
 			{
-				if (state.equals("cooking")) 
+				if (state.equals("cooking") || cookTime == 1) 
 					this.particleBlast(world, x, y, z, "explode", 1, 1);
 				if (state.equals("burning")) 
 					this.particleBlast(world, x, y, z, "smoke", 1, 1);

@@ -74,7 +74,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				// Check to grease up the pan
 				if(state.equals("clean") && RecipeKawaiiFryingPan.CookingOilItems.contains(player.getCurrentEquippedItem().getItem()))
 				{
-					takeCurrentItemContainer(player);
+					takeCurrentItemContainer(world, x, y, z, player);
 					state = "oiled";
 					
 					particleBlast(world, x, y, z, "mobSpell", 8, 12, 1, 1, .6d);
@@ -83,7 +83,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				// Check for valid ingredient
 				else if (slot != -1 && isItemValidForSlot(slot, player.getCurrentEquippedItem()))
 				{
-					setInventorySlotContents(slot, takeCurrentItemContainer(player));
+					setInventorySlotContents(slot, takeCurrentItemContainer(world, x, y, z, player));
 				}
 				
 				// If the pan is heated, start checking for instant cook recipes

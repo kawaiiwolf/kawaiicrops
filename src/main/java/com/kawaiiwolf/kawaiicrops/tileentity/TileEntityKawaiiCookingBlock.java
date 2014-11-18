@@ -254,7 +254,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
     		worldObj.spawnParticle(name, x + world.rand.nextFloat(), y + world.rand.nextFloat() * 0.2D, z + world.rand.nextFloat(), mx, my, mz);
     }
     
-    public ItemStack takeCurrentItemContainer(EntityPlayer player)
+    public ItemStack takeCurrentItemContainer(World world, int x, int y, int z, EntityPlayer player)
     {
     	if (player.getCurrentEquippedItem() == null)
     		return null;
@@ -264,7 +264,8 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
     	
     	Item container = ret.getItem().getContainerItem();
     	if (container != null)
-    		player.inventory.addItemStackToInventory(new ItemStack(container, 1));
+    		if(!player.inventory.addItemStackToInventory(new ItemStack(container, 1)))
+    			this.dropBlockAsItem(world, x, y, z, new ItemStack(container));
     	
     	return ret;
     	

@@ -54,9 +54,8 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
-     * NEI Integration.
-     *   GUI asset
-     *   Subclass the cachedrecipe to store cooking block & liquid
+     * NEI render harvest item
+     * 
      * TEST TEST TEST
      *    
      */

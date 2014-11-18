@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 
 public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase 
 {
-	private static ArrayList<RecipeKawaiiCookingBase> allRecipes = new ArrayList<RecipeKawaiiCookingBase>();
-	private static ArrayList<RecipeKawaiiCookingBase> oilRecipes = new ArrayList<RecipeKawaiiCookingBase>();
-	private static ArrayList<RecipeKawaiiCookingBase> cleanRecipes = new ArrayList<RecipeKawaiiCookingBase>();
+	public static ArrayList<RecipeKawaiiCookingBase> allRecipes = new ArrayList<RecipeKawaiiCookingBase>();
+	public static ArrayList<RecipeKawaiiCookingBase> oilRecipes = new ArrayList<RecipeKawaiiCookingBase>();
+	public static ArrayList<RecipeKawaiiCookingBase> cleanRecipes = new ArrayList<RecipeKawaiiCookingBase>();
 	
 	public static String CookingOilItemsString = "";
 	public static ArrayList<Item> CookingOilItems = new ArrayList<Item>();

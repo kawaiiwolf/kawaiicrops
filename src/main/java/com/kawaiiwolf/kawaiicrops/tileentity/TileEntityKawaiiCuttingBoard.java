@@ -41,7 +41,7 @@ public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCookingBlock
 			dropAllItems(world, x, y, z);
 		else if (isItemValidForSlot(1, player.getCurrentEquippedItem()))
 		{
-			setInventorySlotContents(1, takeCurrentItemContainer(player));
+			setInventorySlotContents(1, takeCurrentItemContainer(world, x, y, z, player));
 		} 
 		else
 		{

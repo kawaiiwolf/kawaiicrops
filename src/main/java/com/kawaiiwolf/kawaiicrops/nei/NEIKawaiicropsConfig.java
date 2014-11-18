@@ -11,6 +11,7 @@ import com.kawaiiwolf.kawaiicrops.lib.Constants;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public class NEIKawaiicropsConfig implements IConfigureNEI
 {
@@ -23,8 +24,16 @@ public class NEIKawaiicropsConfig implements IConfigureNEI
 		for (BlockKawaiiTreeBlocks block : ModBlocks.AllTrees)
 			API.hideItem(new ItemStack((Block)block));
 		
-		API.registerRecipeHandler(new NEIRecipeHandlerKawaiiCuttingBoard());
-		API.registerUsageHandler(new NEIRecipeHandlerKawaiiCuttingBoard());
+		TemplateRecipeHandler[] handlers = 
+		{ 	new NEIRecipeHandlerKawaiiCuttingBoard(), 
+			new NEIRecipeHandlerKawaiiFryingPan(), 
+			new NEIRecipeHandlerKawaiiBigPot() 
+		};
+		for (TemplateRecipeHandler handler : handlers)
+		{
+			API.registerRecipeHandler(handler);
+			API.registerUsageHandler(handler);
+		}
 	}
 
 	@Override
