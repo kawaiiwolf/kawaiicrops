@@ -1,14 +1,20 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
+import java.util.List;
 import java.util.Random;
 
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
+import com.kawaiiwolf.kawaiicrops.lib.ConfigurationLoader;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCookingBlock;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mcp.mobius.waila.api.IWailaBlock;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcp.mobius.waila.api.SpecialChars;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -19,10 +25,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public abstract class BlockKawaiiCookingBlock extends BlockContainer {
+public abstract class BlockKawaiiCookingBlock extends BlockContainer implements IWailaBlock {
 
 	public String Name = "";
 	
@@ -123,4 +130,22 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer {
 		GameRegistry.registerBlock(this, Constants.MOD_ID + "." + Name);
 	}
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // WAILA Mod Integration ( implements IWailaBlock )
+    
+	@Override public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) { return null; }
+	@Override public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.WHITE + StatCollector.translateToLocal(getUnlocalizedName() + ".name")); return currenttip; }
+	@Override public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + ConfigurationLoader.WAILAName); return currenttip; }
+
+	@Override
+	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	{
+		if (accessor != null && accessor.getTileEntity() != null && accessor.getTileEntity() instanceof TileEntityKawaiiCookingBlock)
+		{
+			String s = ((TileEntityKawaiiCookingBlock)accessor.getTileEntity()).getWAILATip();
+			if ( s != null && s.length() > 0)
+				currenttip.add(s);
+		}
+		return currenttip;
+	}
 }

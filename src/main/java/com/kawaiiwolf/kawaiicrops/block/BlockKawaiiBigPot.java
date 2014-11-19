@@ -1,6 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
 import java.util.HashMap;
+import java.util.List;
 
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
@@ -11,8 +12,11 @@ import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiBigPot;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -27,8 +31,8 @@ public class BlockKawaiiBigPot extends BlockKawaiiCookingBlock
 	protected BlockKawaiiBigPot()
 	{
 		super(Material.iron, "bigpot", true);
-		
-		this.setBlockTextureName(Constants.MOD_ID + ":bigpot");
+		setHardness(0.5f);
+		setBlockTextureName(Constants.MOD_ID + ":bigpot");
 	}
 
 	@Override
@@ -57,5 +61,4 @@ public class BlockKawaiiBigPot extends BlockKawaiiCookingBlock
 				FoodTextures.put(recipe, register.registerIcon(Constants.MOD_ID + ":" + NamespaceHelper.getItemShortName(recipe.output) + ".bigpot"));
 		}
     }
-
 }

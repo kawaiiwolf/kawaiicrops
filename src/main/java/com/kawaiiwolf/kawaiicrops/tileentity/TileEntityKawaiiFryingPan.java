@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiFryingPan;
@@ -248,5 +249,23 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 		for (int i = 0; i < inventorySlots.length && i < display.length; i++)
 			display[i] = inventorySlots[i] == null ? null : new TexturedIcon(inventorySlots[i]);
 		return display;
+	}
+
+	@Override
+	public String getWAILATip() 
+	{
+		if (state.equals("clean")) return cookTime > 0 ? "State: Hot Pan" : "State: Squeaky Clean";
+		if (state.equals("burning")) return "State: Burning !";
+		if (state.equals("ruined")) return "State: Completely Ruined";
+		if (state.equals("oiled")) return "State: " + (cookTime > 0 ? "Hot " : "") + "Oiled Pan";
+		if (state.equals("cooking"))
+		{
+			RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCurrentRecipe();
+			if (recipe == null) 
+				return null;
+			else
+				return "State: " + (cookTime > recipe.cookTime ? "Finished " : "Cooking ") + StatCollector.translateToLocal(recipe.output.getItem().getUnlocalizedName() + ".name");
+		}
+		return null;
 	}
 }

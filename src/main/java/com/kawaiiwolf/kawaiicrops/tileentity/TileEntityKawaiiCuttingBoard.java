@@ -61,6 +61,12 @@ public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCookingBlock
 		return dummy.getAllRecipes();
 	}
 	private static RecipeKawaiiCuttingBoard dummy = new RecipeKawaiiCuttingBoard();
+
+	@Override
+	public String getWAILATip() 
+	{
+		return null;
+	}
 	
 
 }

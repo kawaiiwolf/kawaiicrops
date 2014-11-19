@@ -2,11 +2,13 @@ package com.kawaiiwolf.kawaiicrops.block;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeed;
+import com.kawaiiwolf.kawaiicrops.lib.ConfigurationLoader;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.DropTable;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
@@ -17,6 +19,10 @@ import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiTree;
 
+import mcp.mobius.waila.api.IWailaBlock;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcp.mobius.waila.api.SpecialChars;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockLeavesBase;
@@ -32,6 +38,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -41,7 +48,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable {
+public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWailaBlock {
 
 	private String name = "";
 	public Boolean Enabled = false;
@@ -588,4 +595,17 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable {
     	
     	return false;
     }
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // WAILA Mod Integration ( implements IWailaBlock )
+    
+	@Override public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) { return null; }
+	@Override public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.WHITE + StatCollector.translateToLocal(getUnlocalizedName() + ".name")); return currenttip; }
+	@Override public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + ConfigurationLoader.WAILAName); return currenttip; }
+
+	@Override
+	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	{
+		return currenttip;
+	}
 }

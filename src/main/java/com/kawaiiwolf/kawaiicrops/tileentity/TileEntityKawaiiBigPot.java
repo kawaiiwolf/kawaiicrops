@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiBigPot;
@@ -282,6 +283,26 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 		if (state.equals("water") || (recipe != null && recipe.water))
 			return BlockKawaiiBigPot.WaterTexture;
 		
+		return null;
+	}
+
+	@Override
+	public String getWAILATip() 
+	{
+		if (state.equals("clean")) return "State: Squeaky Clean";
+		if (state.equals("burning")) return "State: Burning !";
+		if (state.equals("ruined")) return "State: Completely Ruined";
+		if (state.equals("oil")) return "State: Filled with " + (cookTime > 0 ? "Hot " : "") + "Oil";
+		if (state.equals("milk")) return "State: Filled with " + (cookTime > 0 ? "Warm " : "") + "Milk";
+		if (state.equals("water")) return "State: Filled with " + (cookTime > 0 ? "Boiling " : "") + "Water";
+		if (state.equals("cooking"))
+		{
+			RecipeKawaiiBigPot recipe = (RecipeKawaiiBigPot) getCurrentRecipe();
+			if (recipe == null) 
+				return null;
+			else
+				return "State: " + (cookTime > recipe.cookTime ? "Finished " : "Cooking ") + StatCollector.translateToLocal(recipe.output.getItem().getUnlocalizedName() + ".name");
+		}
 		return null;
 	}
 }

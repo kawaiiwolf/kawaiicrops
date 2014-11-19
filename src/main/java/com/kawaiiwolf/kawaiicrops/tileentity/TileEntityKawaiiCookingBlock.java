@@ -270,6 +270,8 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
     	return ret;
     	
     }
+    
+    public abstract String getWAILATip();
 
     /////////////////////////////////////////////////////////////////////////////////////////
     // Multi-Player Sync Code - Just make sure to call: world.markBlockForUpdate(x, y, z);

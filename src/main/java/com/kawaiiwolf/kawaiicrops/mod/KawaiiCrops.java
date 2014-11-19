@@ -25,7 +25,7 @@ public class KawaiiCrops {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) 
     {
-    	config = new ConfigurationLoader(event.getSuggestedConfigurationFile().getParent());
+    	config = new ConfigurationLoader(event);
     	config.loadConfiguration_PreInit();
     	ModBlocks.register();
     	ModItems.register();
@@ -54,12 +54,14 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
-     * WAILA Config mod name
-     * WAILA integration on all blocks
-     * 
-     * NEI render harvest item
+     * WAILA integration on
+     *   Crops
+     *   Trees
+     *
+     * Rendering on internal fruit block for tree 
      * 
      * TEST TEST TEST
+     * 
      * Cooking Block Models
      * Re-adjust particle position on big pot
      * Mortar and pestle cooking block ?

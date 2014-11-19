@@ -2,6 +2,7 @@ package com.kawaiiwolf.kawaiicrops.block;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -9,8 +10,10 @@ import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeed;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeedFood;
+import com.kawaiiwolf.kawaiicrops.lib.ConfigurationLoader;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.DropTable;
+import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
@@ -22,6 +25,10 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mcp.mobius.waila.api.IWailaBlock;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcp.mobius.waila.api.SpecialChars;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.ITileEntityProvider;
@@ -36,11 +43,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
+public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, IWailaBlock {
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Rendering Code
@@ -500,5 +508,34 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider {
         	growPlant(world, x, y, z);
     }
     
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // WAILA Mod Integration ( implements IWailaBlock )
+    
+	@Override public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) { return null; }
+	@Override public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.WHITE + StatCollector.translateToLocal(getUnlocalizedName() + ".name")); return currenttip; }
+	@Override public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + ConfigurationLoader.WAILAName); return currenttip; }
+
+	@Override
+	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	{
+		World world = accessor.getWorld();
+		int x = accessor.getPosition().blockX, y = accessor.getPosition().blockY, z = accessor.getPosition().blockZ;
+
+		if (MaxHeight == 1 || !MaxHeightRequiredToRipen)
+		{
+			if (accessor.getMetadata() == 7)
+				currenttip.add("Crop: Mature");
+			else
+				currenttip.add("Crop: " + ((accessor.getMetadata() + CropStages - 7) * 100 / CropStages) + "% Grown");
+		}
+		else
+		{
+			int max = (CropStages - UnripeStage /*+ 1 Possibly ?*/) * (MaxHeight - 1) + CropStages;
+			
+			// Multi-tier % calculation !
+		}
+
+		return currenttip;
+	}
 	
 }

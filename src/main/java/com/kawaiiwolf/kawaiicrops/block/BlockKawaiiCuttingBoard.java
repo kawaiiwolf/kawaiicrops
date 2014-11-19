@@ -33,33 +33,4 @@ public class BlockKawaiiCuttingBoard extends BlockKawaiiCookingBlock implements 
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityKawaiiCuttingBoard();
 	}
-	
-    /************************************************************************* */
-    
-	@Override
-	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) 
-	{
-		return null;
-	}
-
-	@Override
-	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
-	{
-		currenttip.add(SpecialChars.WHITE + "TEST, TEST. A. B. C!");
-		return currenttip;
-	}
-
-	@Override
-	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
-	{
-		currenttip.add("TEST, TEST. 1. 2. 3!");
-		return currenttip;
-	}
-
-	@Override
-	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
-	{
-		currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + "TEST, TEST. x. y. z!");
-		return currenttip;
-	}
 }

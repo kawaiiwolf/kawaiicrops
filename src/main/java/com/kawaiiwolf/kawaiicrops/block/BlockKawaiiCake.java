@@ -3,6 +3,7 @@ package com.kawaiiwolf.kawaiicrops.block;
 import java.util.List;
 
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiCake;
+import com.kawaiiwolf.kawaiicrops.lib.ConfigurationLoader;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 
@@ -18,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class BlockKawaiiCake extends BlockCake implements IWailaBlock {
@@ -25,7 +27,7 @@ public class BlockKawaiiCake extends BlockCake implements IWailaBlock {
 	public String Name = "";
 	public int Hunger = 2;
 	public float Saturation = 0.1F;
-	public boolean Enabled = true;
+	public boolean Enabled = false;
 	public String ToolTipText = "";
 	public PotionEffectHelper Potion = null;
 	public String OreDict = "";
@@ -98,37 +100,18 @@ public class BlockKawaiiCake extends BlockCake implements IWailaBlock {
         return cake;
     }
     
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // WAILA Mod Integration ( implements IWailaBlock )
     
-    /************************************************************************* */
-    
-	@Override
-	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) 
-	{
-		return null;
-	}
-
-	@Override
-	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
-	{
-		currenttip.add(SpecialChars.WHITE + "TEST, TEST. A. B. C!");
-		return currenttip;
-	}
+	@Override public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) { return null; }
+	@Override public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.WHITE + StatCollector.translateToLocal(getUnlocalizedName() + ".name")); return currenttip; }
+	@Override public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + ConfigurationLoader.WAILAName); return currenttip; }
 
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
 	{
-		currenttip.add("TEST, TEST. 1. 2. 3!");
+		currenttip.add("Slices remaining: " + (6 - accessor.getMetadata()));
 		return currenttip;
 	}
-
-	@Override
-	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
-	{
-		currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + "TEST, TEST. x. y. z!");
-		return currenttip;
-	}
-    
-
-   
     
 }
