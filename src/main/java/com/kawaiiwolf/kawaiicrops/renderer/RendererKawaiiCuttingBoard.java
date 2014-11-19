@@ -14,10 +14,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCuttingBoard;
 
@@ -26,12 +29,17 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 
 	public static RendererKawaiiCuttingBoard instance = null;
+    private IModelCustom model;
+    private ResourceLocation modelTexture;
 	
 	public RendererKawaiiCuttingBoard()
 	{
 		if (instance == null) {
 			instance = this;
-		}			
+
+			model = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/cuttingboard.obj"));
+			modelTexture = new ResourceLocation(Constants.MOD_ID + ":textures/model/cuttingboard.png");
+		}
 	}
 	
 	public static void register() 
@@ -46,7 +54,9 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 		int meta = te.getBlockMetadata();
 		
 		// Temporary
-		renderItem(Blocks.wooden_pressure_plate.getIcon(0, 0), x, y, z, meta, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, TextureMap.locationBlocksTexture);
+		//renderItem(Blocks.wooden_pressure_plate.getIcon(0, 0), x, y, z, meta, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, TextureMap.locationBlocksTexture);
+		
+		renderModel(x, y, z, meta);
 
 		TexturedIcon render = null;
 		if (te instanceof TileEntityKawaiiCuttingBoard)
@@ -69,6 +79,18 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 		GL11.glTranslated(-0.5d, 0.0d, -0.5d);
 		GL11.glRotatef(angle, rotatex, rotatey, rotatez);
 		ItemRenderer.renderItemIn2D(Tessellator.instance, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 1.0f / 16.0f);
+		GL11.glPopMatrix();
+	}
+	
+	private void renderModel(double x, double y, double z, int meta)
+	{
+		Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
+
+		GL11.glPushMatrix();
+		GL11.glTranslated(x + 0.5d, y + 0.03125d, z + 0.5d);
+		GL11.glRotatef(((meta + 1) * 90.0f), 0.0f, 1.0f, 0.0f);
+		GL11.glScalef(0.5f, 0.5f, 0.5f);
+		model.renderAll();
 		GL11.glPopMatrix();
 	}
 

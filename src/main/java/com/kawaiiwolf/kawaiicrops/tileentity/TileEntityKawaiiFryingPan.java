@@ -63,11 +63,11 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 		}
 		else
 		{
-			// DEBUG: Stick = fast cook
-			if (player.getCurrentEquippedItem().getItem() == Items.stick) { this.onRandomTick(world, x, y, z, world.rand); } else
+			// DEBUG: fast cook
+			if (player.getCurrentEquippedItem().getItem() == ModItems.MagicSpoon) { this.onRandomTick(world, x, y, z, world.rand); } 
 			
 			// We haven't started cooking just yet, but the pan could be heated
-			if (cookTime <= 1)
+			else if (cookTime <= 1)
 			{
 				int slot = getFirstOpenSlot();
 				

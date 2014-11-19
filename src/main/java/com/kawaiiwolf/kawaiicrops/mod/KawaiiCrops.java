@@ -54,9 +54,15 @@ public class KawaiiCrops {
     /**
      * TODO:
      * 
+     * WAILA Config mod name
+     * WAILA integration on all blocks
+     * 
      * NEI render harvest item
      * 
      * TEST TEST TEST
+     * Cooking Block Models
+     * Re-adjust particle position on big pot
+     * Mortar and pestle cooking block ?
      *    
      */
 }

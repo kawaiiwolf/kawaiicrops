@@ -1,5 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.block;
 
+import java.util.List;
+
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
@@ -7,13 +9,18 @@ import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mcp.mobius.waila.api.IWailaBlock;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcp.mobius.waila.api.SpecialChars;
 import net.minecraft.block.BlockCake;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class BlockKawaiiCake extends BlockCake {
+public class BlockKawaiiCake extends BlockCake implements IWailaBlock {
 
 	public String Name = "";
 	public int Hunger = 2;
@@ -90,4 +97,38 @@ public class BlockKawaiiCake extends BlockCake {
     {
         return cake;
     }
+    
+    
+    /************************************************************************* */
+    
+	@Override
+	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	{
+		return null;
+	}
+
+	@Override
+	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	{
+		currenttip.add(SpecialChars.WHITE + "TEST, TEST. A. B. C!");
+		return currenttip;
+	}
+
+	@Override
+	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	{
+		currenttip.add("TEST, TEST. 1. 2. 3!");
+		return currenttip;
+	}
+
+	@Override
+	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	{
+		currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + "TEST, TEST. x. y. z!");
+		return currenttip;
+	}
+    
+
+   
+    
 }

@@ -28,7 +28,7 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 		ArrayList<ItemStack> oil = new ArrayList<ItemStack>();
 		for (Item item : RecipeKawaiiFryingPan.CookingOilItems)
 			oil.add(new ItemStack(item));
-		oiledPan.add(new PositionedStack(oil, 76, 42));
+		oiledPan.add(new PositionedStack(oil, 68, 42));
 	}
 
 	public class CachedFryingPanRecipe extends CachedRecipe
@@ -52,6 +52,9 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 			else if (recipe.input.size() == 3) 
 				for (int i = 0; i < 3; i++)
 					this.input.add(new PositionedStack(recipe.input.get(i), 34, 6 + 18 * i));
+			
+			if (recipe.harvest != null)
+				this.input.add(new PositionedStack(new ItemStack(recipe.harvest), 90, 42));
 		}
 		
         @Override
@@ -93,7 +96,7 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 			{
 				RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) r;
 				
-				if (hasIngredient(recipe.input, ingredient))
+				if (hasIngredient(recipe.input, ingredient) || (recipe.harvest != null && recipe.harvest == ingredient.getItem()))
 					arecipes.add(new CachedFryingPanRecipe(recipe));
 			}
 		
@@ -133,6 +136,6 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 	@Override
 	public String getGuiTexture()
 	{
-		return Constants.MOD_ID + ":textures/gui/nei.png";
+		return Constants.MOD_ID + ":textures/gui/nei2.png";
 	}
 }

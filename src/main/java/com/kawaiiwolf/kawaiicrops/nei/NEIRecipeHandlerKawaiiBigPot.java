@@ -32,17 +32,17 @@ public class NEIRecipeHandlerKawaiiBigPot extends TemplateRecipeHandler
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		for (Item item : RecipeKawaiiBigPot.CookingOilItems)
 			list.add(new ItemStack(item));
-		oilPot.add(new PositionedStack(list, 76, 42));
+		oilPot.add(new PositionedStack(list, 68, 42));
 
 		list = new ArrayList<ItemStack>();
 		for (Item item : RecipeKawaiiBigPot.CookingMilkItems)
 			list.add(new ItemStack(item));
-		milkPot.add(new PositionedStack(list, 76, 42));
+		milkPot.add(new PositionedStack(list, 68, 42));
 
 		list = new ArrayList<ItemStack>();
 		for (Item item : RecipeKawaiiBigPot.CookingWaterItems)
 			list.add(new ItemStack(item));
-		waterPot.add(new PositionedStack(list, 76, 42));
+		waterPot.add(new PositionedStack(list, 68, 42));
 	}
 	private enum Type { OIL, MILK, WATER };
 	
@@ -82,6 +82,9 @@ public class NEIRecipeHandlerKawaiiBigPot extends TemplateRecipeHandler
 				for (int i = 4; i < size; i++)
 					this.input.add(new PositionedStack(recipe.input.get(i), size == 5 ? 34 : (25 + 18 * (i & 1)), 6 + 18 * (i / 2)));
 			}
+			
+			if (recipe.harvest != null)
+				this.input.add(new PositionedStack(new ItemStack(recipe.harvest), 90, 42));
 		}
 		
         @Override
@@ -129,7 +132,7 @@ public class NEIRecipeHandlerKawaiiBigPot extends TemplateRecipeHandler
 			{
 				RecipeKawaiiBigPot recipe = (RecipeKawaiiBigPot) r;
 				
-				if (hasIngredient(recipe.input, ingredient))
+				if (hasIngredient(recipe.input, ingredient) || (recipe.harvest != null && recipe.harvest == ingredient.getItem()))
 					arecipes.add(new CachedBigPotRecipe(recipe));
 			}
 		
@@ -175,6 +178,6 @@ public class NEIRecipeHandlerKawaiiBigPot extends TemplateRecipeHandler
 	@Override
 	public String getGuiTexture()
 	{
-		return Constants.MOD_ID + ":textures/gui/nei.png";
+		return Constants.MOD_ID + ":textures/gui/nei2.png";
 	}
 }
