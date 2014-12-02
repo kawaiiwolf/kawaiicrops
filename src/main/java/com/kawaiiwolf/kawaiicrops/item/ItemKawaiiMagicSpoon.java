@@ -10,6 +10,7 @@ public class ItemKawaiiMagicSpoon extends ItemKawaiiIngredient
 	public ItemKawaiiMagicSpoon() 
 	{
 		super("houchou", "Quicker Cooking through Magic.");
+		setMaxStackSize(1);
 	}
 	
 	@Override

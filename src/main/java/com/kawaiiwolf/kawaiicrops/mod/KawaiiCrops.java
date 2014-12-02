@@ -53,18 +53,11 @@ public class KawaiiCrops {
     
     /**
      * TODO:
-     * 
-     * WAILA integration on
-     *   Crops
-     *   Trees
      *
-     * Rendering on internal fruit block for tree 
+     * Mortar and pestle cooking block ?
      * 
      * TEST TEST TEST
      * 
-     * Cooking Block Models
-     * Re-adjust particle position on big pot
-     * Mortar and pestle cooking block ?
      *    
      */
 }

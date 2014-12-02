@@ -80,7 +80,7 @@ public class RenderingHandlerKawaiiCropBlocks implements ISimpleBlockRenderingHa
         	case FRUITLEAF:
         	case FRUITLEAFRIPE:
         		drawBlock(tessellator, renderer.getIconSafe(block.getLeafIcon()), x, y, z, 1.0D);
-        		drawBlock(tessellator, renderer.getIconSafe(block.getFruitForStage(world, x, y, z)), x, y, z, 0.875D);
+        		drawBlock(tessellator, renderer.getIconSafe(block.getFruitForStage(world, x, y, z)), x, y, z, 1.001D);
         		break;
         }
 	}

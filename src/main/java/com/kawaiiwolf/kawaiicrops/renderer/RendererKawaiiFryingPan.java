@@ -5,6 +5,7 @@ import java.awt.Color;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.FNV;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiFryingPan;
@@ -22,15 +23,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
 
 public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer 
 {
 	public static RendererKawaiiFryingPan instance = null;
+    private IModelCustom model;
+    private ResourceLocation modelTexture;
 	
 	public RendererKawaiiFryingPan()
 	{
-		if (instance == null) {
+		if (instance == null) 
+		{
 			instance = this;
+
+			model = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/fryingpan.obj"));
+			modelTexture = new ResourceLocation(Constants.MOD_ID + ":textures/model/fryingpan.png");
 		}			
 	}
 	
@@ -48,15 +57,14 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		float rotation, jitter, spin;
 		TexturedIcon[] icons;
 		
-		// Temporary
-		renderBaseItem(Blocks.wooden_pressure_plate.getIcon(0, 0), x, y, z, meta, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, TextureMap.locationBlocksTexture);
+		renderModel(x, y, z, meta);
 
 		if (te instanceof TileEntityKawaiiFryingPan)
 		{
 			icons = ((TileEntityKawaiiFryingPan)te).getDisplayItems();
 			if (icons.length == 1 && icons[0] != null)
 			{
-				renderBaseItem(icons[0].icon, x, y + 0.0625, z, meta, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, icons[0].texture);
+				renderFlatTile(icons[0].icon, x, y + 2.0d/16, z, meta, 12.0f/16, 90.0f, 1.0f, 0.0f, 0.0f, icons[0].texture);
 			}
 			else
 			{
@@ -69,13 +77,13 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 						rotation = itemCurrent++ / (float)itemCount;
 						jitter = ((TileEntityKawaiiFryingPan)te).jitter ? ((Math.abs(Minecraft.getSystemTime() + itemCurrent * 13) / 12) % 21 - 10) / 40.0f : 0.0f;
 						spin = (float)FNV.rand(te.xCoord, te.yCoord, te.zCoord, 360);
-						renderItem(icon.icon, x, y, z, rotation, jitter, spin, icon.texture);
+						renderSizzlingItem(icon.icon, x, y + 2.0d/16, z, rotation, jitter, spin, icon.texture);
 					}
 			}
 		}
 	}
 
-	private void renderBaseItem(IIcon icon, double x, double y, double z, int meta, float scale, float angle, float rotatex, float rotatey, float rotatez, ResourceLocation texture)
+	private void renderFlatTile(IIcon icon, double x, double y, double z, int meta, float scale, float angle, float rotatex, float rotatey, float rotatez, ResourceLocation texture)
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
@@ -91,7 +99,7 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 	}
 
 	
-	private void renderItem(IIcon icon, double x, double y, double z, float rotation, float jitter, float spin, ResourceLocation texture)
+	private void renderSizzlingItem(IIcon icon, double x, double y, double z, float rotation, float jitter, float spin, ResourceLocation texture)
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
@@ -101,7 +109,7 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		
 		// Set Position
-		GL11.glTranslated(x + 0.5d, y + 0.0625d - scale/2.0d, z + 0.5d);
+		GL11.glTranslated(x + 0.5d, y - scale/2.0d, z + 0.5d);
 		
 		// Add random spin so blocks next to each other don't look the same
 		GL11.glRotatef(spin, 0.0f, 1.0f, 0.0f);
@@ -120,6 +128,20 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		// Draw
 		GL11.glTranslated(-0.5d, 0.0d, -0.5d);
 		ItemRenderer.renderItemIn2D(Tessellator.instance, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 1.0f / 16.0f);
+		GL11.glPopMatrix();
+	}
+	
+	private void renderModel(double x, double y, double z, int meta)
+	{
+		Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
+
+		float scale = 1.0f / 16.0f;
+		
+		GL11.glPushMatrix();
+		GL11.glTranslated(x + 0.5d, y, z + 0.5d);
+		GL11.glRotatef(((meta + 2) * 90.0f), 0.0f, 1.0f, 0.0f);
+		GL11.glScalef(scale, scale, scale);
+		model.renderAll();
 		GL11.glPopMatrix();
 	}
 }

@@ -23,8 +23,9 @@ public class BlockKawaiiFryingPan extends BlockKawaiiCookingBlock {
 	protected BlockKawaiiFryingPan() 
 	{
 		super(Material.iron, "fryingpan", true);
-		maxY = 0.125d;
-		minX = minZ = 0.0625d;
+		
+		maxY = 4.0d / 16.0d;
+		minX = minZ = 1.0d / 16.0d;
 		maxX = maxZ = 1.0d - minX;
 		
 		this.setBlockTextureName(Constants.MOD_ID + ":fryingpan");

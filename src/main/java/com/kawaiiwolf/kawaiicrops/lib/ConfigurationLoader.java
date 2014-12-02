@@ -108,14 +108,15 @@ public class ConfigurationLoader {
 			"<drop-table> ::= <items> | <items> \"|\" <drop-table>\n"+
 			"     <items> ::= <item> | <item> \",\" <items>\n"+
 			"      <item> ::= <item-name> | <item-name> \" \" <num-drops> | <item-name> \" \" <num-drops> \" \" <weight>\n"+
-			" <item-name> ::= \"seed\" | \"crop\" | \"nothing\" | <minecraft-item-name>\n"+
+			" <item-name> ::= \"seed\" | \"sapling\" | \"crop\" | \"fruit\" | \"nothing\" | <minecraft-item-name>\n"+
 			" <num-drops> ::= <integer-between-1-and-64>\n"+
 			"    <weight> ::= <integer-between-1-and-64>\n"+
 			"\n"+
 			"\n"+
 			"The keywords 'seed', 'crop', and 'nothing' are shorthand so you don't have to type out the fully\n"+
 			"qualified names for the products of a crop (or empty blocks.) Number of drops and weight default to \n"+
-			"one if not supplied. For Trees 'seed' acts as saplings, 'crop' as fruit.\n"+ 
+			"one if not supplied. For Trees 'seed' acts as saplings, 'crop' as fruit, and you may use the word \n"+ 
+			"\n'fruit' interchangably with 'crop' and 'sapling' with 'seed'."+
 			"\n"+
 			"Here are some examples of how to use this:\n"+
 			"\n"+

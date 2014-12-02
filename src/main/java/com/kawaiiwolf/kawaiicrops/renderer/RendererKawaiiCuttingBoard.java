@@ -34,7 +34,8 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 	
 	public RendererKawaiiCuttingBoard()
 	{
-		if (instance == null) {
+		if (instance == null) 
+		{
 			instance = this;
 
 			model = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/cuttingboard.obj"));
@@ -52,10 +53,7 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float scale)
 	{
 		int meta = te.getBlockMetadata();
-		
-		// Temporary
-		//renderItem(Blocks.wooden_pressure_plate.getIcon(0, 0), x, y, z, meta, 0.875f, 90.0f, 1.0f, 0.0f, 0.0f, TextureMap.locationBlocksTexture);
-		
+	
 		renderModel(x, y, z, meta);
 
 		TexturedIcon render = null;
@@ -86,10 +84,12 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
 
+		float scale = 1.0f / 16.0f;
+		
 		GL11.glPushMatrix();
-		GL11.glTranslated(x + 0.5d, y + 0.03125d, z + 0.5d);
-		GL11.glRotatef(((meta + 1) * 90.0f), 0.0f, 1.0f, 0.0f);
-		GL11.glScalef(0.5f, 0.5f, 0.5f);
+		GL11.glTranslated(x + 0.5d, y, z + 0.5d);
+		GL11.glRotatef(((meta + 2) * 90.0f), 0.0f, 1.0f, 0.0f);
+		GL11.glScalef(scale, scale, scale);
 		model.renderAll();
 		GL11.glPopMatrix();
 	}

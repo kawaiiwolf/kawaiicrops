@@ -606,6 +606,26 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
 	{
+		switch(this.getState(accessor.getMetadata()))
+		{
+		case SAPLING:
+			currenttip.add("Sapling");
+			break;
+		case LEAF:
+			currenttip.add("Leaves");
+			break;
+		case FRUIT:
+			currenttip.add("Fruit: " + ((accessor.getMetadata() - 4) * 25) + "% Grown");
+			break;
+		case FRUITLEAF:
+			currenttip.add("Fruit: " + ((accessor.getMetadata() - 1) * 25) + "% Grown");
+			break;
+		case FRUITRIPE:
+		case FRUITLEAFRIPE:
+			currenttip.add("Fruit: Mature");
+			break;
+		}
+		
 		return currenttip;
 	}
 }

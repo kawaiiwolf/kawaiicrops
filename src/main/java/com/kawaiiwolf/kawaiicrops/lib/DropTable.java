@@ -36,9 +36,9 @@ public class DropTable {
 					String drops = (match.group(2) == null ? "" : match.group(2)) + (match.group(5) == null ? "" : match.group(5));
 					String weight = (match.group(3) == null ? "" : match.group(3));
 					
-					if (name.equalsIgnoreCase("seed"))
+					if (name.equalsIgnoreCase("seed") || name.equals("sapling"))
 						item.item = seed;
-					else if (name.equalsIgnoreCase("crop"))
+					else if (name.equalsIgnoreCase("crop") || name.equalsIgnoreCase("fruit"))
 						item.item = crop;
 					else if (name.equalsIgnoreCase("nothing"))
 						item.item = null;

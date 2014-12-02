@@ -18,12 +18,13 @@ import net.minecraft.world.World;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCuttingBoard;
 
-public class BlockKawaiiCuttingBoard extends BlockKawaiiCookingBlock implements IWailaBlock{
-
-	protected BlockKawaiiCuttingBoard() {
+public class BlockKawaiiCuttingBoard extends BlockKawaiiCookingBlock implements IWailaBlock
+{
+	protected BlockKawaiiCuttingBoard() 
+	{
 		super(Material.wood, "cuttingboard", false);
-		maxY = 0.125d;
-		minX = minZ = 0.0625d;
+		maxY = 1.0d / 16.0d;
+		minX = minZ = 1.0d / 16.0d;
 		maxX = maxZ = 1.0d - minX;
 		
 		this.setBlockTextureName(Constants.MOD_ID + ":cuttingboard");

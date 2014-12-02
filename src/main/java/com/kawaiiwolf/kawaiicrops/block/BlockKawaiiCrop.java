@@ -285,10 +285,12 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
 		}
 		
 		for (int i = -1; i <= 1; i += 2)
-			if (world.getBlock(x, y + i, z) == this && (!MultiHarvest || meta < 7)) 
+			if (world.getBlock(x, y + i, z) == this && (MaxHeightRequiredToRipen || meta < 7)) 
 			{
 				if (!MaxHeightRequiredToRipen)
 					dropBlockAsItem(world, x, y + i, z, world.getBlockMetadata(x, y + i, z), 0);
+				if (meta < 7)
+					world.setBlockMetadataWithNotify(x,  y + i, z, 0, 0);
 				world.setBlock(x, y + i, z, getBlockById(0), 0, 2);
 	        }
     }
@@ -518,8 +520,6 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
 	{
-		World world = accessor.getWorld();
-		int x = accessor.getPosition().blockX, y = accessor.getPosition().blockY, z = accessor.getPosition().blockZ;
 
 		if (MaxHeight == 1 || !MaxHeightRequiredToRipen)
 		{
@@ -530,9 +530,21 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
 		}
 		else
 		{
-			int max = (CropStages - UnripeStage /*+ 1 Possibly ?*/) * (MaxHeight - 1) + CropStages;
+			World world = accessor.getWorld();
+			int x = accessor.getPosition().blockX, y = accessor.getPosition().blockY, z = accessor.getPosition().blockZ;
+
+			int max = (UnripeStage + 1) * (MaxHeight - 1) + CropStages;
+			int height = getCropTotalHeight(world, x, y, z);
+			int topMeta = world.getBlockMetadata(x, getTopY(world, x, y, z), z);
+			int current = (UnripeStage + 1) * (height - 1) + topMeta + CropStages - 7;
+			int unripe = (UnripeStage + 1) * MaxHeight;
 			
-			// Multi-tier % calculation !
+			if (current == max)
+				currenttip.add("Crop: " + (MultiHarvest ? "Fully Grown, " : "") + "Mature");
+			else if (MultiHarvest && current >= unripe)
+				currenttip.add("Crop: Fully Grown, " + (current - unripe) * 100 / (max - unripe) + "% Mature");
+			else
+				currenttip.add("Crop: " + current * 100 / (MultiHarvest ? unripe : max) + "% Grown");
 		}
 
 		return currenttip;

@@ -214,12 +214,12 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 			if (rand.nextFloat() > 0.66f)
 			{
 				if (state.equals("cooking") || cookTime == 1) 
-					this.particleBlast(world, x, y, z, "explode", 1, 1);
+					this.particleBlast(world, x, y + 0.5d, z, "explode", 1, 1);
 				if (state.equals("burning")) 
-					this.particleBlast(world, x, y, z, "smoke", 1, 1);
+					this.particleBlast(world, x, y + 0.5d, z, "smoke", 1, 1);
 			}
 			if (state.equals("ruined"))
-				this.particleBlast(world, x, y, z, "largesmoke", 1, 2);	
+				this.particleBlast(world, x, y + 0.5d, z, "largesmoke", 1, 2);	
 		}
 	}
 	

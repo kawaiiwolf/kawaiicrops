@@ -5,6 +5,7 @@ import java.awt.Color;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.FNV;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiBigPot;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCuttingBoard;
@@ -23,16 +24,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
 
 public class RendererKawaiiBigPot extends TileEntitySpecialRenderer 
 {
-
 	public static RendererKawaiiBigPot instance = null;
+    private IModelCustom model;
+    private ResourceLocation modelTexture;
 	
 	public RendererKawaiiBigPot()
 	{
-		if (instance == null) {
+		if (instance == null) 
+		{
 			instance = this;
+
+			model = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/bigpot.obj"));
+			modelTexture = new ResourceLocation(Constants.MOD_ID + ":textures/model/bigpot.png");
 		}			
 	}
 	
@@ -53,12 +61,11 @@ public class RendererKawaiiBigPot extends TileEntitySpecialRenderer
 			
 			TexturedIcon[] icons = ((TileEntityKawaiiBigPot)te).getDisplayItems();
 
-			// Temporary
-			renderBaseItem(Blocks.wooden_pressure_plate.getIcon(0, 0), x, y, z, meta, 0.875f, TextureMap.locationBlocksTexture);
+			renderModel(x, y, z, meta);
 			
 			if (icons.length == 1)
 			{
-				renderBaseItem(icons[0].icon, x, y + 0.35d, z, meta, 0.875f, icons[0].texture);
+				renderFlatTile(icons[0].icon, x, y + 0.35d, z, meta, 0.875f, icons[0].texture);
 			}
 			else
 			{
@@ -71,15 +78,15 @@ public class RendererKawaiiBigPot extends TileEntitySpecialRenderer
 						rotation = itemCurrent++ * 2.0d * Math.PI / itemCount;
 						spin = ((Minecraft.getSystemTime() / 32 + 61 * itemCurrent) % 360) / 180.0d * Math.PI;
 						
-						renderItem(icon.icon, meta, x, y, z, rotation, spin, icon.texture);
+						renderFloatingItem(icon.icon, meta, x, y, z, rotation, spin, icon.texture);
 					}
 				
-				renderLiquid(((TileEntityKawaiiBigPot)te).getDisplayLiquid(), x, y + 0.35d, z, 0.875d);
+				renderLiquid(((TileEntityKawaiiBigPot)te).getDisplayLiquid(), x, y + 0.35d, z, 12.0f/16);
 			}
 		}
 	}
 	
-	private void renderBaseItem(IIcon icon, double x, double y, double z, int meta, float scale, ResourceLocation texture)
+	private void renderFlatTile(IIcon icon, double x, double y, double z, int meta, float scale, ResourceLocation texture)
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
@@ -114,7 +121,7 @@ public class RendererKawaiiBigPot extends TileEntitySpecialRenderer
 		GL11.glPopMatrix();
 	}
 	
-	private void renderItem(IIcon icon, int meta, double x, double y, double z, double rotation, double spin, ResourceLocation texture)
+	private void renderFloatingItem(IIcon icon, int meta, double x, double y, double z, double rotation, double spin, ResourceLocation texture)
 	{
 		if (icon == null) return;
 		
@@ -129,5 +136,19 @@ public class RendererKawaiiBigPot extends TileEntitySpecialRenderer
 		ItemRenderer.renderItemIn2D(Tessellator.instance, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 1.0f / 16.0f);
 		GL11.glPopMatrix();
 	}
+	
+	
+	private void renderModel(double x, double y, double z, int meta)
+	{
+		Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
 
+		float scale = 1.0f / 16.0f;
+		
+		GL11.glPushMatrix();
+		GL11.glTranslated(x + 0.5d, y, z + 0.5d);
+		GL11.glRotatef(((meta + 2) * 90.0f), 0.0f, 1.0f, 0.0f);
+		GL11.glScalef(scale, scale, scale);
+		model.renderAll();
+		GL11.glPopMatrix();
+	}
 }

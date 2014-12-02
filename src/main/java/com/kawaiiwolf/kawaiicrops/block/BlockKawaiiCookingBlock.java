@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 public abstract class BlockKawaiiCookingBlock extends BlockContainer implements IWailaBlock {
 
 	public String Name = "";
+	public IIcon burntTexture = null;
 	
 	protected BlockKawaiiCookingBlock(Material material, String name, boolean randomTick) 
 	{
@@ -129,6 +130,14 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer implements 
 		
 		GameRegistry.registerBlock(this, Constants.MOD_ID + "." + Name);
 	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister register)
+    {
+		super.registerBlockIcons(register);
+		this.burntTexture = register.registerIcon(Constants.MOD_ID + ":ruined");
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // WAILA Mod Integration ( implements IWailaBlock )
@@ -145,6 +154,7 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer implements 
 			String s = ((TileEntityKawaiiCookingBlock)accessor.getTileEntity()).getWAILATip();
 			if ( s != null && s.length() > 0)
 				currenttip.add(s);
+			//currenttip.add("DEBUG: Meta is " + accessor.getMetadata());
 		}
 		return currenttip;
 	}
