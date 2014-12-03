@@ -3,6 +3,7 @@ package com.kawaiiwolf.kawaiicrops.lib;
 import java.util.ArrayList;
 
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiBigPot;
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiChurn;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCuttingBoard;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 
@@ -235,6 +236,48 @@ public class RecipeHelper {
 				new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
 		
 		(new RecipeKawaiiCuttingBoard(output, parseIngredient(parts[2]))).register();
+		
+		return true;
+	}
+	
+	public static boolean registerCustomChurnRecpie(String recipe)
+	{
+		String[] parts = recipe.trim().replaceAll("  ", " ").split("[ ]");
+		if (parts.length < 3 || parts.length > 4) 
+			return false;
+		
+		// Parse Output Type
+		IngredientType outputType = parseIngredientType(parts[0]);
+		if (outputType != IngredientType.ITEM && outputType != IngredientType.BLOCK)
+			return false;
+		
+		// Parse Output Number
+		int outputNum;
+		try {
+			outputNum = Integer.parseInt(parts[1]);
+		} catch (NumberFormatException e) { return false; }
+		if (outputNum < 1 || outputNum > 64) return false;
+		
+		// Parse Input Type
+		IngredientType inputType = parseIngredientType(parts[2]);
+		if (inputType == IngredientType.ERROR)
+			return false;
+		
+		Integer time = 1;
+		if (parts.length == 4)
+		{
+			try
+			{
+				time = Integer.parseInt(parts[3]);
+			} catch (NumberFormatException e) { return false; }
+			if (outputNum < 1 || outputNum > 64) return false;
+		}
+		
+		ItemStack output = (outputType == IngredientType.ITEM ? 
+				new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
+				new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+		
+		(new RecipeKawaiiChurn(output, new Object[] { parseIngredient(parts[2]), "|", time.toString() })).register();
 		
 		return true;
 	}

@@ -54,7 +54,8 @@ public class KawaiiCrops {
     /**
      * TODO:
      *
-     * Mortar and pestle cooking block ?
+     * Churn Block
+     * Pot burned items/textures?
      * 
      * TEST TEST TEST
      * 

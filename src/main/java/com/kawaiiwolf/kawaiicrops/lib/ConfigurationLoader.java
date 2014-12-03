@@ -325,6 +325,22 @@ public class ConfigurationLoader {
 			"\"minecraft:stick 3 minecraft:sapling \"\n"+
 			"\nChops a sapling into 3 sticks.";
 
+	public static final String REFERENCE_RECIPES_CUST_CHURN = "" +
+			"Format for Churn Crafting recipes:\n"+
+			"\n"+
+			"\"<result item/block name> <number crafted> <ingredient> [<cookTime>]\"\n"+
+			"\n"+
+			"Where <ingredient> is the name of the block, item or ore dictonary name \n"+
+			"for theingredient to be chopped into the result. <cookTime> is the number\n"+
+			"of consecutive clicks to fully churn. Muts be between 1 and 64 (64 is just\n"+
+			"cruel. Churn is optional and defaults to 1 if not supplied. For a list of \n"+
+			"all valid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
+			"\n"+
+			"Example:\n"+
+			"\n"+
+			"\"minecraft:stick 3 minecraft:sapling \"\n"+
+			"\nChurns a sapling into 3 sticks.";
+
 	public static final String REFERENCE_RECIPES_CUST_FRYING_PAN = "" +
 			"Format for Frying Pan Crafting recipes:\n"+
 			"\n"+
@@ -570,6 +586,7 @@ public class ConfigurationLoader {
 		int recipesC_cut = cfg.getInt("Kawaiicraft Cutting Board", category, defaultRecipes, 0, 10000, "Number of Kawaiicraft Cutting Board crafting recipes ?");
 		int recipesC_fry = cfg.getInt("Kawaiicraft Frying Pan", category, defaultRecipes, 0, 10000, "Number of Kawaiicraft Frying Pan crafting recipes ?");
 		int recipesC_pot = cfg.getInt("Kawaiicraft Big Pot", category, defaultRecipes, 0, 10000, "Number of Kawaiicraft Big Pot crafting recipes ?");
+		int recipesC_churn = cfg.getInt("Kawaiicraft Churn", category, defaultRecipes, 0, 10000, "Number of Kawaiicraft Churn crafting recipes ?");
 		
 		category = "2 by 2 Shaped Crafting Recipes";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES_2);
@@ -609,6 +626,14 @@ public class ConfigurationLoader {
 		{
 			String recipe = cfg.getString("" + i, category, "", "");
 			RecipeHelper.registerCustomCuttingBoardRecpie(recipe);
+		}
+
+		category = "Kawaiicraft Churn Recipes";
+		cfg.setCategoryComment(category, this.REFERENCE_RECIPES_CUST_CUTTING_BOARD);
+		for (int i = 0; i < recipesC_churn; i++)
+		{
+			String recipe = cfg.getString("" + i, category, "", "");
+			RecipeHelper.registerCustomChurnRecpie(recipe);
 		}
 
 		category = "Kawaiicraft Frying Pan Recipes";

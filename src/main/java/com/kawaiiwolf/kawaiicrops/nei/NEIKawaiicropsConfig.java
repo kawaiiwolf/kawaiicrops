@@ -27,7 +27,8 @@ public class NEIKawaiicropsConfig implements IConfigureNEI
 		TemplateRecipeHandler[] handlers = 
 		{ 	new NEIRecipeHandlerKawaiiCuttingBoard(), 
 			new NEIRecipeHandlerKawaiiFryingPan(), 
-			new NEIRecipeHandlerKawaiiBigPot() 
+			new NEIRecipeHandlerKawaiiBigPot(),
+			new NEIRecipeHandlerKawaiiChurn()
 		};
 		for (TemplateRecipeHandler handler : handlers)
 		{

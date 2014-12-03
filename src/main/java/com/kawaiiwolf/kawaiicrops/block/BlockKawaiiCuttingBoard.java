@@ -18,9 +18,9 @@ import net.minecraft.world.World;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCuttingBoard;
 
-public class BlockKawaiiCuttingBoard extends BlockKawaiiCookingBlock implements IWailaBlock
+public class BlockKawaiiCuttingBoard extends BlockKawaiiCookingBlock
 {
-	protected BlockKawaiiCuttingBoard() 
+	public BlockKawaiiCuttingBoard() 
 	{
 		super(Material.wood, "cuttingboard", false);
 		maxY = 1.0d / 16.0d;

@@ -15,12 +15,14 @@ public class ModBlocks
 	public static BlockKawaiiCuttingBoard cuttingBoard = new BlockKawaiiCuttingBoard();
 	public static BlockKawaiiFryingPan fryingPan = new BlockKawaiiFryingPan();
 	public static BlockKawaiiBigPot bigPot = new BlockKawaiiBigPot();
+	public static BlockKawaiiChurn churn = new BlockKawaiiChurn();
 	
 	public static void register()
 	{
 		cuttingBoard.register();
 		fryingPan.register();
 		bigPot.register();
+		churn.register();
 	}
 	
 	public static void registerDropTables() 
