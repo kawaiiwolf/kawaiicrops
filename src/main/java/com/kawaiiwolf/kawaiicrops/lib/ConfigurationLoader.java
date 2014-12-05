@@ -338,8 +338,8 @@ public class ConfigurationLoader {
 			"\n"+
 			"Example:\n"+
 			"\n"+
-			"\"minecraft:stick 3 minecraft:sapling \"\n"+
-			"\nChurns a sapling into 3 sticks.";
+			"\"minecraft:flint 3 minecraft:gravel 4\"\n"+
+			"\nChurns block of gravle into 3 flint.";
 
 	public static final String REFERENCE_RECIPES_CUST_FRYING_PAN = "" +
 			"Format for Frying Pan Crafting recipes:\n"+
@@ -629,7 +629,7 @@ public class ConfigurationLoader {
 		}
 
 		category = "Kawaiicraft Churn Recipes";
-		cfg.setCategoryComment(category, this.REFERENCE_RECIPES_CUST_CUTTING_BOARD);
+		cfg.setCategoryComment(category, this.REFERENCE_RECIPES_CUST_CHURN);
 		for (int i = 0; i < recipesC_churn; i++)
 		{
 			String recipe = cfg.getString("" + i, category, "", "");

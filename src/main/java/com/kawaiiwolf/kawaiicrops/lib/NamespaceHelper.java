@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 public class NamespaceHelper {
 	
@@ -36,6 +37,12 @@ public class NamespaceHelper {
 	
 	public static Iterator<Block> getBlockIterator() {
 		return GameData.getBlockRegistry().iterator();
+	}
+	
+	public static String getItemLocalizedName(ItemStack item) { return getItemLocalizedName(item.getItem()); }
+	public static String getItemLocalizedName(Item item)
+	{
+		return StatCollector.translateToLocal(item.getUnlocalizedName() + ".name");
 	}
 	
 	public static String getItemName(ItemStack item) { return getItemName (item.getItem()); }

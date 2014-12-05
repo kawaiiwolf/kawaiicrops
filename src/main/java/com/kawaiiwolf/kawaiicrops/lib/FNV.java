@@ -42,7 +42,7 @@ public class FNV
 	
 	public static int hash (int x, int y, int z) 
 	{ 
-		return hash(hash(hash(x), y), z); 
+		return hash(INIT, ByteBuffer.allocate(12).putInt(x).putInt(y).putInt(z).array());
 	}
 	
 	public static int rand (int x, int y, int z, int max) 

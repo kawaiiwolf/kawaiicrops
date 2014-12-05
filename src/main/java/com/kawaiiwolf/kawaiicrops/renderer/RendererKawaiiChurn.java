@@ -47,9 +47,14 @@ public class RendererKawaiiChurn extends TileEntitySpecialRenderer
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float scale)
 	{
 		int meta = te.getBlockMetadata();
-	
-		renderModel(x, y, z, meta);
-		renderModel(x, y + 0.5d, z, meta);
+		
+		if (te instanceof TileEntityKawaiiChurn)
+		{
+			TileEntityKawaiiChurn churn = (TileEntityKawaiiChurn)te;
+			
+			renderModel(x, y, z, meta);
+			renderModel(x, y + 0.5d + Math.sin(churn.getChunMovementTick() / 20.0d * Math.PI) / 2.0d, z, meta);
+		}
 		
 	}
 	

@@ -14,6 +14,8 @@ public class RecipeKawaiiChurn extends RecipeKawaiiCookingBase
 	public RecipeKawaiiChurn(ItemStack result, Object... recipe) 
 	{
 		super(result, recipe);
+		setOptions(options);
+		options = null;
 	}
 
 	@Override
