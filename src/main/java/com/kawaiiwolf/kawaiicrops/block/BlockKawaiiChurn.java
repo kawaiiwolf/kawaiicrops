@@ -12,8 +12,8 @@ public class BlockKawaiiChurn extends BlockKawaiiCookingBlock {
 	public BlockKawaiiChurn()
 	{
 		super(Material.wood, "churn", false);
-		maxY = 32.0d / 16.0d;
-		minX = minZ = 0.0d / 16.0d;
+		maxY = 16.0d / 16.0d;
+		minX = minZ = 2.0d / 16.0d;
 		maxX = maxZ = 1.0d - minX;
 		
 		this.setBlockTextureName(Constants.MOD_ID + ":churn");

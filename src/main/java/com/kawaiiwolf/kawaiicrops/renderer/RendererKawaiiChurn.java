@@ -23,7 +23,8 @@ import net.minecraftforge.client.model.IModelCustom;
 public class RendererKawaiiChurn extends TileEntitySpecialRenderer 
 {
 	public static RendererKawaiiChurn instance = null;
-    private IModelCustom model;
+    private IModelCustom modelBase;
+    private IModelCustom modelTop;
     private ResourceLocation modelTexture;
 	
 	public RendererKawaiiChurn()
@@ -32,8 +33,9 @@ public class RendererKawaiiChurn extends TileEntitySpecialRenderer
 		{
 			instance = this;
 
-			model = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/cuttingboard.obj"));
-			modelTexture = new ResourceLocation(Constants.MOD_ID + ":textures/model/cuttingboard.png");
+			modelBase = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/churn.base.obj"));
+			modelTop = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/churn.top.obj"));
+			modelTexture = new ResourceLocation(Constants.MOD_ID + ":textures/model/churn.png");
 		}
 	}
 	
@@ -52,15 +54,14 @@ public class RendererKawaiiChurn extends TileEntitySpecialRenderer
 		{
 			TileEntityKawaiiChurn churn = (TileEntityKawaiiChurn)te;
 			
-			renderModel(x, y, z, meta);
-			renderModel(x, y + 0.5d + Math.sin(churn.getChunMovementTick() / 20.0d * Math.PI) / 2.0d, z, meta);
+			renderModel(modelBase, modelTexture, x, y, z, meta);
+			renderModel(modelTop, modelTexture, x, y + 0.5d + Math.sin(churn.getChunMovementTick() / 20.0d * Math.PI) / 2.0d, z, meta);
 		}
-		
 	}
 	
-	private void renderModel(double x, double y, double z, int meta)
+	private void renderModel(IModelCustom model, ResourceLocation texture, double x, double y, double z, int meta)
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
+		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
 		float scale = 1.0f / 16.0f;
 		
