@@ -54,7 +54,6 @@ public class KawaiiCrops {
     /**
      * TODO:
      *
-     * Churn Block
      * Pot burned items/textures?
      * 
      * TEST TEST TEST

@@ -1,6 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.item;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -15,6 +16,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.lib.Pair;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemKawaiiMysterySeed extends ItemSeeds {
 
@@ -38,6 +42,14 @@ public class ItemKawaiiMysterySeed extends ItemSeeds {
 			SeedList.add(new Pair(Blocks.wheat, 3));
 			SeedList.add(new Pair(Blocks.sapling, 1));
 		}
+	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean p_77624_4_) 
+	{
+		list.add("Who knows what it'll grow into ?");
+		list.add("Try planting it in tilled soil.");
 	}
 	
 	private Block getRandomBlock(Random rand)

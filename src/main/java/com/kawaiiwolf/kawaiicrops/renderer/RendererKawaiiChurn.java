@@ -10,6 +10,7 @@ import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCuttingBoard;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -54,6 +55,7 @@ public class RendererKawaiiChurn extends TileEntitySpecialRenderer
 		{
 			TileEntityKawaiiChurn churn = (TileEntityKawaiiChurn)te;
 			
+			RenderHelper.disableStandardItemLighting();
 			renderModel(modelBase, modelTexture, x, y, z, meta);
 			renderModel(modelTop, modelTexture, x, y + 0.5d + Math.sin(churn.getChunMovementTick() / 20.0d * Math.PI) / 2.0d, z, meta);
 		}

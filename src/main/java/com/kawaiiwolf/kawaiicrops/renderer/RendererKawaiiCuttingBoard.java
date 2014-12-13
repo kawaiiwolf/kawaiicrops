@@ -5,6 +5,7 @@ import java.awt.Color;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -54,6 +55,7 @@ public class RendererKawaiiCuttingBoard extends TileEntitySpecialRenderer {
 	{
 		int meta = te.getBlockMetadata();
 	
+		RenderHelper.disableStandardItemLighting();
 		renderModel(x, y, z, meta);
 
 		TexturedIcon render = null;

@@ -14,6 +14,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -57,6 +58,7 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		float rotation, jitter, spin;
 		TexturedIcon[] icons;
 		
+		RenderHelper.disableStandardItemLighting();
 		renderModel(x, y, z, meta);
 
 		if (te instanceof TileEntityKawaiiFryingPan)

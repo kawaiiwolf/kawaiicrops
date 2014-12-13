@@ -15,6 +15,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -61,6 +62,7 @@ public class RendererKawaiiBigPot extends TileEntitySpecialRenderer
 			
 			TexturedIcon[] icons = ((TileEntityKawaiiBigPot)te).getDisplayItems();
 
+			RenderHelper.disableStandardItemLighting();
 			renderModel(x, y, z, meta);
 			
 			if (icons.length == 1)
