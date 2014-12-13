@@ -11,6 +11,7 @@ public class ModBlocks
 {
 	public static ArrayList<BlockKawaiiCrop> AllCrops = new ArrayList<BlockKawaiiCrop>();
 	public static ArrayList<BlockKawaiiTreeBlocks> AllTrees = new ArrayList<BlockKawaiiTreeBlocks>();
+	public static ArrayList<BlockKawaiiCake> AllCakes = new ArrayList<BlockKawaiiCake>();
 	
 	public static BlockKawaiiCuttingBoard cuttingBoard = new BlockKawaiiCuttingBoard();
 	public static BlockKawaiiFryingPan fryingPan = new BlockKawaiiFryingPan();

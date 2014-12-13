@@ -54,10 +54,10 @@ public class KawaiiCrops {
     /**
      * TODO:
      *
-     * Pot burned items/textures?
-     * 
      * TEST TEST TEST
      * 
-     *    
+     * Possible future idea:
+     * 		Bamboo Steamer - Attach to frying pan
+     * 		Grill - Cook without heat (drying) or with (BBQ/smoke)
      */
 }

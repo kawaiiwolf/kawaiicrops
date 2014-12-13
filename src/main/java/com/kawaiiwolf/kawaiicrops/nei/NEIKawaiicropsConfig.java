@@ -4,6 +4,7 @@ package com.kawaiiwolf.kawaiicrops.nei;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
+import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiTreeBlocks;
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
@@ -22,6 +23,9 @@ public class NEIKawaiicropsConfig implements IConfigureNEI
 			API.hideItem(new ItemStack((Block)block));
 		
 		for (BlockKawaiiTreeBlocks block : ModBlocks.AllTrees)
+			API.hideItem(new ItemStack((Block)block));
+		
+		for (BlockKawaiiCake block : ModBlocks.AllCakes)
 			API.hideItem(new ItemStack((Block)block));
 		
 		TemplateRecipeHandler[] handlers = 

@@ -51,6 +51,7 @@ public class BlockKawaiiCake extends BlockCake implements IWailaBlock {
 		cake.OreDict = OreDict;
 		
 		GameRegistry.registerItem(cake, Constants.MOD_ID + "." + this.Name + ".cake");
+		ModBlocks.AllCakes.add(this);
 	}
 	
 	@Override

@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiBigPot;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiFryingPan;
+import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
@@ -258,6 +259,11 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 	@Override
 	public TexturedIcon[] getDisplayItems() 
 	{
+		if (state.equals("ruined"))
+		{
+			fullIcon[0] = new TexturedIcon(ModBlocks.fryingPan.burntTexture, TextureMap.locationBlocksTexture);
+			return fullIcon;
+		}
 		if (recipeHash != 0)
 		{
 			RecipeKawaiiBigPot recipe = (RecipeKawaiiBigPot) getCurrentRecipe();

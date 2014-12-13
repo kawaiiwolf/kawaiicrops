@@ -445,6 +445,7 @@ public class ConfigurationLoader {
 
 		cfg_general.setCategoryComment(category, "Configuration Settings for special KawaiiCrops Items");
 		ModItems.HungerPotionEnabled = cfg_general.getBoolean("Hunger Potion", category, ModItems.HungerPotionEnabled, "Enable the Potion of Hunger ?  This debug item makes you hungrier by drinking it.");
+		ModItems.MagicSpoonEnabled = cfg_general.getBoolean("Magic Spoon", category, ModItems.MagicSpoonEnabled, "Enable the Magic Spoon ?  This debug item makes cooking blocks tick instantly.");
 		ModItems.MysterySeedEnabled = cfg_general.getBoolean("Mystery Seed Enabled", category, ModItems.MysterySeedEnabled, "Enable the Myster Seed to drop from tall grass ?  When planted it could grow into just about anything !");
 		ModItems.MysterySeedVanilla = cfg_general.getBoolean("Vanilla Mystery Seed Crops", category, ModItems.MysterySeedVanilla, "Include Vanilla Crops/Plants in the Mystery Seed's Drop List ?");
 		
@@ -578,7 +579,7 @@ public class ConfigurationLoader {
 		String category = "0 Main Settings";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES);
 		
-		int defaultRecipes = 10;
+		int defaultRecipes = 3;
 		int recipes2 = cfg.getInt("2 by 2", category, defaultRecipes, 0, 10000, "Number of 2x2 Shaped crafting recipes ?");
 		int recipes3 = cfg.getInt("3 by 3", category, defaultRecipes, 0, 10000, "Number of 3x3 Shaped crafting recipes ?");
 		int recipesU = cfg.getInt("Unshaped", category, defaultRecipes, 0, 10000, "Number of Unshaped crafting recipes ?");
