@@ -21,6 +21,9 @@ public abstract class RecipeKawaiiCookingBase
     
     public static String CookingHeatSourcesString = "";
     public static ArrayList<Block> CookingHeatSources = new ArrayList<Block>();
+    
+    public static String CookingFireString = "";
+    public static ArrayList<Block> CookingFire = new ArrayList<Block>();
 
     protected RecipeKawaiiCookingBase() { }
 	protected RecipeKawaiiCookingBase(ItemStack result, Object... recipe)

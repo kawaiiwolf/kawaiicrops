@@ -59,7 +59,8 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				{
 					dropAllItems(world, x, y, z);
 					state = (recipe.greasy ? "oiled" : "clean");
-					cookTime = recipeHash = 1;
+					cookTime = 1;
+					recipeHash = 0;
 				}
 			}
 		}
@@ -233,15 +234,18 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 	}
 	private static RecipeKawaiiFryingPan dummy = new RecipeKawaiiFryingPan();
 
-	private TexturedIcon[] display = new TexturedIcon[getInputSlots() + 1];
+	private TexturedIcon[] display = new TexturedIcon[getInputSlots()];
 	private TexturedIcon[] fullIcon = new TexturedIcon[1];
+	
 	@Override
 	public TexturedIcon[] getDisplayItems() 
 	{
+		if (DisplayCache != null) return DisplayCache;
+		
 		if (state.equals("ruined"))
 		{
-			fullIcon[0] =new TexturedIcon(ModBlocks.fryingPan.burntTexture, TextureMap.locationBlocksTexture);
-			return fullIcon;
+			fullIcon[0] = new TexturedIcon(ModBlocks.fryingPan.burntTexture, TextureMap.locationBlocksTexture);
+			return (DisplayCache = fullIcon);
 		}
 		if (recipeHash != 0)
 		{
@@ -249,12 +253,18 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			if (recipe != null && recipe.texture && cookTime > recipe.cookTime)
 			{
 				fullIcon[0] = new TexturedIcon(BlockKawaiiFryingPan.FoodTextures.get(recipe), TextureMap.locationBlocksTexture);
-				return fullIcon;
+				return (DisplayCache = fullIcon);
+			}
+			if (recipe != null && cookTime > recipe.cookTime && inventorySlots[0] != null)
+			{
+				for (int i = 0; i < inventorySlots[0].stackSize && i < display.length; i++)
+					display[i] = inventorySlots[0] == null ? null : new TexturedIcon(inventorySlots[0]);
+				return (DisplayCache = display);
 			}
 		}
 		for (int i = 0; i < inventorySlots.length && i < display.length; i++)
-			display[i] = inventorySlots[i] == null ? null : new TexturedIcon(inventorySlots[i]);
-		return display;
+			display[i] = inventorySlots[i + 1] == null ? null : new TexturedIcon(inventorySlots[i + 1]);
+		return (DisplayCache = display);
 	}
 
 	@Override
@@ -270,7 +280,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			if (recipe == null) 
 				return null;
 			else
-				return "State: " + (cookTime > recipe.cookTime ? "Finished " : "Cooking ") + StatCollector.translateToLocal(recipe.output.getItem().getUnlocalizedName() + ".name");
+				return "State: " + (cookTime > recipe.cookTime ? "Finished " : "Cooking ") + NamespaceHelper.getItemLocalizedName(recipe.output);
 		}
 		return null;
 	}

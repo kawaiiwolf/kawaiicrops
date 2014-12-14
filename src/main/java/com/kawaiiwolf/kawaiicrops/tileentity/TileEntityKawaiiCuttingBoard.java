@@ -23,13 +23,15 @@ public class TileEntityKawaiiCuttingBoard extends TileEntityKawaiiCookingBlock
 	@Override
 	public TexturedIcon[] getDisplayItems()
 	{
+		if (DisplayCache != null) return DisplayCache;
+		
 		if (getStackInSlot(1) != null)
 			display[0] = new TexturedIcon(getStackInSlot(1));
 		else if (getStackInSlot(0) != null)
 			display[0] = new TexturedIcon(getStackInSlot(0));
 		else
 			display[0] = null;
-		return display;
+		return (DisplayCache = display);
 	}
 	
 	@Override

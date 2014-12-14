@@ -39,12 +39,6 @@ public class NamespaceHelper {
 		return GameData.getBlockRegistry().iterator();
 	}
 	
-	public static String getItemLocalizedName(ItemStack item) { return getItemLocalizedName(item.getItem()); }
-	public static String getItemLocalizedName(Item item)
-	{
-		return StatCollector.translateToLocal(item.getUnlocalizedName() + ".name");
-	}
-	
 	public static String getItemName(ItemStack item) { return getItemName (item.getItem()); }
 	public static String getItemName(Item item) 
 	{
@@ -89,4 +83,24 @@ public class NamespaceHelper {
 	{
 		return Block.getBlockFromItem(item) != Blocks.air;
 	}
+
+	public static String getItemLocalizedName(Item item) { return getItemLocalizedName(new ItemStack(item)); }
+	public static String getItemLocalizedName(ItemStack item) 
+	{
+		return item.getDisplayName();
+	}
+
+	private interface IItemNameTransformer	{ public String transform(Item item); }
+	private IItemNameTransformer[] transformers = 
+	{
+		new IItemNameTransformer() { public String transform(Item item) { return item.getUnlocalizedName() + ".name"; }}
+	};
 }
+
+
+
+
+
+
+
+

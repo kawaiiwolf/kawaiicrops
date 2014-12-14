@@ -33,6 +33,9 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 	protected int cookTime = 0;
 	protected String state = "";
 	protected int recipeHash = 0;
+	
+	// Cached icon for quicker rendering. NULLed on readFromNBT
+	protected TexturedIcon[] DisplayCache = null;
 
 	@Override
 	public int getSizeInventory() 
@@ -60,6 +63,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 		cookTime = tags.getInteger("CookTicks");
 		state = tags.getString("CookState");
 		recipeHash = tags.getInteger("Recipe");
+		DisplayCache = null;
 	}
 
 	@Override

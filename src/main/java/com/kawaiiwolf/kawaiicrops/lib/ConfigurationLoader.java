@@ -385,7 +385,7 @@ public class ConfigurationLoader {
 			"\n"+
 			"\n\"<result item/block name> <number crafted> <1> [<2> ... <6>] <cook time> <burn time> <options>\""+
 			"\n"+
-			"\nWhere <1>, <2> ... <3> are the names of the block, item or ore dictonary names for the"+
+			"\nWhere <1>, <2> ... <6> are the names of the block, item or ore dictonary names for the"+
 			"\ningredients to be cooked into the result. You can provide between 1 and 6 ingredients."+
 			"\nFor a list of all valid IDs, turn on \"Dump All IDs\" in general.cfg"+
 			"\n"+
@@ -423,7 +423,34 @@ public class ConfigurationLoader {
 			"\ncooks 2 mushroom stews after 4 random ticks with no chance of burning. You must click on the pan with a"+
 			"\nwooden bowl in hand to harvest the soup. Additionally, once fully cooked, instead of rendering a"+
 			"\nbowl of mushroom stew in the pan, it will instead display the texture found at"+
-			"\n  kawaiicrops\\textures\\blocks\\mushroom_stew.fryingpan.png";
+			"\n  kawaiicrops\\textures\\blocks\\mushroom_stew.bigpot.png";
+	
+	public static final String REFERENCE_RECIPES_CUST_GRILL = "" +
+			"Format for Grill Crafting recipes:\n"+
+			"\n"+
+			"\n\"<result item/block name> <number crafted> <1> [<2> ... <4>] <cook time> <burn time | dry>\""+
+			"\n"+
+			"\nWhere <1>, <2> ... <4> are the names of the block, item or ore dictonary names for the"+
+			"\ningredients to be cooked into the result. You can provide between 1 and 4 ingredients."+
+			"\nFor a list of all valid IDs, turn on \"Dump All IDs\" in general.cfg"+
+			"\n"+
+			"\n<cook time> is the number of random ticks it will take for the recipe to finish cooking."+
+			"\n  A number less than 1 indicates it cooks instantly if the pan is hot ( at least one "+
+			"\n  random tick ontop of a heat source block)"+
+			"\n"+
+			"\n<burn time> is the number of random ticks it will take for the recipe to be ruined by"+
+			"\n  overcooking. A number less than 1 indicates the food will never burn. Alternatively"+
+			"\n  use the word 'dry' to indicate that the grill does not need a heat source to cook"+
+			"\n  and can't overcook. Great for drying out jerkey."+
+			"\n"+
+			"\n"+
+			"\nExample:"+
+			"\n"+
+			"\n\"minecraft:cooked_beef 1 minecraft:beef 2 3\""+
+			"\nCooks a steak in 2 random ticks that will burn after 3 more random ticks"+
+			"\n"+
+			"\n\"minecraft:cooked_fished 2 minecraft:fish minecraft:fish 4 dry\""+
+			"\nDries out 2 fish over 4 random ticks.";
 	
 	public void loadConfiguration_PreInit() 
 	{
@@ -453,6 +480,7 @@ public class ConfigurationLoader {
 		
 		cfg_general.setCategoryComment(category, "Configuration Settings for special KawaiiCrops Crafting Blocks");
 		RecipeKawaiiCookingBase.CookingHeatSourcesString = cfg_general.getString("Heat Sources", category, "minecraft:lava minecraft:fire minecraft:lit_furnace ", "Which blocks act as heat sources on which cooking blocks (pots/pans/etc) can cook ontop of ?  Please separate blocks with spaces. Enable \"Dump All IDs\" to see a list of valid block names.");
+		RecipeKawaiiCookingBase.CookingFireString = cfg_general.getString("Grill Fire Sources", category, "minecraft:lava minecraft:fire", "Which blocks act as fire sources on which a grill can cook ontop of ?  Please separate blocks with spaces. Enable \"Dump All IDs\" to see a list of valid block names.");
 		RecipeKawaiiFryingPan.CookingOilItemsString = cfg_general.getString("Frying Pan Oil Items", category, "kawaiicrops:kawaiicrops.cookingoil", "What items can be used as a cooking oil for frying pan recipes ?  Please separate items with spaces.");
 		RecipeKawaiiBigPot.CookingOilItemsString = cfg_general.getString("Big Pot Oil Items", category, "kawaiicrops:kawaiicrops.cookingoil", "What items can be used as a cooking oil for Big Pot recipes ?  Please separate items with spaces.");
 		RecipeKawaiiBigPot.CookingWaterItemsString = cfg_general.getString("Big Pot Water Items", category, "minecraft:water_bucket", "What items can be used as water for Big Pot recipes ?  Please separate items with spaces.");
@@ -588,6 +616,7 @@ public class ConfigurationLoader {
 		int recipesC_fry = cfg.getInt("Kawaiicraft Frying Pan", category, defaultRecipes, 0, 10000, "Number of Kawaiicraft Frying Pan crafting recipes ?");
 		int recipesC_pot = cfg.getInt("Kawaiicraft Big Pot", category, defaultRecipes, 0, 10000, "Number of Kawaiicraft Big Pot crafting recipes ?");
 		int recipesC_churn = cfg.getInt("Kawaiicraft Churn", category, defaultRecipes, 0, 10000, "Number of Kawaiicraft Churn crafting recipes ?");
+		int recipesC_grill = cfg.getInt("Kawaiicraft Grill", category, defaultRecipes, 0, 10000, "Number of Kawaiicraft Grill crafting recipes ?");
 		
 		category = "2 by 2 Shaped Crafting Recipes";
 		cfg.setCategoryComment(category, REFERENCE_RECIPES_2);
@@ -651,6 +680,14 @@ public class ConfigurationLoader {
 		{
 			String recipe = cfg.getString("" + i, category, "", "");
 			RecipeHelper.registerCustomBigPotRecipe(recipe);
+		}
+		
+		category = "Kawaiicraft Grill Recipes";
+		cfg.setCategoryComment(category, REFERENCE_RECIPES_CUST_GRILL);
+		for (int i = 0; i < recipesC_grill; i++)
+		{
+			String recipe = cfg.getString("" + i, category, "", "");
+			RecipeHelper.registerCustomGrillRecipe(recipe);
 		}
 		
 		cfg.save();

@@ -17,6 +17,7 @@ public class ModBlocks
 	public static BlockKawaiiFryingPan fryingPan = new BlockKawaiiFryingPan();
 	public static BlockKawaiiBigPot bigPot = new BlockKawaiiBigPot();
 	public static BlockKawaiiChurn churn = new BlockKawaiiChurn();
+	public static BlockKawaiiGrill grill = new BlockKawaiiGrill();
 	
 	public static void register()
 	{
@@ -24,6 +25,7 @@ public class ModBlocks
 		fryingPan.register();
 		bigPot.register();
 		churn.register();
+		grill.register();
 	}
 	
 	public static void registerDropTables() 
@@ -38,6 +40,7 @@ public class ModBlocks
 	public static void registerCookingBlockLists()
 	{
 		RecipeKawaiiCookingBase.CookingHeatSources = NamespaceHelper.getBlocksByName(RecipeKawaiiCookingBase.CookingHeatSourcesString);
+		RecipeKawaiiCookingBase.CookingFire = NamespaceHelper.getBlocksByName(RecipeKawaiiCookingBase.CookingFireString);
 		RecipeKawaiiFryingPan.CookingOilItems = NamespaceHelper.getItemsByName(RecipeKawaiiFryingPan.CookingOilItemsString);
 		RecipeKawaiiBigPot.CookingOilItems = NamespaceHelper.getItemsByName(RecipeKawaiiBigPot.CookingOilItemsString);
 		RecipeKawaiiBigPot.CookingWaterItems = NamespaceHelper.getItemsByName(RecipeKawaiiBigPot.CookingWaterItemsString);
