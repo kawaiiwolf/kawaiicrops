@@ -363,6 +363,8 @@ public class ConfigurationLoader {
 			"\n           other ingredeints. See general.cfg to see a list of items that count as a type"+
 			"\n           of oil."+
 			"\n  - \"greasy\": Oil the pan after cooking this dish"+
+			"\n  - \"steam\": recipes require a bamboo steam box to be added to the pan before you can"+
+			"\n             cook this recipe. Does not work with the oil or greasy keywords."+
 			"\n  - \"texture\": On a completed recipe, render a different texture in the pan. The file"+
 			"\n               for this texture sould be named the same as the item plus \".fryingpan\""+
 			"\n               (minus the mod id) and placed in the kawaiicrops\\textures\\blocks folder."+
@@ -862,6 +864,7 @@ public class ConfigurationLoader {
 		t.TreeTrunkBlock = NamespaceHelper.getBlockByName(config.getString("2.Tree  Trunk Block", category, "minecraft:log", "What block acts as a trunk for this tree ?  For a list of blocks, see [DumpNames] setting in General.cfg."));
 		t.TreeExternalFruit = config.getBoolean("2.Tree  External Fruit", category, t.TreeExternalFruit, "Does fruit grow external to the block ?  (If false, fruit grows inside leaf block");
 		t.TreeGravityChance = config.getFloat("2.Tree  Fruit Gravity Chance", category, t.TreeGravityChance, 0.0f, 1.0f, "What is the chance, per tick, that ripe fruit will drop to the ground ?");
+		t.FruitHarvest = config.getBoolean("2.Tree  Fruit Harvest", category, t.FruitHarvest, "Can right clicking on a mature fruit harvest it ?");
 
 		t.GrowthMultiplierSapling = config.getFloat("3.Growth  Sapling Growth Multiplier", category, t.GrowthMultiplierSapling, 0.01f, 100.0f, "What growth mutlipler to apply to the growth of this tree ?");
 		t.GrowthMultiplierLeaf = config.getFloat("3.Growth  Fruit Spawn Multiplier", category, t.GrowthMultiplierLeaf, 0.01f, 100.0f, "What growth multiplier to apply to the generation of fruit ?");

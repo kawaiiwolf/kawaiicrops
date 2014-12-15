@@ -182,7 +182,7 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 				// Burned
 				if (recipe.burnTime > 0 && cookTime > recipe.cookTime + recipe.burnTime)
 				{
-					inventorySlots[0] = new ItemStack(ModItems.BurntFood);
+					inventorySlots[0] = new ItemStack(recipe.oil ? ModItems.BurntFood : ModItems.RuinedFood);
 					cookTime = 1;
 					recipeHash = 0;
 					state = "ruined";

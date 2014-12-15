@@ -66,6 +66,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
 	public float TreeGravityChance = 0.0f;
 	
 	public Boolean FruitEdible = true;
+	public Boolean FruitHarvest = true;
 	public int FruitHunger = 2;
 	public float FruitSaturation = 0.1f;
 	public float GrowthMultiplierFruit = 1.0f;
@@ -362,7 +363,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xhit, float yhit, float zhit)
     {
-    	if (getState(world, x, y, z) == TreeState.FRUITLEAFRIPE)
+    	if (FruitHarvest && getState(world, x, y, z) == TreeState.FRUITLEAFRIPE)
     		doFruitDrop(world, x, y, z, world.rand);
     	
         return false;

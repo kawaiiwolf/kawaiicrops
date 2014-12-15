@@ -53,11 +53,13 @@ public class KawaiiCrops {
     
     /**
      * TODO:
-     *
+     * 
      * TEST TEST TEST
      * 
-     * Possible future idea:
-     * 		Bamboo Steamer - Attach to frying pan
-     * 		Grill - Cook without heat (drying) or with (BBQ/smoke)
+     * Cheese block ! Takes a while to ferment.
+     *   No custom recipe
+     *   Instanced like crops
+     *   Pulls labels from block textures
+     * 
      */
 }

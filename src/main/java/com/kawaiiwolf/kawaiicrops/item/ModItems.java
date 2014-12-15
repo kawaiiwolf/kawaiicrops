@@ -37,8 +37,10 @@ public class ModItems {
 	public static ItemHungerPotion HungerPotion = new ItemHungerPotion();
 	public static ItemKawaiiMysterySeed MysterySeed = null;
 	public static ItemKawaiiIngredient BurntFood = new ItemKawaiiIngredient("burntfood"," Beyond Unappetizing");
+	public static ItemKawaiiIngredient RuinedFood = new ItemKawaiiIngredient("ruinedfood","Beyond Unappetizing");
 	public static ItemKawaiiIngredient CookingOil = new ItemKawaiiIngredient("cookingoil", "Perfect for frying or greasing a pan.");
 	public static ItemKawaiiIngredient MagicSpoon = new ItemKawaiiMagicSpoon();
+	public static ItemKawaiiIngredient Steamer = new ItemKawaiiIngredient("steamer","Set on a frying pan to cook with steam.");
 	
 	public static boolean HungerPotionEnabled = false;
 	public static boolean MagicSpoonEnabled = false;
@@ -61,6 +63,7 @@ public class ModItems {
 		
 		GameRegistry.registerItem(BurntFood, Constants.MOD_ID + ".burntfood");
 		GameRegistry.registerItem(CookingOil, Constants.MOD_ID + ".cookingoil");
+		GameRegistry.registerItem(Steamer, Constants.MOD_ID + ".steamer");
 	}
 	
 	public static void registerOreDictionary()

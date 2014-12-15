@@ -34,7 +34,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 	protected String state = "";
 	protected int recipeHash = 0;
 	
-	// Cached icon for quicker rendering. NULLed on readFromNBT
+	// Cached icon for quicker rendering. NULLed on readFromNBT to mark dirty
 	protected TexturedIcon[] DisplayCache = null;
 
 	@Override
@@ -47,7 +47,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 	
 	@Override
 	public void readFromNBT(NBTTagCompound tags) { readFromNBT(tags, true); }
-	private void readFromNBT(NBTTagCompound tags, boolean callSuper)
+	protected void readFromNBT(NBTTagCompound tags, boolean callSuper)
 	{
 		if (callSuper)
 			super.readFromNBT(tags);
@@ -68,7 +68,7 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 
 	@Override
 	public void writeToNBT(NBTTagCompound tags) { writeToNBT(tags, true); }
-	private void writeToNBT(NBTTagCompound tags, boolean callSuper)
+	protected void writeToNBT(NBTTagCompound tags, boolean callSuper)
 	{
 		if (callSuper)
 			super.writeToNBT(tags);

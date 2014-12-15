@@ -2,11 +2,11 @@
 {
   "modid": "kawaiicrops",
   "name": "A Kawaii Crop Mod",
-  "description": "If you can read me, I exist !",
+  "description": "Custom Crops & Cooking. See the config files and don't forget your resourcepack !",
   "version": "xxx",
   "mcversion": "$mcversion",
   "authorList": ["kawaiiwolf"],
   "credits": "Kawaiiwolf & Sasha",
-  "logoFile": ""
+  "logoFile": "banner.png"
 }
 ]

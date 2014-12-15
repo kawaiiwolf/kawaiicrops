@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -22,6 +24,7 @@ import com.kawaiiwolf.kawaiicrops.renderer.TexturedIcon;
 public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 {
 	public boolean jitter = false;
+	public boolean steam = false;
 	
 	public TileEntityKawaiiFryingPan()
 	{
@@ -69,6 +72,12 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			// DEBUG: fast cook
 			if (player.getCurrentEquippedItem().getItem() == ModItems.MagicSpoon) { this.onRandomTick(world, x, y, z, world.rand); } 
 			
+			else if (player.getCurrentEquippedItem().getItem() == ModItems.Steamer && state.equals("clean") && !steam)
+			{
+				player.getCurrentEquippedItem().stackSize--;
+				steam = true;
+			}
+			
 			// We haven't started cooking just yet, but the pan could be heated
 			else if (cookTime <= 1)
 			{
@@ -95,6 +104,9 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCompleteRecipe();
 					if (recipe != null && recipe.cookTime == 0)
 					{
+						if(!recipe.steam && steam)
+							dropSteamer();
+						
 						recipeHash = recipe.hashCode();
 						state = "cooking";
 						for (int i = 0; i < inventorySlots.length; i++)
@@ -141,6 +153,9 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCompleteRecipe();
 				if (recipe != null)
 				{
+					if(!recipe.steam && steam)
+						dropSteamer();
+					
 					recipeHash = recipe.hashCode();
 					state = "cooking";
 					world.markBlockForUpdate(x, y, z);
@@ -157,12 +172,15 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					recipeHash = 0; 
 					return;
 				}
+				
+				if (recipe.steam && !steam) return;
+				
 				cookTime++;
 
 				// Burned
 				if (recipe.burnTime > 0 && cookTime > recipe.cookTime + recipe.burnTime)
 				{
-					inventorySlots[0] = new ItemStack(ModItems.BurntFood);
+					inventorySlots[0] = new ItemStack(recipe.steam ? ModItems.RuinedFood : ModItems.BurntFood);
 					cookTime = 1;
 					recipeHash = 0;
 					state = "ruined";
@@ -214,6 +232,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 		RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) this.getCurrentRecipe();
 		if (recipe == null || recipe.harvest == null)
 			super.dropAllItems(world, x, y, z);
+		dropSteamer();
 	}
 	
 	@Override
@@ -267,10 +286,45 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 		return (DisplayCache = display);
 	}
 
+	protected void dropSteamer()
+	{
+		if (!steam) return;
+		steam = false;
+		dropBlockAsItem(getWorldObj(), xCoord, yCoord, zCoord, new ItemStack(ModItems.Steamer));
+	}
+	
+	@Override
+	public void clearAllItems()
+	{
+		super.clearAllItems();
+		dropSteamer();
+	}
+	
+	@Override
+	protected void readFromNBT(NBTTagCompound tags, boolean callSuper) 
+	{ 
+		super.readFromNBT(tags, callSuper);
+		steam = tags.getBoolean("steam");
+	}
+
+	@Override
+	protected void writeToNBT(NBTTagCompound tags, boolean callSuper) 
+	{ 
+		super.writeToNBT(tags, callSuper);
+		tags.setBoolean("steam", steam);
+	}
+	
+	
 	@Override
 	public String getWAILATip() 
 	{
-		if (state.equals("clean")) return cookTime > 0 ? "State: Hot Pan" : "State: Squeaky Clean";
+		if (state.equals("clean"))
+		{
+			if (steam)
+				return "State: Ready to Steam";
+			else
+				return cookTime > 0 ? "State: Hot Pan" : "State: Squeaky Clean";
+		}
 		if (state.equals("burning")) return "State: Burning !";
 		if (state.equals("ruined")) return "State: Completely Ruined";
 		if (state.equals("oiled")) return "State: " + (cookTime > 0 ? "Hot " : "") + "Oiled Pan";
@@ -279,8 +333,9 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCurrentRecipe();
 			if (recipe == null) 
 				return null;
-			else
-				return "State: " + (cookTime > recipe.cookTime ? "Finished " : "Cooking ") + NamespaceHelper.getItemLocalizedName(recipe.output);
+			if (recipe.steam & !steam)
+				return "State: Missing Steamer";
+			return "State: " + (cookTime > recipe.cookTime ? "Finished " : (steam ? "Steaming " : "Cooking ")) + NamespaceHelper.getItemLocalizedName(recipe.output);
 		}
 		return null;
 	}

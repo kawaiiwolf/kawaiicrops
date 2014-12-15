@@ -3,9 +3,11 @@ itemGroup.kawaiicrops=Kawaii Crops
 
 item.kawaiicrops.hungerpotion.name=Potion of Hunger
 item.kawaiicrops.burntfood.name=Burnt Food
+item.kawaiicrops.ruinedfood.name=Ruined Food
 item.kawaiicrops.cookingoil.name=Cooking Oil
 item.kawaiicrops.houchou.name=Magic Spoon
 item.kawaiicrops.mysteryseed.name=Mystery Seed
+item.kawaiicrops.steamer.name=Steamer
 
 tile.kawaiicrops.cuttingboard.name=Cutting Board
 tile.kawaiicrops.bigpot.name=Big Iron Pot

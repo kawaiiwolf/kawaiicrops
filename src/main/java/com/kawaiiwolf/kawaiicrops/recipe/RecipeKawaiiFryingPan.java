@@ -19,6 +19,7 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 	public int cookTime = 0;
 	public int burnTime = 0;
 	public boolean oil = false;
+	public boolean steam = false;
 	public boolean greasy = false;
 	public boolean texture = false;
 	public Item harvest = null;
@@ -48,11 +49,22 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 				if (option == null || option.isEmpty() || option.equals("|"))
 					continue;
 				else if (option.equals("oil"))
+				{
 					oil = true;
+					steam = false;
+				}
+				else if (option.equals("greasy"))
+				{
+					greasy = true;
+					steam = false;
+				}
+				else if (option.equals("steam"))
+				{
+					greasy = oil = false;
+					steam = true;
+				}
 				else if (option.equals("texture"))
 					texture = true;
-				else if (option.equals("greasy"))
-					greasy = true;
 				else
 				{
 					Item item = NamespaceHelper.getItemByName(option);

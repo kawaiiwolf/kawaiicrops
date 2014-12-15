@@ -103,22 +103,24 @@ public class NEIRecipeHandlerKawaiiGrill extends TemplateRecipeHandler
 		for (RecipeKawaiiCookingBase r : RecipeKawaiiGrill.allRecipes)
 			if (r != null && r instanceof RecipeKawaiiGrill)
 			{
-				skip = false;
 				RecipeKawaiiGrill recipe = (RecipeKawaiiGrill) r;
 				
-				for (int i = 0; i < r.input.size(); i++)
-					if (skip) break;
-					else if (r.input.get(i) instanceof ItemStack && NEIServerUtils.areStacksSameTypeCrafting(ingredient, (ItemStack) r.input.get(i))) 
-						arecipes.add(new CachedGrillRecipe(recipe));
-					else if (r.input.get(i) instanceof List)
-						for (ItemStack item : (ArrayList<ItemStack>)r.input.get(i))
-							if (NEIServerUtils.areStacksSameTypeCrafting(ingredient, item))
-							{
-								arecipes.add(new CachedGrillRecipe(recipe));
-								skip = true;
-								break;
-							}
+				if (hasIngredient(recipe.input, ingredient))
+					arecipes.add(new CachedGrillRecipe(recipe));
 			}
+	}
+	
+	private boolean hasIngredient(Object o, ItemStack ingredient)
+	{
+		if (o instanceof ItemStack)
+			return NEIServerUtils.areStacksSameTypeCrafting((ItemStack)o, ingredient);
+		else if (o instanceof List)
+		{
+			for (ItemStack item : (ArrayList<ItemStack>)o)
+				if (NEIServerUtils.areStacksSameTypeCrafting(item, ingredient))
+					return true;
+		}
+		return false;
 	}
 	
 	@Override

@@ -12,6 +12,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler.CachedRecipe;
 
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
+import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
@@ -20,15 +21,19 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 {
 	private static ArrayList<PositionedStack> cleanPan = new ArrayList<PositionedStack>();
 	private static ArrayList<PositionedStack> oiledPan = new ArrayList<PositionedStack>();
+	private static ArrayList<PositionedStack> steamer = new ArrayList<PositionedStack>();
 	static
 	{
 		cleanPan.add(new PositionedStack(new ItemStack(ModBlocks.fryingPan), 76, 14));
 		oiledPan.add(new PositionedStack(new ItemStack(ModBlocks.fryingPan), 76, 14));
+		steamer.add(new PositionedStack(new ItemStack(ModBlocks.fryingPan), 76, 14));
 		
 		ArrayList<ItemStack> oil = new ArrayList<ItemStack>();
 		for (Item item : RecipeKawaiiFryingPan.CookingOilItems)
 			oil.add(new ItemStack(item));
 		oiledPan.add(new PositionedStack(oil, 68, 42));
+		
+		steamer.add(new PositionedStack(new ItemStack(ModItems.Steamer), 68, 42));
 	}
 
 	public class CachedFryingPanRecipe extends CachedRecipe
@@ -36,6 +41,7 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 		private ArrayList<PositionedStack> input = new ArrayList<PositionedStack>();
 		private PositionedStack output;
 		private boolean oiled;
+		private boolean steam;
 		public String display;
 		
 		public CachedFryingPanRecipe(RecipeKawaiiFryingPan recipe)
@@ -43,6 +49,7 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 			this.oiled = recipe.oil; 
 			this.output = new PositionedStack(recipe.output, 119, 24);
 			this.display = (recipe.cookTime == 0 ? "" : "Cook Time: " + recipe.cookTime);
+			this.steam = recipe.steam;
 			
 			if (recipe.input.size() == 1)
 				this.input.add(new PositionedStack(recipe.input.get(0), 34, 24));
@@ -72,7 +79,7 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 		@Override
         public List<PositionedStack> getOtherStacks() 
         {
-            return getCycledIngredients(cycleticks / 20, oiled ? oiledPan : cleanPan);
+            return getCycledIngredients(cycleticks / 20, oiled ? oiledPan : (steam ? steamer : cleanPan));
         }
     }
 	
@@ -90,6 +97,12 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 		if (ingredient.getItem() == Item.getItemFromBlock(ModBlocks.fryingPan))
 			for (RecipeKawaiiCookingBase r : RecipeKawaiiFryingPan.allRecipes)
 				arecipes.add(new CachedFryingPanRecipe((RecipeKawaiiFryingPan)r));
+		else if (ingredient.getItem() == ModItems.Steamer)
+		{
+			for (RecipeKawaiiCookingBase r : RecipeKawaiiFryingPan.allRecipes)
+				if (((RecipeKawaiiFryingPan)r).steam)
+					arecipes.add(new CachedFryingPanRecipe((RecipeKawaiiFryingPan)r));
+		}
 		else
 		for (RecipeKawaiiCookingBase r : RecipeKawaiiFryingPan.allRecipes)
 			if (r != null && r instanceof RecipeKawaiiFryingPan)

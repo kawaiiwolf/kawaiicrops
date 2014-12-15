@@ -30,8 +30,10 @@ import net.minecraftforge.client.model.IModelCustom;
 public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer 
 {
 	public static RendererKawaiiFryingPan instance = null;
-    private IModelCustom model;
-    private ResourceLocation modelTexture;
+    private IModelCustom modelPan;
+    private ResourceLocation modelPanTexture;
+    private IModelCustom modelSteamer;
+    private ResourceLocation modelSteamerTexture;
 	
 	public RendererKawaiiFryingPan()
 	{
@@ -39,8 +41,11 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		{
 			instance = this;
 
-			model = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/fryingpan.obj"));
-			modelTexture = new ResourceLocation(Constants.MOD_ID + ":textures/model/fryingpan.png");
+			modelPan = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/fryingpan.obj"));
+			modelPanTexture = new ResourceLocation(Constants.MOD_ID + ":textures/model/fryingpan.png");
+			
+			modelSteamer = AdvancedModelLoader.loadModel(new ResourceLocation(Constants.MOD_ID + ":model/steamer.obj"));
+			modelSteamerTexture = new ResourceLocation(Constants.MOD_ID + ":textures/model/steamer.png");
 		}			
 	}
 	
@@ -59,28 +64,35 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		TexturedIcon[] icons;
 		
 		RenderHelper.disableStandardItemLighting();
-		renderModel(x, y, z, meta);
+		renderModel(modelPan, modelPanTexture, x, y, z, meta);
 
 		if (te instanceof TileEntityKawaiiFryingPan)
 		{
-			icons = ((TileEntityKawaiiFryingPan)te).getDisplayItems();
-			if (icons.length == 1 && icons[0] != null)
+			if (((TileEntityKawaiiFryingPan)te).steam)
 			{
-				renderFlatTile(icons[0].icon, x, y + 2.0d/16, z, meta, 12.0f/16, 90.0f, 1.0f, 0.0f, 0.0f, icons[0].texture);
+				renderModel(modelSteamer, modelSteamerTexture, x, y + .25d, z, meta + 1);
 			}
 			else
 			{
-				for (TexturedIcon icon : icons)
-					if (icon != null)
-						itemCount++;
-				for (TexturedIcon icon : icons)
-					if (icon != null)
-					{
-						rotation = itemCurrent++ / (float)itemCount;
-						jitter = ((TileEntityKawaiiFryingPan)te).jitter ? ((Math.abs(Minecraft.getSystemTime() + itemCurrent * 13) / 12) % 21 - 10) / 40.0f : 0.0f;
-						spin = (float)FNV.rand(te.xCoord, te.yCoord, te.zCoord, 360);
-						renderSizzlingItem(icon.icon, x, y + 2.0d/16, z, rotation, jitter, spin, icon.texture);
-					}
+				icons = ((TileEntityKawaiiFryingPan)te).getDisplayItems();
+				if (icons.length == 1 && icons[0] != null)
+				{
+					renderFlatTile(icons[0].icon, x, y + 2.0d/16, z, meta, 12.0f/16, 90.0f, 1.0f, 0.0f, 0.0f, icons[0].texture);
+				}
+				else
+				{
+					for (TexturedIcon icon : icons)
+						if (icon != null)
+							itemCount++;
+					for (TexturedIcon icon : icons)
+						if (icon != null)
+						{
+							rotation = itemCurrent++ / (float)itemCount;
+							jitter = ((TileEntityKawaiiFryingPan)te).jitter ? ((Math.abs(Minecraft.getSystemTime() + itemCurrent * 13) / 12) % 21 - 10) / 40.0f : 0.0f;
+							spin = (float)FNV.rand(te.xCoord, te.yCoord, te.zCoord, 360);
+							renderSizzlingItem(icon.icon, x, y + 2.0d/16, z, rotation, jitter, spin, icon.texture);
+						}
+				}
 			}
 		}
 	}
@@ -133,9 +145,9 @@ public class RendererKawaiiFryingPan extends TileEntitySpecialRenderer
 		GL11.glPopMatrix();
 	}
 	
-	private void renderModel(double x, double y, double z, int meta)
+	private void renderModel(IModelCustom model, ResourceLocation texture, double x, double y, double z, int meta)
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
+		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
 		float scale = 1.0f / 16.0f;
 		
