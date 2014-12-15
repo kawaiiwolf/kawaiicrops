@@ -770,14 +770,14 @@ public class ConfigurationLoader {
 		b.DropTableUnripeString = config.getString("4.Drops  Unripe Drop Table", category, b.DropTableUnripeString, "What is the drop table for Unripe crops ? Please see General.cfg to see how to use these.");
 		
 		WorldGenKawaiiBaseWorldGen.WorldGen gen = new WorldGen();
-		gen.weight = config.getInt("5.WorldGen  Weight", category, gen.weight, 0, 1000, "How often should this crop attempt to spawn ?  A weight of 1 will attempt to spawn this cropy in every chunk, 5 in every 5 chunks, etc.. A weight of 0 disables world gen for this crop.");
+		gen.weight = config.getInt("5.WorldGen  Weight", category, gen.weight, 0, 1000, "How often should this crop attempt to spawn ?  A weight of 1 will attempt to spawn this crop in every chunk, 5 in every 5 chunks, etc.. A weight of 0 disables world gen for this crop.");
 		gen.minRainfall = config.getFloat("5.WorldGen  Biome Humidity Minimum", category, gen.minRainfall, 0.0f, 1.0f, "What is the minimum Humidity a biome must have to spawn this crop ?");
 		gen.maxRainfall = config.getFloat("5.WorldGen  Biome Humidity Maximum", category, gen.maxRainfall, 0.0f, 1.0f, "What is the maximum Humidity a biome must have to spawn this crop ?");
 		gen.minTemperature = config.getFloat("5.WorldGen  Biome Temperature Minimum", category, gen.minTemperature, -0.5f, 2.0f, "What is the minimum Temperature a biome must have to spawn this crop ?");
 		gen.maxTemperature = config.getFloat("5.WorldGen  Biome Temperature Maximum", category, gen.maxTemperature, -0.5f, 2.0f, "What is the maximum Temperature a biome must have to spawn this crop ?");
 		gen.biomeBlacklist = config.getString("5.WorldGen  Biome Blacklist", category, gen.biomeBlacklist, "What biomes do you not want this to spawn on ?  For a list of biomes and their Humidity/Temperature, see [DumpNames] setting in General.cfg").toLowerCase();
 
-		String comment = "Resource Pack settings for " + name + "\n\nLangage Name: tile.kawaiicrops." + name + ".seed.name\n\n";
+		String comment = "Resource Pack settings for " + name + "\n\nLangage Name: tile.kawaiicrops." + name + ".name\n\n";
 		for (int i = 0; i < (b.MaxHeightRequiredToRipen ? b.MaxHeight : 1); i++)
 			for (int j = 0; j < b.CropStages; j++)
 				comment += "Texture Name: textures/blocks/" + name + "_stage_" + (b.MaxHeightRequiredToRipen && b.MaxHeight > 1 ? j + "_" : "") + j + ".png\n";
