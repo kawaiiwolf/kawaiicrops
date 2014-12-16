@@ -18,21 +18,25 @@ import codechicken.nei.recipe.TemplateRecipeHandler.CachedRecipe;
 
 public class NEIRecipeHandlerKawaiiChurn extends TemplateRecipeHandler 
 {
-	private static ArrayList<PositionedStack> cookingBlock = new ArrayList<PositionedStack>();
+	private static ArrayList<PositionedStack> churnBlock = new ArrayList<PositionedStack>();
+	private static ArrayList<PositionedStack> millBlock = new ArrayList<PositionedStack>();
 	static
 	{
-		cookingBlock.add(new PositionedStack(new ItemStack(ModBlocks.churn), 76, 14));
+		churnBlock.add(new PositionedStack(new ItemStack(ModBlocks.churn), 76, 14));
+		millBlock.add(new PositionedStack(new ItemStack(ModBlocks.mill), 76, 14));
 	}
 
 	public class CachedChurnRecipe extends CachedRecipe
     {
 		private ArrayList<PositionedStack> input = new ArrayList<PositionedStack>();
 		private PositionedStack output;
+		private boolean isChurn;
 		
 		public CachedChurnRecipe(RecipeKawaiiChurn recipe)
 		{
 			this.input.add(new PositionedStack(recipe.input.get(0), 34, 24));
 			this.output = new PositionedStack(recipe.output, 119, 24);
+			this.isChurn = recipe.churn;
 		}
 		
         @Override
@@ -49,7 +53,7 @@ public class NEIRecipeHandlerKawaiiChurn extends TemplateRecipeHandler
 		@Override
         public List<PositionedStack> getOtherStacks() 
         {
-            return getCycledIngredients(cycleticks / 20, cookingBlock);
+            return getCycledIngredients(cycleticks / 20, isChurn ? churnBlock : millBlock);
         }
     }
 	
@@ -67,7 +71,10 @@ public class NEIRecipeHandlerKawaiiChurn extends TemplateRecipeHandler
 		boolean skip;
 		
 		if (ingredient.getItem() == Item.getItemFromBlock(ModBlocks.churn))
-			for (RecipeKawaiiCookingBase r : RecipeKawaiiChurn.allRecipes)
+			for (RecipeKawaiiCookingBase r : RecipeKawaiiChurn.churnRecipes)
+				arecipes.add(new CachedChurnRecipe((RecipeKawaiiChurn)r));
+		else if (ingredient.getItem() == Item.getItemFromBlock(ModBlocks.mill))
+			for (RecipeKawaiiCookingBase r : RecipeKawaiiChurn.millRecipes)
 				arecipes.add(new CachedChurnRecipe((RecipeKawaiiChurn)r));
 		else
 		for (RecipeKawaiiCookingBase r : RecipeKawaiiChurn.allRecipes)
@@ -94,7 +101,7 @@ public class NEIRecipeHandlerKawaiiChurn extends TemplateRecipeHandler
 	@Override
 	public String getRecipeName() 
 	{
-		return "Churn";
+		return "Churn & Hand Mill";
 	}
 
 	@Override

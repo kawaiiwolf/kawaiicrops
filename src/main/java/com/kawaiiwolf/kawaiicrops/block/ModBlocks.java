@@ -17,6 +17,7 @@ public class ModBlocks
 	public static BlockKawaiiFryingPan fryingPan = new BlockKawaiiFryingPan();
 	public static BlockKawaiiBigPot bigPot = new BlockKawaiiBigPot();
 	public static BlockKawaiiChurn churn = new BlockKawaiiChurn();
+	public static BlockKawaiiMill mill = new BlockKawaiiMill();
 	public static BlockKawaiiGrill grill = new BlockKawaiiGrill();
 	
 	public static void register()
@@ -25,6 +26,7 @@ public class ModBlocks
 		fryingPan.register();
 		bigPot.register();
 		churn.register();
+		mill.register();
 		grill.register();
 	}
 	

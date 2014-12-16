@@ -326,20 +326,22 @@ public class ConfigurationLoader {
 			"\nChops a sapling into 3 sticks.";
 
 	public static final String REFERENCE_RECIPES_CUST_CHURN = "" +
-			"Format for Churn Crafting recipes:\n"+
+			"Format for Churn & Milling Crafting recipes:\n"+
 			"\n"+
-			"\"<result item/block name> <number crafted> <ingredient> [<cookTime>]\"\n"+
+			"\n\"<result item/block name> <number crafted> <ingredient> [<cookTime>] [churn | mill]\""+
 			"\n"+
-			"Where <ingredient> is the name of the block, item or ore dictonary name \n"+
-			"for theingredient to be chopped into the result. <cookTime> is the number\n"+
-			"of consecutive clicks to fully churn. Muts be between 1 and 64 (64 is just\n"+
-			"cruel. Churn is optional and defaults to 1 if not supplied. For a list of \n"+
-			"all valid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
+			"\nWhere <ingredient> is the name of the block, item or ore dictonary name "+
+			"\nfor theingredient to be chopped into the result. <cookTime> is the number"+
+			"\nof consecutive clicks to fully churn. Muts be between 1 and 64 (64 is just"+
+			"\ncruel. <cookTime> is optional and defaults to 1 if not supplied. [churn]"+
+			"\nindicates that we need to use a churn block and [mill] to use the"+
+			"\nmillstone block, but defaults to churn if not supplied. For a list of all"+
+			"\nvalid IDs, turn on \"Dump All IDs\" in general.cfg\n"+
 			"\n"+
 			"Example:\n"+
 			"\n"+
-			"\"minecraft:flint 3 minecraft:gravel 4\"\n"+
-			"\nChurns block of gravle into 3 flint.";
+			"\"minecraft:flint 3 minecraft:gravel 4 mill\"\n"+
+			"\nMills a block of gravle into 3 flint.";
 
 	public static final String REFERENCE_RECIPES_CUST_FRYING_PAN = "" +
 			"Format for Frying Pan Crafting recipes:\n"+

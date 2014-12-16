@@ -7,22 +7,22 @@ import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockKawaiiChurn extends BlockKawaiiCookingBlock {
+public class BlockKawaiiMill extends BlockKawaiiCookingBlock {
 
-	public BlockKawaiiChurn()
+	public BlockKawaiiMill()
 	{
-		super(Material.wood, "churn", false);
-		maxY = 16.0d / 16.0d;
-		minX = minZ = 2.0d / 16.0d;
+		super(Material.rock, "mill", false);
+		maxY = 8.0d / 16.0d;
+		minX = minZ = 5.0d / 16.0d;
 		maxX = maxZ = 1.0d - minX;
 		
-		this.setBlockTextureName(Constants.MOD_ID + ":churn");
+		this.setBlockTextureName(Constants.MOD_ID + ":mill");
 	}
 	
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) 
 	{
-		return new TileEntityKawaiiChurn(true);
+		return new TileEntityKawaiiChurn(false);
 	}
 
 }

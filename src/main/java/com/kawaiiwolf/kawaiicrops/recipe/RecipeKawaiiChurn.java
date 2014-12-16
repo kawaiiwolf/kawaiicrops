@@ -7,8 +7,12 @@ import net.minecraft.item.ItemStack;
 public class RecipeKawaiiChurn extends RecipeKawaiiCookingBase 
 {
 	public static ArrayList<RecipeKawaiiCookingBase> allRecipes = new ArrayList<RecipeKawaiiCookingBase>();
+	public static ArrayList<RecipeKawaiiCookingBase> churnRecipes = new ArrayList<RecipeKawaiiCookingBase>();
+	public static ArrayList<RecipeKawaiiCookingBase> millRecipes = new ArrayList<RecipeKawaiiCookingBase>();
 	
-	public int ChurnTime = 0;
+	public int ChurnTime = 1;
+	public boolean churn = true;
+	public boolean mill = false;
 	
 	public RecipeKawaiiChurn() { }
 	public RecipeKawaiiChurn(ItemStack result, Object... recipe) 
@@ -31,7 +35,12 @@ public class RecipeKawaiiChurn extends RecipeKawaiiCookingBase
 				if (option.equals("|"))
 					continue;
 				
-				ChurnTime = Integer.parseInt(option);
+				else if (option.equals("churn"))
+					churn = !(mill = false);
+				else if (option.equals("mill"))
+					churn = !(mill = true);
+				else
+					ChurnTime = Integer.parseInt(option);
 			}
 		}
 		catch (Exception exception)
@@ -56,5 +65,9 @@ public class RecipeKawaiiChurn extends RecipeKawaiiCookingBase
 	public void register() 
 	{
 		allRecipes.add(this);
+		if (churn)
+			churnRecipes.add(this);
+		if (mill)
+			millRecipes.add(this);
 	}
 }

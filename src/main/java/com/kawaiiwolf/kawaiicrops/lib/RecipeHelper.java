@@ -244,8 +244,10 @@ public class RecipeHelper {
 	public static boolean registerCustomChurnRecpie(String recipe)
 	{
 		String[] parts = recipe.trim().replaceAll("  ", " ").split("[ ]");
-		if (parts.length < 3 || parts.length > 4) 
+		if (parts.length < 3) 
 			return false;
+		
+		ArrayList<Object> params = new ArrayList<Object>();
 		
 		// Parse Output Type
 		IngredientType outputType = parseIngredientType(parts[0]);
@@ -264,22 +266,21 @@ public class RecipeHelper {
 		if (inputType == IngredientType.ERROR)
 			return false;
 		
-		Integer time = 1;
-		if (parts.length == 4)
-		{
-			try
-			{
-				time = Integer.parseInt(parts[3]);
-			} catch (NumberFormatException e) { return false; }
-			if (outputNum < 1 || outputNum > 64) return false;
-		}
-		
 		ItemStack output = (outputType == IngredientType.ITEM ? 
 				new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
 				new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
-		
-		(new RecipeKawaiiChurn(output, new Object[] { parseIngredient(parts[2]), "|", time.toString() })).register();
-		
+
+		try
+		{
+			params.add(parseIngredient(parts[2]));
+			params.add("|");
+			
+			for (int i = 3; i < parts.length; i++)
+				params.add(parts[i]);
+			
+			(new RecipeKawaiiChurn(output, params.toArray())).register();
+			
+		} catch (Exception e) { return false; }
 		return true;
 	}
 	

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
@@ -14,6 +15,14 @@ import com.kawaiiwolf.kawaiicrops.renderer.TexturedIcon;
 
 public class TileEntityKawaiiChurn extends TileEntityKawaiiCookingBlock 
 {
+	public boolean isChurn = true;
+	
+	public TileEntityKawaiiChurn(boolean isChurn)
+	{
+		super();
+		this.isChurn = isChurn;
+	}
+	
 	@Override
 	protected int getInputSlots() { return 1; }
 
@@ -59,13 +68,30 @@ public class TileEntityKawaiiChurn extends TileEntityKawaiiCookingBlock
 	@Override
 	protected ArrayList<RecipeKawaiiCookingBase> getRecipes(String filter) 
 	{
-		return dummy.getAllRecipes();
+		if (isChurn)
+			return dummy.churnRecipes;
+		else
+			return dummy.millRecipes;
 	}
 	private static RecipeKawaiiChurn dummy = new RecipeKawaiiChurn();
+
+	@Override
+	protected void readFromNBT(NBTTagCompound tags, boolean callSuper)
+	{
+		super.readFromNBT(tags, callSuper);
+		isChurn = tags.getBoolean("isChurn");
+	}
 	
+	@Override
+	protected void writeToNBT(NBTTagCompound tags, boolean callSuper)
+	{
+		super.writeToNBT(tags, callSuper);
+		tags.setBoolean("isChurn", isChurn);
+	}
+
 	@Override
 	public String getWAILATip() 
 	{ 
-		return (inventorySlots[1] == null ? "Empty" : "Churning: " + NamespaceHelper.getItemLocalizedName(inventorySlots[1])); 
+		return (inventorySlots[1] == null ? "Empty" : (isChurn ? "Churning: " : "Milling: ") + NamespaceHelper.getItemLocalizedName(inventorySlots[1])); 
 	}
 }
