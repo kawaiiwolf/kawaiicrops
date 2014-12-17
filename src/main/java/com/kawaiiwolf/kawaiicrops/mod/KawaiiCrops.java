@@ -1,6 +1,7 @@
 package com.kawaiiwolf.kawaiicrops.mod;
 
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
+import com.kawaiiwolf.kawaiicrops.event.ModEvents;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.*;
 import com.kawaiiwolf.kawaiicrops.proxies.*;
@@ -30,7 +31,9 @@ public class KawaiiCrops {
     	ModBlocks.register();
     	ModItems.register();
     	ModWorldGen.register();
+    	ModEvents.register();
     	
+    	// Dynamically set mcmod.info version
     	event.getModMetadata().version = Constants.VERSION;
     }
  
@@ -60,6 +63,11 @@ public class KawaiiCrops {
      *   No custom recipe
      *   Instanced like crops
      *   Pulls labels from block textures
+     * 
+     * 
+     * Changes:
+     * 
+     * Update to configuration dump. Lists all living entities & potion effects, even from other mods
      * 
      */
 }

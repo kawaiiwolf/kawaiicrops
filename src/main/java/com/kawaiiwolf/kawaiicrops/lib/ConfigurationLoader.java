@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiTreeBlocks;
+import com.kawaiiwolf.kawaiicrops.event.EventKawaiiLivingDrop;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
@@ -19,10 +20,14 @@ import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen.WorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiTree;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.potion.Potion;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
@@ -36,6 +41,7 @@ public class ConfigurationLoader {
 	// Dump a list of Block/Item names to a config file.
 	private static boolean DumpIDs = false;
 	private static boolean BonusOres = false;
+	private static boolean BonusDrops = false;
 	
 	public static String WAILAName;
 	
@@ -162,34 +168,9 @@ public class ConfigurationLoader {
 			"  \"9 10 1 .05\" This applies Nausea for 10 seconds, 5% of the time\n"+
 			"  \"1 4 1 1.0 | 9 10 1 .05\" This always applies speed I and 5% of the time, Nausea\n"+
 			"\n"+
-			"\n"+
-			"Potion IDs:\n"+
-			"\n"+
-			" 1 Speed \n"+
-			" 2 Slowness \n"+
-			" 3 Haste \n"+
-			" 4 Mining Fatigue \n"+
-			" 5 Strength \n"+
-			" 6 Instant Health \n"+
-			" 7 Instant Damage \n"+
-			" 8 Jump Boost \n"+
-			" 9 Nausea \n"+
-			"10 Regeneration \n"+
-			"11 Resistance \n"+
-			"12 Fire Resistance \n"+
-			"13 Water Breathing \n"+
-			"14 Invisibility \n"+
-			"15 Blindness \n"+
-			"16 Night vision \n"+
-			"17 Hunger \n"+
-			"18 Weakness \n"+
-			"19 Poison \n"+
-			"20 Wither \n"+
-			"21 Health Boost \n"+
-			"22 Absorption \n"+
-			"23 Saturation";
-	
+			"\nTo see a list of all potion IDs & names, turn on \"Dump All IDs\" and see dump.cfg";
 
+	
 	public static final String REFERENCE_ORE_COMMENT = "" +
 			"Use this field to add items to ore dictionary references. These can be used as\n"+
 			"shortcuts when making recipes. Ore recipes should be separated by a space and may\n" +
@@ -222,6 +203,28 @@ public class ConfigurationLoader {
 			"\n"+
 			"\n  minecraft:carrot veggieAll veggieRaw veggieSalad"+
 			"\nAdds the vanilla carrot to the veggieAll, veggieRaw and veggieSalad ore dictionary groups.";
+	
+
+	public static final String REFERENCE_BONUS_DROPS_COMMENT = "" +
+			"\nUse these fields to add an additional drop table to a mob upon it's death. Please see the"+
+			"\nnote on the Drop Tables in general.cfg. For these drop tables, keywords for seeds/fruit/etc"+
+			"\n have no meaning and will be treated as \"nothing\"."+
+			"\n"+
+			"\nFormat:"+
+			"\n  <entity name> <Drop Table>"+
+			"\n"+
+			"\nWhere <entity name> is the name of a living entity (underscores subsituted for spaces) and"+
+			"\n<Drop Table> is a full drop table. Please don't include the same mob twice, if you wish to"+
+			"\nadd additional items to a mob, do this in one drop table. See general.cfg and dump.cfg to "+
+			"\nget a list of all entity and item names."+
+			"\n"+
+			"\nExamples:"+
+			"\n"+
+			"\nCow minecraft:bone 1, minecraft:bone 2, nothing 1 2"+
+			"\n"+
+			"\nAdds the occasional bone or two to a minecraft cow. It's not like they don't have them too."+
+			"";
+
 	
 	
 	public static final String REFERENCE_RECIPES = "" +
@@ -469,7 +472,8 @@ public class ConfigurationLoader {
 		String category = Configuration.CATEGORY_GENERAL;
 		
 		DumpIDs = cfg_general.getBoolean("Dump All IDs", category, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
-		BonusOres = cfg_general.getBoolean("Bonus Ore Dictionary", category, false, "Add items from other mods to ore dictionary references ?  If enabled, see ore.cfg");
+		BonusOres = cfg_general.getBoolean("Bonus Ore Dictionary", category, BonusOres, "Add items from other mods to ore dictionary references ?  If enabled, see ore.cfg");
+		BonusDrops = cfg_general.getBoolean("Bonus Mob Drops", category, BonusDrops, "Add items to the drop tables of living entities ?  If enabled, see mobs.cfg");
 		WAILAName = cfg_general.getString("WAILA Plugin Mod Name", category, WAILAName, "If the WAILA Mod is installed, what mod name do you want to show up ?  You can override the default with a custom name for your configuration/mod pack.");
 
 		category = Configuration.CATEGORY_GENERAL + " Item Config";
@@ -575,35 +579,16 @@ public class ConfigurationLoader {
 	
 	public void loadConfiguration_Init()
 	{
-		if (BonusOres)
-		{
-			Configuration cfg = new Configuration(new File(configFolder+ Constants.CONFIG_ORES));
-			cfg.load();
-
-			cfg.setCategoryComment("0 General", "Number of Ore Dictionary References");
-			int ores = cfg.getInt("Number of references", "0 General", 3, 1, 10000, "");
-			String ore, name, dict;
-			
-			cfg.setCategoryComment("Ore Dictionary References", REFERENCE_BONUS_ORE_COMMENT);
-			for (int i = 1; i <= ores; i++)
-			{
-				ore = cfg.getString("" + i, "Ore Dictionary References", "", "");
-				try
-				{
-					name = ore.substring(0, ore.indexOf(" ")).trim();
-					dict = ore.substring(ore.indexOf(" ")).trim();
-					
-					ModItems.OreDictionaryBonus.put(name, dict);
-				} 
-				catch (Exception e) { }
-			}
-			cfg.save();
-		}
+		if (BonusOres) 
+			loadBonusOres();
 	}
 	
 	public void loadConfiguration_PostInit() 
 	{
-		if (DumpIDs) dumpIDs();
+		if (DumpIDs) 
+			dumpIDs();
+		if (this.BonusDrops)
+			loadBonusDrops();			
 		
 		Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_RECIPES));
 		cfg.load();
@@ -704,7 +689,7 @@ public class ConfigurationLoader {
 		// Try to clear it out if it exists. Fresh File
 		try { if (f.exists()) f.delete(); } catch (Exception e) { }
 		
-		String blockList = "", itemList = "", oreList = "", biomeList = "";
+		String blockList = "", itemList = "", oreList = "", biomeList = "", entityList = "", potionList = "";
 		
 		Iterator<Block> blocks = NamespaceHelper.getBlockIterator();
 		while (blocks.hasNext())
@@ -722,6 +707,13 @@ public class ConfigurationLoader {
 			biomeList += "\"" + (biome.biomeName + "\"                                                  ").substring(0, 50)
 					+ "  Temperature [" + biome.temperature + "]  Humidity [" + biome.rainfall + "]" + "\n";
 		
+		for (Object entity : EntityList.classToStringMapping.keySet())
+			if (entity != null && entity instanceof Class && EntityLiving.class.isAssignableFrom((Class) entity))
+				entityList += EntityList.classToStringMapping.get(entity).toString().replace(' ', '_') + "\n";
+		
+		for (Potion potion : Potion.potionTypes)
+			if (potion != null)
+				potionList += potion.id + " : " + potion.getName() + "\n";
 		
 		Configuration config = new Configuration(f);
 		config.load();
@@ -729,7 +721,67 @@ public class ConfigurationLoader {
 		config.setCategoryComment("Items", itemList);
 		config.setCategoryComment("OreDictionary", oreList);
 		config.setCategoryComment("Biomes", biomeList);
+		config.setCategoryComment("Living Entities", entityList);
+		config.setCategoryComment("Potions", potionList);
 		config.save();
+	}
+
+	private void loadBonusOres()
+	{
+		Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_ORES));
+		cfg.load();
+
+		cfg.setCategoryComment("0 General", "Number of Ore Dictionary References");
+		int ores = cfg.getInt("Number of references", "0 General", 3, 1, 10000, "");
+		String ore, name, dict;
+		
+		cfg.setCategoryComment("Ore Dictionary References", REFERENCE_BONUS_ORE_COMMENT);
+		for (int i = 1; i <= ores; i++)
+		{
+			ore = cfg.getString("" + i, "Ore Dictionary References", "", "");
+			try
+			{
+				name = ore.substring(0, ore.indexOf(" ")).trim();
+				dict = ore.substring(ore.indexOf(" ")).trim();
+				
+				ModItems.OreDictionaryBonus.put(name, dict);
+			} 
+			catch (Exception e) { }
+		}
+		cfg.save();
+	}
+	
+	private void loadBonusDrops()
+	{
+		Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_DROPS));
+		cfg.load();
+		
+		cfg.setCategoryComment("0 General", "Number of Mob Drop References");
+		int drops = cfg.getInt("Number of references", "0 General", 3, 1, 10000, "");
+		String raw;
+
+		cfg.setCategoryComment("Ore Dictionary References", REFERENCE_BONUS_DROPS_COMMENT);
+		for (int i = 1; i <= drops; i++)
+		{
+			raw = cfg.getString("" + i, "Ore Dictionary References", "", "");
+			try
+			{
+				DropTable dropTable = new DropTable(raw.substring(raw.indexOf(" ")).trim(), null, null);
+				Class entity = null;
+				
+				for (Object e : EntityList.classToStringMapping.keySet())
+					if (raw.substring(0, raw.indexOf(" ")).trim().replace(' ', '_').equals(EntityList.classToStringMapping.get(e).toString().replace(' ', '_')))
+					{
+						entity = (Class) e;
+						break;
+					}
+				
+				EventKawaiiLivingDrop.drops.put(entity, dropTable);
+			} 
+			catch (Exception e) { }
+		}
+		
+		cfg.save();
 	}
 
 	private BlockKawaiiCrop loadCrop(Configuration config, String name) 
