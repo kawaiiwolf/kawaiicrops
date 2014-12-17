@@ -4,7 +4,7 @@ public class Constants
 {
 	public static final String MOD_ID = "kawaiicrops";
 	public static final String MOD_NAME = "A Kawaii Crop Mod";
-	public static final String VERSION = "0.5.4b";
+	public static final String VERSION = "0.5.5b";
 	public static final String VERSION_MC = "1.7.10";
 	public static final String VERSION_FULL = VERSION_MC + "-" + VERSION;
 	

@@ -211,18 +211,27 @@ public class ConfigurationLoader {
 			"\n have no meaning and will be treated as \"nothing\"."+
 			"\n"+
 			"\nFormat:"+
-			"\n  <entity name> <Drop Table>"+
+			"\n  <entity name> [cull] <Drop Table> [$ <Baby Drop Table>]"+
 			"\n"+
 			"\nWhere <entity name> is the name of a living entity (underscores subsituted for spaces) and"+
 			"\n<Drop Table> is a full drop table. Please don't include the same mob twice, if you wish to"+
 			"\nadd additional items to a mob, do this in one drop table. See general.cfg and dump.cfg to "+
-			"\nget a list of all entity and item names."+
+			"\nget a list of all entity and item names. You can include the word \"cull\" after the "+
+			"\nentity name in order to remove their default drops. If you like, include a second drop "+
+			"\ntable seperated with a $. If an entity has a baby version, this second drop table will "+
+			"\nbe applied instead of the first for the children."+
 			"\n"+
 			"\nExamples:"+
 			"\n"+
-			"\nCow minecraft:bone 1, minecraft:bone 2, nothing 1 2"+
+			"\n  Cow minecraft:bone 1, minecraft:bone 2, nothing 1 2"+
 			"\n"+
 			"\nAdds the occasional bone or two to a minecraft cow. It's not like they don't have them too."+
+			"\n"+
+			"\n"+
+			"\n  Cow cull minecraft:bone 1, nothing | minecraft:beef 2 minecraft:beef 1 $ minecraft:beef"+
+			"\n"+
+			"\nStrips the drops from cows and changes it so adults drop a bone sometimes, and between"+
+			"\none or two beef. Baby cows just drop a single beef"+
 			"";
 
 	
@@ -760,23 +769,39 @@ public class ConfigurationLoader {
 		int drops = cfg.getInt("Number of references", "0 General", 3, 1, 10000, "");
 		String raw;
 
-		cfg.setCategoryComment("Ore Dictionary References", REFERENCE_BONUS_DROPS_COMMENT);
+		cfg.setCategoryComment("Bonus Mob Drops", REFERENCE_BONUS_DROPS_COMMENT);
 		for (int i = 1; i <= drops; i++)
 		{
-			raw = cfg.getString("" + i, "Ore Dictionary References", "", "");
+			raw = cfg.getString("" + i, "Bonus Mob Drops", "", "");
 			try
 			{
-				DropTable dropTable = new DropTable(raw.substring(raw.indexOf(" ")).trim(), null, null);
 				Class entity = null;
-				
 				for (Object e : EntityList.classToStringMapping.keySet())
 					if (raw.substring(0, raw.indexOf(" ")).trim().replace(' ', '_').equals(EntityList.classToStringMapping.get(e).toString().replace(' ', '_')))
 					{
 						entity = (Class) e;
 						break;
 					}
+				if (entity == null) continue;
 				
-				EventKawaiiLivingDrop.drops.put(entity, dropTable);
+				raw = raw.substring(raw.indexOf(" ")).trim();
+				if (raw.toLowerCase().startsWith("cull"))
+				{
+					EventKawaiiLivingDrop.cull.add(entity);
+					raw = raw.substring(4).trim();
+				}
+				
+				DropTable[] tables;
+				
+				if (raw.contains("$"))
+				{
+					String[] split = raw.split("\\$");
+					tables = new DropTable[] { new DropTable(split[0].trim(), null, null), new DropTable(split[1].trim(), null, null) };
+				}
+				else
+					tables = new DropTable[] { new DropTable(raw.trim(), null, null) };
+
+				EventKawaiiLivingDrop.drops.put(entity, tables);
 			} 
 			catch (Exception e) { }
 		}

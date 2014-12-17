@@ -67,7 +67,8 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     * Update to configuration dump. Lists all living entities & potion effects, even from other mods
+     * Configuration loader typos
+     * Changes to bonus mob drops, able to remove old drops and provide separate drop tables for adult/child variants of mobs, assuming the mob is EntityAgeable.
      * 
      */
 }
