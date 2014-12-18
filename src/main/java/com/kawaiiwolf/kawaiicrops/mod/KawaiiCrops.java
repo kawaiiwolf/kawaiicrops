@@ -66,9 +66,7 @@ public class KawaiiCrops {
      * 
      * 
      * Changes:
-     * 
-     * Configuration loader typos
-     * Changes to bonus mob drops, able to remove old drops and provide separate drop tables for adult/child variants of mobs, assuming the mob is EntityAgeable.
+     *   Implemented Clothing (Armor !)
      * 
      */
 }

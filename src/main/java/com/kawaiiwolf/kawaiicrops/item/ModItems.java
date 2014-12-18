@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
@@ -26,11 +28,15 @@ public class ModItems {
 	    }
 	};
 	
+	public static int ClothArmorMaterialDurability = 30;
+	public static ArmorMaterial ClothArmorMaterial;
+	
 	public static ArrayList<ItemKawaiiCake> ModCakes = new ArrayList<ItemKawaiiCake>();
 	public static ArrayList<ItemKawaiiFood> ModFoods = new ArrayList<ItemKawaiiFood>();
 	public static ArrayList<ItemKawaiiIngredient> ModIngredients = new ArrayList<ItemKawaiiIngredient>();
 	public static ArrayList<ItemKawaiiSeed> ModSeeds = new ArrayList<ItemKawaiiSeed>();
 	public static ArrayList<ItemKawaiiSeedFood> ModSeedFoods = new ArrayList<ItemKawaiiSeedFood>();
+	public static ArrayList<ItemKawaiiClothes> ModClothes = new ArrayList<ItemKawaiiClothes>();
 	
 	public static HashMap<String,String> OreDictionaryBonus = new HashMap<String,String>();
 	
@@ -64,6 +70,16 @@ public class ModItems {
 		GameRegistry.registerItem(BurntFood, Constants.MOD_ID + ".burntfood");
 		GameRegistry.registerItem(CookingOil, Constants.MOD_ID + ".cookingoil");
 		GameRegistry.registerItem(Steamer, Constants.MOD_ID + ".steamer");
+	}
+	
+	private static boolean hasClothArmorMaterialized = false;
+	public static void initilizeClothArmorMaterial()
+	{
+		if (!hasClothArmorMaterialized) 
+		{
+			ClothArmorMaterial = EnumHelper.addArmorMaterial(Constants.MOD_ID + ".cloth.material", ClothArmorMaterialDurability, new int[]{1, 1, 1, 1}, 25);
+			hasClothArmorMaterialized = true;
+		}
 	}
 	
 	public static void registerOreDictionary()

@@ -9,6 +9,7 @@ import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiTreeBlocks;
 import com.kawaiiwolf.kawaiicrops.event.EventKawaiiLivingDrop;
+import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiClothes;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
@@ -27,6 +28,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.potion.Potion;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.config.Configuration;
@@ -68,7 +70,7 @@ public class ConfigurationLoader {
 	
 	
 	public static final String GENERAL_TREE_COMMENT = "" + 
-			"List the names of all fruit bearing trees you the mod to generate. Make sure each tree name is lower\n" +
+			"List the names of all fruit bearing trees for the mod to generate. Make sure each tree name is lower\n" +
 			"case and has no spaces or punctuation. You can separate these with commas or spaces.\n" +
 			"\n"+
 			"Bad Name: Cherry\n"+
@@ -78,7 +80,7 @@ public class ConfigurationLoader {
 
 	
 	public static final String GENERAL_CAKE_COMMENT = "" + 
-			"List the names of all cakes you the mod to generate. Make sure each cake name is lower case and has no\n" + 
+			"List the names of all cakes for the mod to generate. Make sure each cake name is lower case and has no\n" + 
 			"spaces or punctuation. You can separate these with commas or spaces.\n" +
 			"\n"+
 			"Bad Name: Strawberry Shortcake\n"+
@@ -88,7 +90,7 @@ public class ConfigurationLoader {
 	
 	
 	public static final String GENERAL_FOOD_COMMENT = "" + 
-			"List the names of all foods you the mod to generate. Make sure each name is lower case and has no\n" + 
+			"List the names of all foods for the mod to generate. Make sure each name is lower case and has no\n" + 
 			"spaces or punctuation. You can separate these with commas or spaces.\n" +
 			"\n"+
 			"Bad Name: Raspberry Tea\n"+
@@ -98,7 +100,7 @@ public class ConfigurationLoader {
 	
 	
 	public static final String GENERAL_INGREDIENTS_COMMENT = "" + 
-			"List the names of all non-food items you the mod to generate. Typically these will be used as byproducts\n" +
+			"List the names of all non-food items for the mod to generate. Typically these will be used as byproducts\n" +
 			"or half-steps in recipes, such as an unbaked cake or ground pepper. Make sure each name is lower case\n" +
 			"and has no spaces or punctuation. You can separate these with commas or spaces.\n" +
 			"\n"+
@@ -106,6 +108,19 @@ public class ConfigurationLoader {
 			"Good Name: unbakedchocolatecake\n"+
 			"\n"+
 			"S:Cakes=unbakedchocolatecake groundpepper";
+	
+	
+	public static final String GENERAL_CLOTHING_COMMENT = "" +
+			"\nList the names of all clothing sets for the mod to generate. Typically these will be cosmetic armor"+
+			"\npieces because we need more options than dyed leather, but you can add new armor if you really want."+
+			"\nEach name provided here is a full armor set (hat, top, pants and shoes), but you can enable only "+
+			"\nspecific pieces. Please list names for the clothing sets in lower case with no space or punctuation."+
+			"\nYou can separate these with commas or spaces. You can include numbers !"+
+			"\n"+
+			"\nBad Name: Fuzzy Jammies"+
+			"\nGood Name: fuzzyjammies\n"+
+			"\n"+
+			"S:Clothes=fuzzyjammies casual1 casual2 eveningwear1";
 	
 	
 	public static final String REFERENCE_DROPTABLES_COMMENT = "" +
@@ -507,7 +522,7 @@ public class ConfigurationLoader {
 		
 		cfg_general.setCategoryComment("KawaiiCrop Crops", GENERAL_CROP_COMMENT);
 		String cropsRaw = cfg_general.getString("Crops", "KawaiiCrop Crops", "","Crop List");
-		String[] cropsParsed = cropsRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		String[] cropsParsed = cropsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
 		if(arrayHasString(cropsParsed))
 		{
@@ -523,7 +538,7 @@ public class ConfigurationLoader {
 		
 		cfg_general.setCategoryComment("KawaiiCrops Trees", GENERAL_TREE_COMMENT);
 		String treesRaw = cfg_general.getString("Trees", "KawaiiCrops Trees", "", "Tree List");
-		String[] treesParsed = treesRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		String[] treesParsed = treesRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 
 		if(arrayHasString(treesParsed))
 		{
@@ -539,7 +554,7 @@ public class ConfigurationLoader {
 		
 		cfg_general.setCategoryComment("KawaiiCrop Yummy Cakes", GENERAL_CAKE_COMMENT);
 		String cakesRaw = cfg_general.getString("Cakes", "KawaiiCrop Yummy Cakes", "", "Cake List");
-		String[] cakesParsed = cakesRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		String[] cakesParsed = cakesRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
 		if(arrayHasString(cakesParsed))
 		{
@@ -555,7 +570,7 @@ public class ConfigurationLoader {
 		
 		cfg_general.setCategoryComment("KawaiiCrop Foods", GENERAL_FOOD_COMMENT);
 		String foodsRaw = cfg_general.getString("Foods", "KawaiiCrop Foods", "", "Food List");
-		String[] foodsParsed = foodsRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		String[] foodsParsed = foodsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
 		if(arrayHasString(foodsParsed))
 		{
@@ -571,7 +586,7 @@ public class ConfigurationLoader {
 		
 		cfg_general.setCategoryComment("KawaiiCrop Ingredients", GENERAL_INGREDIENTS_COMMENT);
 		String ingredientsRaw = cfg_general.getString("Ingredients", "KawaiiCrop Ingredients", "", "Ingredients List");
-		String[] ingredientsParsed = ingredientsRaw.toLowerCase().replaceAll("[^a-z, ]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		String[] ingredientsParsed = ingredientsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
 		if(arrayHasString(ingredientsParsed))
 		{
@@ -582,6 +597,24 @@ public class ConfigurationLoader {
 				loadIngredient(cfg, ingredient);
 			cfg.save();
 		}
+		
+		// Clothes
+		
+		cfg_general.setCategoryComment("KawaiiCrop Clothes", GENERAL_CLOTHING_COMMENT);
+		String clothesRaw = cfg_general.getString("Clothes", "KawaiiCrop Clothes", "", "Clothes List");
+		String[] clothesParsed = clothesRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		
+		if(arrayHasString(clothesParsed))
+		{
+			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CLOTHES));
+			cfg.load();
+			cfg.setCategoryComment("0", HEADER_COMMENT);
+			ModItems.ClothArmorMaterialDurability = cfg.getInt("Cloth Armor Durability", "0", ModItems.ClothArmorMaterialDurability, 1, 500, "What do you want the durability for your clothes to be ? Ex: Leather 5, Gold 7, Chain & Iron 15, Diamond 33.");
+			ModItems.initilizeClothArmorMaterial();
+			for (String clothes : clothesParsed)
+				loadClothes(cfg, clothes);
+			cfg.save();
+		}		
 		
 		cfg_general.save();
 	}
@@ -1068,6 +1101,58 @@ public class ConfigurationLoader {
 			GameRegistry.registerItem(ingredient, Constants.MOD_ID + "." + name);		
 		
 		return ingredient;
+	}
+	
+	private void loadClothes(Configuration config, String name)
+	{
+		if (name == null || name.length() == 0) return;
+		
+		String category = "Kawaiicrops: " + name;
+		
+		boolean enabledHat = config.getBoolean("0.  Enabled - Hat", category, false, "Is this an hat in minecraft ?");
+		boolean enabledTop = config.getBoolean("0.  Enabled - Top", category, false, "Is this an top in minecraft ?");
+		boolean enabledPants = config.getBoolean("0.  Enabled - Pants", category, false, "Are these pants in minecraft ?");
+		boolean enabledShoes = config.getBoolean("0.  Enabled - Shoes", category, false, "Are these shoes in minecraft ?");
+		
+		String toolTipHat = config.getString("1.  ToolTip - Hat", category, "", "What tooltip do you want this hat to have ?");
+		String toolTipTop = config.getString("1.  ToolTip - Top", category, "", "What tooltip do you want this top to have ?");
+		String toolTipPants = config.getString("1.  ToolTip - Pants", category, "", "What tooltip do you want these pants to have ?");
+		String toolTipShoes = config.getString("1.  ToolTip - Shoes", category, "", "What tooltip do you want these shoes to have ?");
+
+		String armorType = config.getString("2.  Armor Type", category, "cloth", "What armor type is this ? [Options: cloth, leather, gold, iron, chain, diamond]").toLowerCase();
+		
+		ArmorMaterial mat;
+		if (armorType.equals("leather")) mat = ArmorMaterial.CLOTH;
+		else if (armorType.equals("gold")) mat = ArmorMaterial.GOLD;
+		else if (armorType.equals("iron")) mat = ArmorMaterial.IRON;
+		else if (armorType.equals("chain")) mat = ArmorMaterial.IRON;
+		else if (armorType.equals("diamond")) mat = ArmorMaterial.DIAMOND;
+		else mat = ModItems.ClothArmorMaterial;
+	
+		config.setCategoryComment(category, 
+				"Resource Pack settings for " + name + "\n\n" +
+				"Langage Name: item.kawaiicrops." + name + ".hat.name\n" +
+				"Langage Name: item.kawaiicrops." + name + ".top.name\n" +
+				"Langage Name: item.kawaiicrops." + name + ".pants.name\n" +
+				"Langage Name: item.kawaiicrops." + name + ".shoes.name\n" +
+				"\n"+
+				"Texture Name: textures/items/" + name + ".hat.png\n" +
+				"Texture Name: textures/items/" + name + ".top.png\n" +
+				"Texture Name: textures/items/" + name + ".pants.png\n" +
+				"Texture Name: textures/items/" + name + ".shoes.png\n" +
+				"\n"+
+				"Texture Name: textures/models/armor/" + name + "_1.png\n" +
+				"Texture Name: textures/models/armor/" + name + "_2.png\n" +
+				"");
+		
+		if (enabledHat)
+			(new ItemKawaiiClothes(name, mat, 0, new String[] { toolTipHat, toolTipTop, toolTipPants, toolTipShoes })).register();
+		if (enabledTop)
+			(new ItemKawaiiClothes(name, mat, 1, new String[] { toolTipHat, toolTipTop, toolTipPants, toolTipShoes })).register();
+		if (enabledPants)
+			(new ItemKawaiiClothes(name, mat, 2, new String[] { toolTipHat, toolTipTop, toolTipPants, toolTipShoes })).register();
+		if (enabledShoes)
+			(new ItemKawaiiClothes(name, mat, 3, new String[] { toolTipHat, toolTipTop, toolTipPants, toolTipShoes })).register();
 	}
 	
 	private boolean arrayHasString(String[] array)
