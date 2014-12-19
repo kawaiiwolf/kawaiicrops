@@ -66,7 +66,6 @@ public class KawaiiCrops {
      * 
      * 
      * Changes:
-     *   Implemented Clothing (Armor !)
-     * 
+     *   Building Barrels
      */
 }

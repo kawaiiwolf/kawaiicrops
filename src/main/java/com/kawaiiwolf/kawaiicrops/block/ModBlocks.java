@@ -12,6 +12,7 @@ public class ModBlocks
 	public static ArrayList<BlockKawaiiCrop> AllCrops = new ArrayList<BlockKawaiiCrop>();
 	public static ArrayList<BlockKawaiiTreeBlocks> AllTrees = new ArrayList<BlockKawaiiTreeBlocks>();
 	public static ArrayList<BlockKawaiiCake> AllCakes = new ArrayList<BlockKawaiiCake>();
+	public static ArrayList<BlockKawaiiBarrel> AllBarrels = new ArrayList<BlockKawaiiBarrel>();
 	
 	public static BlockKawaiiCuttingBoard cuttingBoard = new BlockKawaiiCuttingBoard();
 	public static BlockKawaiiFryingPan fryingPan = new BlockKawaiiFryingPan();
@@ -37,6 +38,9 @@ public class ModBlocks
 		
 		for (BlockKawaiiTreeBlocks tree : AllTrees)
 			tree.registerDropTables();
+		
+		for (BlockKawaiiBarrel barrel : AllBarrels)
+			barrel.registerDropTables();
 	}
 	
 	public static void registerCookingBlockLists()

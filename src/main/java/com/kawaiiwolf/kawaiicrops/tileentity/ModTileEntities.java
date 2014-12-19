@@ -13,5 +13,6 @@ public class ModTileEntities {
 		GameRegistry.registerTileEntity(TileEntityKawaiiBigPot.class, Constants.MOD_ID + ".te.kawaiibigot");
 		GameRegistry.registerTileEntity(TileEntityKawaiiChurn.class, Constants.MOD_ID + ".te.kawaiichurn");
 		GameRegistry.registerTileEntity(TileEntityKawaiiGrill.class, Constants.MOD_ID + ".te.kawaiigrill");
+		GameRegistry.registerTileEntity(TileEntityKawaiiBarrel.class, Constants.MOD_ID + ".te.kawaiibarrel");
 	}
 }
