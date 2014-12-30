@@ -10,6 +10,7 @@ import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.DropTable;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiBarrel;
+import com.kawaiiwolf.kawaiicrops.waila.IWailaTooltip;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -31,12 +32,14 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockKawaiiBarrel extends BlockContainer implements IWailaBlock
+public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 {
 	
 	public String Name = "";
 	public int FinishedTime = 0;
 	public int RuinedTime = 0;
+	public boolean Enabled = false;
+	public int SearchRadius = 2;
 	
 	public String RequiredBlockString = "";
 	public ArrayList<Block> RequiredBlocks = null;
@@ -90,7 +93,7 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaBlock
 	private boolean isRegistered = false;
 	public void register()
 	{
-		if (isRegistered) return;
+		if (isRegistered || !Enabled) return;
 		isRegistered = true;
 		
 		ModBlocks.AllBarrels.add(this);
@@ -127,10 +130,9 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaBlock
 			boolean denyCheck = (ForbiddenBlocks.size() > 0);
 			if (approved && !denyCheck)
 			{
-				int r = 3;
-				for (int i = x - r; i < x + r; i++)
-					for (int j = y - r; j < y + r; j++)
-						for (int k = z - r; j < z + r; k++)
+				for (int i = x - SearchRadius; i <= x + SearchRadius; i++)
+					for (int j = y - SearchRadius; j <= y + SearchRadius; j++)
+						for (int k = z - SearchRadius; j <= z + SearchRadius; k++)
 						{
 							if ((i == x && j == y && k == z) || j <= 0) continue;
 							if (!approved && RequiredBlocks.contains(world.getBlock(i, j, k)))
@@ -178,15 +180,16 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaBlock
 	}
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // WAILA Mod Integration ( implements IWailaBlock )
-    
-	@Override public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) { return null; }
-	@Override public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.WHITE + StatCollector.translateToLocal(getUnlocalizedName() + ".name")); return currenttip; }
-	@Override public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + ConfigurationLoader.WAILAName); return currenttip; }
+    // WAILA Mod Integration
 
 	@Override
-	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
-	{
-		return currenttip;
+	public ItemStack getDisplayStack(World world, int x, int y, int z, int meta, TileEntity te) {
+		return null;
+	}
+
+	@Override
+	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

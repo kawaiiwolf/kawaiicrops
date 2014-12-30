@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiBarrel;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiTreeBlocks;
@@ -76,7 +77,16 @@ public class ConfigurationLoader {
 			"Bad Name: Cherry\n"+
 			"Good Name: cherry\n"+
 			"\n"+
-			"S:Cakes=cherry lemon walnut";	
+			"S:Cakes=cherry lemon walnut";
+	
+	public static final String GENERAL_BARREL_COMMENT = "" +
+			"List the names of all barrels for mod to generate. Make sure each tree name is lower case and  has no\n" +
+			"spaces or punctuation. You can separate these with commas or spaces. Barrels ferment/age and can spoil.\n" +
+			"\n"+
+			"Bad Name: Swiss Cheese\n"+
+			"Good Name: swisscheese\n"+
+			"\n"+
+			"S:Barrels=cheddarcheese dillpickles peachbrandy";
 
 	
 	public static final String GENERAL_CAKE_COMMENT = "" + 
@@ -482,6 +492,14 @@ public class ConfigurationLoader {
 			"\n"+
 			"\n\"minecraft:cooked_fished 2 minecraft:fish minecraft:fish 4 dry\""+
 			"\nDries out 2 fish over 4 random ticks.";
+
+	public static final String REFERENCE_METADATA = "" +
+			"\nItems names now support metadata/damage values ! Just use a " + Constants.META + " character" +
+			"\nafter the item name followed by the damage value."+
+			"\n"+
+			"\nEx: minecraft:sapling" + Constants.META + "0 for an Oak Sapling."+
+			"\nEx: minecraft:shears" + Constants.META + "10 for partially damaged Shears."+
+			"";
 	
 	public void loadConfiguration_PreInit() 
 	{
@@ -492,6 +510,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("Reference: Drop Table Help", REFERENCE_DROPTABLES_COMMENT);
 		cfg_general.setCategoryComment("Reference: Potions Help", REFERENCE_POTION_COMMENT);
 		cfg_general.setCategoryComment("Reference: Ore Dictionary Help", REFERENCE_ORE_COMMENT);
+		cfg_general.setCategoryComment("Reference: Item Metadata", REFERENCE_METADATA);
 		
 		String category = Configuration.CATEGORY_GENERAL;
 		
@@ -547,6 +566,22 @@ public class ConfigurationLoader {
 			cfg.setCategoryComment("0", HEADER_COMMENT + "\n\nSpecial thanks to mDiyo & the Natura Mod for the tree generation code for type: Eucalyptus & Sakura");
 			for (String tree : treesParsed)
 				loadTree(cfg, tree);
+			cfg.save();
+		}
+		
+		// Barrels
+		
+		cfg_general.setCategoryComment("KawaiiCrops Barrels", GENERAL_BARREL_COMMENT);
+		String barrelsRaw = cfg_general.getString("Barrels", "KawaiiCrops Barrels", "", "Barrels List");
+		String[] barrelsParsed = barrelsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		
+		if(arrayHasString(barrelsParsed))
+		{
+			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_BARRELS));
+			cfg.load();
+			cfg.setCategoryComment("0", HEADER_COMMENT);
+			for (String barrel : barrelsParsed)
+				loadBarrel(cfg, barrel);
 			cfg.save();
 		}
 		
@@ -1015,6 +1050,34 @@ public class ConfigurationLoader {
 		t.register(gen);
 		
 		return t;
+	}
+	
+	private BlockKawaiiBarrel loadBarrel(Configuration config, String name)
+	{
+		if (name == null || name.length() == 0) return null;
+		
+		BlockKawaiiBarrel b = new BlockKawaiiBarrel(name);
+		String category = "Kawaiicrops: " + name + " barrel";
+		
+		config.setCategoryComment(category, 
+				"Resource Pack settings for " + name + " Barrel\n\n"+
+				"");
+		
+		b.Enabled = config.getBoolean("0.  Enabled", category, b.Enabled, "Is this a block in minecraft ?  Defaults to false to allow you to configure before putting it in the game.");
+		b.FinishedTime = config.getInt("1.  Finished Time", category, b.FinishedTime, 1, 1000, "How many random ticks before the barrel is finished/ripe ?");
+		b.RuinedTime = config.getInt("1.  Ruined Time", category, b.RuinedTime, 0, 1000, "How many random ticks before the barrel is ruined/spoiled ? A value of 0 means the barrel never spoils");
+		
+		b.RequiredBlockString = config.getString("2.  Required Blocks", category, b.RequiredBlockString, "Which blocks are required (such as ice) ?  If this block is not nearby the barrel will be ruined. Separate blocks with a space. Leave this empty to have no required blocks. See general.cfg and dump.cfg for a list of block IDs.");
+		b.ForbiddenBlockString = config.getString("2.  Forbidden Blocks", category, b.ForbiddenBlockString, "Which blocks are forbidden (such as lava) ?  If this block is nearby the barrel will be ruined. Separate blocks with a space. Leave this empty to have no required blocks. See general.cfg and dump.cfg for a list of block IDs.");
+		b.SearchRadius = config.getInt("2.  Search Radius", category, b.SearchRadius, 1, 4, "How many blocks should the barrel look for forbidden and required blocks ?");
+		
+		b.UnripeDropTableString = config.getString("3.  Unfinished Drop Table", category, "", "What is the drop table for an unfinished barrel ? Please see General.cfg to see how to use these.");
+		b.RipeDropTableString = config.getString("3.  Finished Drop Table", category, "", "What is the drop table for a finished barrel ? Please see General.cfg to see how to use these.");
+		b.RuinedDropTableString = config.getString("3.  Ruined Drop Table", category, "", "What is the drop table for a ruined barrel ? Please see General.cfg to see how to use these.");
+		
+		b.register();
+		
+		return b;
 	}
 	
 	private BlockKawaiiCake loadCake(Configuration config, String name)

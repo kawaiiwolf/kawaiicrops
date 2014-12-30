@@ -11,6 +11,7 @@ import com.kawaiiwolf.kawaiicrops.world.ModWorldGen;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
@@ -44,6 +45,8 @@ public class KawaiiCrops {
     	proxy.registerRenderers();
     	ModTileEntities.register();
     	ModItems.registerOreDictionary();
+    	
+    	FMLInterModComms.sendMessage("Waila", "register", "com.kawaiiwolf.kawaiicrops.waila.WailaTileHandler.callbackRegister");
     }
  
     @Mod.EventHandler
@@ -59,13 +62,16 @@ public class KawaiiCrops {
      * 
      * TEST TEST TEST
      * 
+     * Document Metadata in Configuration Loader
+     * 
      * Cheese block ! Takes a while to ferment.
-     *   No custom recipe
-     *   Instanced like crops
-     *   Pulls labels from block textures
+     *   Rendering
      * 
      * 
      * Changes:
-     *   Building Barrels
+     *   Drop Table tolower removed
+     *   Metadata added in ALL the things
+     *   WAILA update
+     *   
      */
 }

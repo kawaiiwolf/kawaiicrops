@@ -22,4 +22,5 @@ public class Constants
 	public static final String CONFIG_ORES = CONFIG_FOLDER + "/ore.cfg";
 	public static final String CONFIG_DROPS = CONFIG_FOLDER + "/mobs.cfg";
 	public static final String CONFIG_CLOTHES = CONFIG_FOLDER + "/clothes.cfg";
+	public static final String CONFIG_BARRELS = CONFIG_FOLDER + "/barrels.cfg";
 }

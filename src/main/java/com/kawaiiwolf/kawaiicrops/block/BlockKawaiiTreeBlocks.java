@@ -14,6 +14,7 @@ import com.kawaiiwolf.kawaiicrops.lib.DropTable;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
+import com.kawaiiwolf.kawaiicrops.waila.IWailaTooltip;
 import com.kawaiiwolf.kawaiicrops.world.ModWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiCrop;
@@ -36,6 +37,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -48,7 +50,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWailaBlock {
+public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWailaTooltip {
 
 	private String name = "";
 	public Boolean Enabled = false;
@@ -598,16 +600,20 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
     }
     
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // WAILA Mod Integration ( implements IWailaBlock )
-    
-	@Override public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) { return null; }
-	@Override public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.WHITE + StatCollector.translateToLocal(getUnlocalizedName() + ".name")); return currenttip; }
-	@Override public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + ConfigurationLoader.WAILAName); return currenttip; }
+    // WAILA Mod Integration
+  
+	@Override
+	public ItemStack getDisplayStack(World world, int x, int y, int z, int meta, TileEntity te) 
+	{
+		return null;
+	}
 
 	@Override
-	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te) 
 	{
-		switch(this.getState(accessor.getMetadata()))
+		ArrayList<String> currenttip = new ArrayList<String>();
+		
+		switch(this.getState(meta))
 		{
 		case SAPLING:
 			currenttip.add("Sapling");
@@ -616,10 +622,10 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
 			currenttip.add("Leaves");
 			break;
 		case FRUIT:
-			currenttip.add("Fruit: " + ((accessor.getMetadata() - 4) * 25) + "% Grown");
+			currenttip.add("Fruit: " + ((meta - 4) * 25) + "% Grown");
 			break;
 		case FRUITLEAF:
-			currenttip.add("Fruit: " + ((accessor.getMetadata() - 1) * 25) + "% Grown");
+			currenttip.add("Fruit: " + ((meta - 1) * 25) + "% Grown");
 			break;
 		case FRUITRIPE:
 		case FRUITLEAFRIPE:
