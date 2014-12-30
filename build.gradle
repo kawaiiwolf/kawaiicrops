@@ -38,6 +38,11 @@ repositories {
 		name 'CB Maven FS'
 		url "http://chickenbones.net/maven/"
 	}
+	maven
+    {
+        name "Mobius Repo"
+        url "http://mobiusstrip.eu/maven"
+    }
 }
 
 dependencies 
@@ -45,6 +50,7 @@ dependencies
 	compile "codechicken:CodeChickenLib:" + config.mc_version + "-" + config.ccl_version + ":dev"
 	compile "codechicken:CodeChickenCore:" + config.mc_version + "-" + config.ccc_version + ":dev"
 	compile "codechicken:NotEnoughItems:" + config.mc_version + "-" + config.nei_version + ":dev"
+	compile "mcp.mobius.waila:Waila:" + config.waila_version
 }
 
 

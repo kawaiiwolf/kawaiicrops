@@ -106,6 +106,11 @@ public class NamespaceHelper {
 	{
 		return item.getDisplayName();
 	}
+	
+	public static String getBlockLocalizedName(Block block)
+	{
+		return StatCollector.translateToLocal(block.getUnlocalizedName() + ".name");
+	}
 
 	private interface IItemNameTransformer	{ public String transform(Item item); }
 	private IItemNameTransformer[] transformers = 

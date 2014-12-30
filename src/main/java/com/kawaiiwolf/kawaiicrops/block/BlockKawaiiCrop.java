@@ -17,6 +17,7 @@ import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
+import com.kawaiiwolf.kawaiicrops.waila.IWailaTooltip;
 import com.kawaiiwolf.kawaiicrops.world.ModWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiCrop;
@@ -48,7 +49,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, IWailaBlock {
+public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, IWailaTooltip {
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Rendering Code
@@ -512,27 +513,27 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
     
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // WAILA Mod Integration ( implements IWailaBlock )
-    
-	@Override public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) { return null; }
-	@Override public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.WHITE + StatCollector.translateToLocal(getUnlocalizedName() + ".name")); return currenttip; }
-	@Override public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + ConfigurationLoader.WAILAName); return currenttip; }
 
 	@Override
-	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	public ItemStack getDisplayStack(World world, int x, int y, int z, int meta, TileEntity te) 
 	{
+		return null;
+	}
 
+	@Override
+	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te) 
+	{
+		ArrayList<String> currenttip = new ArrayList<String>(); 
+		
 		if (MaxHeight == 1 || !MaxHeightRequiredToRipen)
 		{
-			if (accessor.getMetadata() == 7)
+			if (meta == 7)
 				currenttip.add("Crop: Mature");
 			else
-				currenttip.add("Crop: " + ((accessor.getMetadata() + CropStages - 7) * 100 / CropStages) + "% Grown");
+				currenttip.add("Crop: " + ((meta + CropStages - 7) * 100 / CropStages) + "% Grown");
 		}
 		else
 		{
-			World world = accessor.getWorld();
-			int x = accessor.getPosition().blockX, y = accessor.getPosition().blockY, z = accessor.getPosition().blockZ;
-
 			int max = (UnripeStage + 1) * (MaxHeight - 1) + CropStages;
 			int height = getCropTotalHeight(world, x, y, z);
 			int topMeta = world.getBlockMetadata(x, getTopY(world, x, y, z), z);
@@ -546,7 +547,7 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
 			else
 				currenttip.add("Crop: " + current * 100 / (MultiHarvest ? unripe : max) + "% Grown");
 		}
-
+		
 		return currenttip;
 	}
 	

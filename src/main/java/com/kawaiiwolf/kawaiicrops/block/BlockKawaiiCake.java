@@ -2,10 +2,12 @@ package com.kawaiiwolf.kawaiicrops.block;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.lib.ConfigurationLoader;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
+import com.kawaiiwolf.kawaiicrops.waila.IWailaTooltip;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -19,10 +21,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-public class BlockKawaiiCake extends BlockCake implements IWailaBlock {
+public class BlockKawaiiCake extends BlockCake implements IWailaTooltip {
 
 	public String Name = "";
 	public int Hunger = 2;
@@ -104,15 +107,15 @@ public class BlockKawaiiCake extends BlockCake implements IWailaBlock {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // WAILA Mod Integration ( implements IWailaBlock )
     
-	@Override public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) { return null; }
-	@Override public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.WHITE + StatCollector.translateToLocal(getUnlocalizedName() + ".name")); return currenttip; }
-	@Override public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) { currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + ConfigurationLoader.WAILAName); return currenttip; }
+	@Override
+	public ItemStack getDisplayStack(World world, int x, int y, int z, int meta, TileEntity te) {
+		return null;
+	}
 
 	@Override
-	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) 
+	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te) 
 	{
-		currenttip.add("Slices remaining: " + (6 - accessor.getMetadata()));
-		return currenttip;
+		return Lists.newArrayList( new String[] { "Slices remaining: " + (6 - meta) });
 	}
     
 }
