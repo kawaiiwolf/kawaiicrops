@@ -7,6 +7,7 @@ import java.util.List;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -115,14 +116,14 @@ public abstract class RecipeKawaiiCookingBase
 
                     if (next instanceof ItemStack)
                     {
-                        match = OreDictionary.itemMatches((ItemStack)next, ingredient, false);
+                        match = OreDictionary.itemMatches((ItemStack)next, ingredient, true);
                     }
                     else if (next instanceof ArrayList)
                     {
                         Iterator<ItemStack> itr = ((ArrayList<ItemStack>)next).iterator();
                         while (itr.hasNext() && !match)
                         {
-                            match = OreDictionary.itemMatches(itr.next(), ingredient, false);
+                            match = OreDictionary.itemMatches(itr.next(), ingredient, true);
                         }
                     }
 

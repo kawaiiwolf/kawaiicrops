@@ -14,7 +14,7 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 	public static ArrayList<RecipeKawaiiCookingBase> cleanRecipes = new ArrayList<RecipeKawaiiCookingBase>();
 	
 	public static String CookingOilItemsString = "";
-	public static ArrayList<Item> CookingOilItems = new ArrayList<Item>();
+	public static ArrayList<ItemStack> CookingOilItems = new ArrayList<ItemStack>();
 	
 	public int cookTime = 0;
 	public int burnTime = 0;
@@ -22,7 +22,7 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 	public boolean steam = false;
 	public boolean greasy = false;
 	public boolean texture = false;
-	public Item harvest = null;
+	public ItemStack harvest = null;
 
 	public RecipeKawaiiFryingPan() {  }
 	public RecipeKawaiiFryingPan(ItemStack output, Object... input) 
@@ -67,7 +67,7 @@ public class RecipeKawaiiFryingPan extends RecipeKawaiiCookingBase
 					texture = true;
 				else
 				{
-					Item item = NamespaceHelper.getItemByName(option);
+					ItemStack item = NamespaceHelper.getItemByName(option);
 					if (item != null)
 						harvest = item;
 					else

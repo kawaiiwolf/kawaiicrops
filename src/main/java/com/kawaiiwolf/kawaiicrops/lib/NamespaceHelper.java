@@ -53,19 +53,36 @@ public class NamespaceHelper {
 		return s.substring(s.indexOf(":") + 1);
 	}
 	
-	public static Item getItemByName(String name) {
-		if (name == null) return null;
-		return GameData.getItemRegistry().getObject(name);
+	public static ItemStack getItemByName(String name) {
+		if (name == null) 
+			return null;
+		
+		int meta = 0;
+		if (name.contains(Constants.META))
+		{
+			try
+			{
+				meta = Integer.parseInt(name.substring(name.indexOf(Constants.META) + 1));
+			} catch (Exception e) {}
+			name = name.substring(0, name.indexOf(Constants.META));
+		}
+		
+		Item item = GameData.getItemRegistry().getObject(name);
+		
+		if (item == null) 
+			return null;
+		
+		return new ItemStack(GameData.getItemRegistry().getObject(name), 1, meta);
 	}
 	
-	public static ArrayList<Item> getItemsByName(String names) { return getItemsByName(names,"[ ,]"); }
-	public static ArrayList<Item> getItemsByName(String names, String separator)
+	public static ArrayList<ItemStack> getItemsByName(String names) { return getItemsByName(names,"[ ,]"); }
+	public static ArrayList<ItemStack> getItemsByName(String names, String separator)
 	{
-		ArrayList<Item> items = new ArrayList<Item>();
+		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 		
 		for (String name : names.split(separator))
 		{
-			Item item = getItemByName(name);
+			ItemStack item = getItemByName(name);
 			if (item != null)
 				items.add(item);
 		}

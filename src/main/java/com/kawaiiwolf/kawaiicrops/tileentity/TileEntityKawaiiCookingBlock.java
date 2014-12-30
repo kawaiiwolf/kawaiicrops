@@ -263,7 +263,10 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
     	if (player.getCurrentEquippedItem() == null)
     		return null;
     	
-    	ItemStack ret = new ItemStack(player.getCurrentEquippedItem().getItem(), 1);
+    	ItemStack ret = player.getCurrentEquippedItem().copy();
+    	ret.stackSize = 1;
+    	ret.setItemDamage(player.getCurrentEquippedItem().getItemDamage());
+    	
     	player.getCurrentEquippedItem().stackSize--;
     	
     	Item container = ret.getItem().getContainerItem();

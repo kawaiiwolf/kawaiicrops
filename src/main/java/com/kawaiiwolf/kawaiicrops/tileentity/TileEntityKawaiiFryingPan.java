@@ -17,6 +17,7 @@ import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiFryingPan;
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
+import com.kawaiiwolf.kawaiicrops.lib.Util;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 import com.kawaiiwolf.kawaiicrops.renderer.TexturedIcon;
@@ -84,7 +85,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				int slot = getFirstOpenSlot();
 				
 				// Check to grease up the pan
-				if(state.equals("clean") && RecipeKawaiiFryingPan.CookingOilItems.contains(player.getCurrentEquippedItem().getItem()))
+				if(state.equals("clean") && Util.arrayContains(RecipeKawaiiFryingPan.CookingOilItems, player.getCurrentEquippedItem()))
 				{
 					takeCurrentItemContainer(world, x, y, z, player);
 					state = "oiled";
@@ -119,7 +120,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			else
 			{
 				RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) this.getCurrentRecipe();
-				if (cookTime > recipe.cookTime && recipe.harvest == player.getCurrentEquippedItem().getItem())
+				if (cookTime > recipe.cookTime && recipe.harvest.getItem() == player.getCurrentEquippedItem().getItem() && recipe.harvest.getItemDamage() == player.getCurrentEquippedItem().getItemDamage())
 				{
 					player.getCurrentEquippedItem().stackSize--;
 					this.dropBlockAsItem(world, x, y, z, new ItemStack(inventorySlots[0].getItem(),1));

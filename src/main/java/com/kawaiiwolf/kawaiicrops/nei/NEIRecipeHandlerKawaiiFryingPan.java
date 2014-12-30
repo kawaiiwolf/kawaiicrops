@@ -14,6 +14,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler.CachedRecipe;
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.lib.Util;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 
@@ -29,8 +30,8 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 		steamer.add(new PositionedStack(new ItemStack(ModBlocks.fryingPan), 76, 14));
 		
 		ArrayList<ItemStack> oil = new ArrayList<ItemStack>();
-		for (Item item : RecipeKawaiiFryingPan.CookingOilItems)
-			oil.add(new ItemStack(item));
+		for (ItemStack item : RecipeKawaiiFryingPan.CookingOilItems)
+			oil.add(item);
 		oiledPan.add(new PositionedStack(oil, 68, 42));
 		
 		steamer.add(new PositionedStack(new ItemStack(ModItems.Steamer), 68, 42));
@@ -61,7 +62,7 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 					this.input.add(new PositionedStack(recipe.input.get(i), 34, 6 + 18 * i));
 			
 			if (recipe.harvest != null)
-				this.input.add(new PositionedStack(new ItemStack(recipe.harvest), 90, 42));
+				this.input.add(new PositionedStack(recipe.harvest, 90, 42));
 		}
 		
         @Override
@@ -109,11 +110,11 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 			{
 				RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) r;
 				
-				if (hasIngredient(recipe.input, ingredient) || (recipe.harvest != null && recipe.harvest == ingredient.getItem()))
+				if (hasIngredient(recipe.input, ingredient) || (recipe.harvest != null && recipe.harvest.getItem() == ingredient.getItem() && recipe.harvest.getItemDamage() == ingredient.getItemDamage()))
 					arecipes.add(new CachedFryingPanRecipe(recipe));
 			}
 		
-		if (RecipeKawaiiFryingPan.CookingOilItems.contains(ingredient.getItem()))
+		if (Util.arrayContains(RecipeKawaiiFryingPan.CookingOilItems, ingredient))
 			for (RecipeKawaiiCookingBase r : RecipeKawaiiFryingPan.oilRecipes)
 				arecipes.add(new CachedFryingPanRecipe((RecipeKawaiiFryingPan)r));
 	}

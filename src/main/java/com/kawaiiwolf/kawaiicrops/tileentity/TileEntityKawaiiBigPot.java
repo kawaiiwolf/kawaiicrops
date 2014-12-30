@@ -16,6 +16,7 @@ import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiFryingPan;
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
+import com.kawaiiwolf.kawaiicrops.lib.Util;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiBigPot;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
@@ -80,21 +81,21 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 				int slot = getFirstOpenSlot();
 				
 				// Fill the pot with Oil
-				if(state.equals("clean") && RecipeKawaiiBigPot.CookingOilItems.contains(player.getCurrentEquippedItem().getItem()))
+				if(state.equals("clean") && Util.arrayContains(RecipeKawaiiBigPot.CookingOilItems, player.getCurrentEquippedItem())) 
 				{
 					takeCurrentItemContainer(world, x, y, z, player);
 					state = "oil";
 				}
 				
 				// Fill the pot with Milk
-				else if(state.equals("clean") && RecipeKawaiiBigPot.CookingMilkItems.contains(player.getCurrentEquippedItem().getItem()))
+				else if(state.equals("clean") && Util.arrayContains(RecipeKawaiiBigPot.CookingMilkItems, player.getCurrentEquippedItem())) 
 				{
 					takeCurrentItemContainer(world, x, y, z, player);
 					state = "milk";
 				}
 				
 				// Fill the pot with Water
-				else if(state.equals("clean") && RecipeKawaiiBigPot.CookingWaterItems.contains(player.getCurrentEquippedItem().getItem()))
+				else if(state.equals("clean") && Util.arrayContains(RecipeKawaiiBigPot.CookingWaterItems, player.getCurrentEquippedItem())) 
 				{
 					takeCurrentItemContainer(world, x, y, z, player);
 					state = "water";
@@ -124,7 +125,7 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 			else
 			{
 				RecipeKawaiiBigPot recipe = (RecipeKawaiiBigPot) this.getCurrentRecipe();
-				if (cookTime > recipe.cookTime && recipe.harvest == player.getCurrentEquippedItem().getItem())
+				if (cookTime > recipe.cookTime && recipe.harvest.getItem() == player.getCurrentEquippedItem().getItem() && recipe.harvest.getItemDamage() == player.getCurrentEquippedItem().getItemDamage())
 				{
 					player.getCurrentEquippedItem().stackSize--;
 					this.dropBlockAsItem(world, x, y, z, new ItemStack(inventorySlots[0].getItem(),1));

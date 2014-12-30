@@ -8,6 +8,8 @@ public class Constants
 	public static final String VERSION_MC = "1.7.10";
 	public static final String VERSION_FULL = VERSION_MC + "-" + VERSION;
 	
+	public static final String META = "$";
+	
 	public static final String CONFIG_FOLDER = "/kawaiicrops";
 	public static final String CONFIG_GENERAL = CONFIG_FOLDER + "/general.cfg";
 	public static final String CONFIG_CROPS = CONFIG_FOLDER + "/crops.cfg";

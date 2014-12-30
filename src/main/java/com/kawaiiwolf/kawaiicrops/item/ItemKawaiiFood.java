@@ -97,7 +97,7 @@ public class ItemKawaiiFood extends ItemFood
     public Item getContainerItem()
     {
 		if (super.getContainerItem() == null && ContainerItemString.length() > 0)
-			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString));
+			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString).getItem());
         return super.getContainerItem();
     }
 	
@@ -105,7 +105,7 @@ public class ItemKawaiiFood extends ItemFood
     public ItemStack getContainerItem(ItemStack stack)
     {
 		if (super.getContainerItem(stack) == null && ContainerItemString.length() > 0)
-			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString));
+			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString).getItem());
         return super.getContainerItem(stack);
     }
 }

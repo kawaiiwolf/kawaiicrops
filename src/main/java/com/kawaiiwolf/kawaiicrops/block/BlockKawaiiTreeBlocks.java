@@ -143,9 +143,9 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
     
 	public void registerDropTables()
 	{
-		LeafDropTableRipe = new DropTable(DropTableRipeString, Sapling, Fruit);
-		LeafDropTableUnripe = new DropTable(DropTableUnripeString, Sapling, Fruit);
-		LeafDropTableDestroyed = new DropTable(DropTableDestroyedString, Sapling, Fruit);
+		LeafDropTableRipe = new DropTable(DropTableRipeString, new ItemStack(Sapling), new ItemStack (Fruit));
+		LeafDropTableUnripe = new DropTable(DropTableUnripeString, new ItemStack(Sapling), new ItemStack (Fruit));
+		LeafDropTableDestroyed = new DropTable(DropTableDestroyedString, new ItemStack(Sapling), new ItemStack (Fruit));
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////

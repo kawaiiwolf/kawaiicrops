@@ -204,8 +204,8 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
 	}
 	
 	public void registerDropTables() {
-		dropTableRipe = new DropTable(DropTableRipeString, seed, crop);
-		dropTableUnripe = new DropTable(DropTableUnripeString, seed, crop);		
+		dropTableRipe = new DropTable(DropTableRipeString, new ItemStack(seed), new ItemStack(crop));
+		dropTableUnripe = new DropTable(DropTableUnripeString, new ItemStack(seed), new ItemStack(crop));		
 	}
 	
     @Override

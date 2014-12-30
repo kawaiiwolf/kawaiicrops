@@ -104,9 +104,9 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaBlock
 		RequiredBlocks = NamespaceHelper.getBlocksByName(RequiredBlockString);
 		ForbiddenBlocks = NamespaceHelper.getBlocksByName(ForbiddenBlockString);
 		
-		UnripeDropTable = new DropTable(UnripeDropTableString, i, null);
-		RipeDropTable = new DropTable(RipeDropTableString, i, null);
-		RuinedDropTable = new DropTable(RuinedDropTableString, i, null);
+		UnripeDropTable = new DropTable(UnripeDropTableString, new ItemStack(i), null);
+		RipeDropTable = new DropTable(RipeDropTableString, new ItemStack(i), null);
+		RuinedDropTable = new DropTable(RuinedDropTableString, new ItemStack(i), null);
 	}
 	
 	@Override

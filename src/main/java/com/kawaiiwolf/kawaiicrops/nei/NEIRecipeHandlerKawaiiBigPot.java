@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.lib.Util;
 import com.kawaiiwolf.kawaiicrops.nei.NEIRecipeHandlerKawaiiFryingPan.CachedFryingPanRecipe;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiBigPot;
@@ -30,18 +31,18 @@ public class NEIRecipeHandlerKawaiiBigPot extends TemplateRecipeHandler
 		milkPot.add(new PositionedStack(new ItemStack(ModBlocks.bigPot), 76, 14));
 		
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-		for (Item item : RecipeKawaiiBigPot.CookingOilItems)
-			list.add(new ItemStack(item));
+		for (ItemStack item : RecipeKawaiiBigPot.CookingOilItems)
+			list.add(item);
 		oilPot.add(new PositionedStack(list, 68, 42));
 
 		list = new ArrayList<ItemStack>();
-		for (Item item : RecipeKawaiiBigPot.CookingMilkItems)
-			list.add(new ItemStack(item));
+		for (ItemStack item : RecipeKawaiiBigPot.CookingMilkItems)
+			list.add(item);
 		milkPot.add(new PositionedStack(list, 68, 42));
 
 		list = new ArrayList<ItemStack>();
-		for (Item item : RecipeKawaiiBigPot.CookingWaterItems)
-			list.add(new ItemStack(item));
+		for (ItemStack item : RecipeKawaiiBigPot.CookingWaterItems)
+			list.add(item);
 		waterPot.add(new PositionedStack(list, 68, 42));
 	}
 	private enum Type { OIL, MILK, WATER };
@@ -84,7 +85,7 @@ public class NEIRecipeHandlerKawaiiBigPot extends TemplateRecipeHandler
 			}
 			
 			if (recipe.harvest != null)
-				this.input.add(new PositionedStack(new ItemStack(recipe.harvest), 90, 42));
+				this.input.add(new PositionedStack(recipe.harvest, 90, 42));
 		}
 		
         @Override
@@ -132,17 +133,17 @@ public class NEIRecipeHandlerKawaiiBigPot extends TemplateRecipeHandler
 			{
 				RecipeKawaiiBigPot recipe = (RecipeKawaiiBigPot) r;
 				
-				if (hasIngredient(recipe.input, ingredient) || (recipe.harvest != null && recipe.harvest == ingredient.getItem()))
+				if (hasIngredient(recipe.input, ingredient) || (recipe.harvest != null && recipe.harvest.getItem() == ingredient.getItem() && recipe.harvest.getItemDamage() == ingredient.getItemDamage()))
 					arecipes.add(new CachedBigPotRecipe(recipe));
 			}
 		
-		if (RecipeKawaiiBigPot.CookingOilItems.contains(ingredient.getItem()))
+		if (Util.arrayContains(RecipeKawaiiBigPot.CookingOilItems, ingredient))
 			for (RecipeKawaiiCookingBase r : RecipeKawaiiBigPot.oilRecipes)
 				arecipes.add(new CachedBigPotRecipe((RecipeKawaiiBigPot)r));
-		else if (RecipeKawaiiBigPot.CookingMilkItems.contains(ingredient.getItem()))
+		else if (Util.arrayContains(RecipeKawaiiBigPot.CookingMilkItems, ingredient))
 			for (RecipeKawaiiCookingBase r : RecipeKawaiiBigPot.milkRecipes)
 				arecipes.add(new CachedBigPotRecipe((RecipeKawaiiBigPot)r));
-		else if (RecipeKawaiiBigPot.CookingWaterItems.contains(ingredient.getItem()))
+		else if (Util.arrayContains(RecipeKawaiiBigPot.CookingWaterItems, ingredient))
 			for (RecipeKawaiiCookingBase r : RecipeKawaiiBigPot.waterRecipes)
 				arecipes.add(new CachedBigPotRecipe((RecipeKawaiiBigPot)r));
 	}

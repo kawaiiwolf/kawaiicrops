@@ -103,7 +103,8 @@ public class ModItems {
 			insertIntoOreDictionary(NamespaceHelper.getItemByName(key), OreDictionaryBonus.get(key));
 	}
 	
-	private static void insertIntoOreDictionary(Item item, String oreEntries)
+	private static void insertIntoOreDictionary(Item item, String oreEntries) { insertIntoOreDictionary(new ItemStack(item), oreEntries); } 
+	private static void insertIntoOreDictionary(ItemStack item, String oreEntries)
 	{
 		if (item == null || oreEntries == null) 
 			return;

@@ -12,7 +12,7 @@ public class DropTable {
 
 	private ArrayList<ArrayList<DropTableItem>> list = new ArrayList<ArrayList<DropTableItem>>();
 	
-	public DropTable(String table, Item seed, Item crop) {
+	public DropTable(String table, ItemStack seed, ItemStack crop) {
 		
 		/* Look for pattern:
 		 * 		<item-name>
@@ -27,7 +27,8 @@ public class DropTable {
 			// Split further by Comma
 			for (String itemStr : dropSet.split(",")) {
 				DropTableItem item = new DropTableItem();
-				Matcher match = pattern.matcher(itemStr.toLowerCase());
+				//Matcher match = pattern.matcher(itemStr.toLowerCase());
+				Matcher match = pattern.matcher(itemStr);
 				
 				// match on 'name [drops] [weight]'
 				if (match.find()) {
@@ -36,10 +37,10 @@ public class DropTable {
 					String drops = (match.group(2) == null ? "" : match.group(2)) + (match.group(5) == null ? "" : match.group(5));
 					String weight = (match.group(3) == null ? "" : match.group(3));
 					
-					if (name.equalsIgnoreCase("seed") || name.equals("sapling"))
-						item.item = seed;
+					if (name.equalsIgnoreCase("seed") || name.equalsIgnoreCase("sapling"))
+						item.item = seed.copy();
 					else if (name.equalsIgnoreCase("crop") || name.equalsIgnoreCase("fruit"))
-						item.item = crop;
+						item.item = crop.copy();
 					else if (name.equalsIgnoreCase("nothing"))
 						item.item = null;
 					else
@@ -49,7 +50,7 @@ public class DropTable {
 						int i = Integer.parseInt(drops);
 						if (i < 1) i = 1;
 						if (i > 64) i = 64;
-						item.drops = i;
+						item.item.stackSize = i;
 					}
 					
 					if (weight.length() > 0) {
@@ -81,7 +82,7 @@ public class DropTable {
 				count -= table.get(i).weight;
 			
 			if (table.get(i).item != null)
-				ret.add(new ItemStack(table.get(i).item, table.get(i).drops));
+				ret.add(table.get(i).item.copy());
 		}
 		
 		return ret;
@@ -92,13 +93,12 @@ public class DropTable {
 		for (int i = 0; i < list.size(); i++){
 			System.out.println("  Drop Group " + (1 + i));
 			for (int j = 0; j < list.get(i).size(); j++)
-				System.out.println("    Item [" + (j + 1) + "] " + (list.get(i).get(j).item == null ? "Nothing" : list.get(i).get(j).item.getUnlocalizedName()) + " " + list.get(i).get(j).drops + " " + list.get(i).get(j).weight);
+				System.out.println("    Item [" + (j + 1) + "] " + (list.get(i).get(j).item == null ? "Nothing" : list.get(i).get(j).item.getUnlocalizedName()) + " " + list.get(i).get(j).item.stackSize + " " + list.get(i).get(j).weight);
 		}
 	}
 	
 	private class DropTableItem {
-		public Item item = null;
-		public int drops = 1;
+		public ItemStack item = null;
 		public int weight = 1; 
 	}
 }

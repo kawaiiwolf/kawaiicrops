@@ -15,13 +15,13 @@ public class RecipeKawaiiBigPot extends RecipeKawaiiCookingBase
 	public static ArrayList<RecipeKawaiiCookingBase> milkRecipes = new ArrayList<RecipeKawaiiCookingBase>();
 	
 	public static String CookingOilItemsString = "";
-	public static ArrayList<Item> CookingOilItems = new ArrayList<Item>();
+	public static ArrayList<ItemStack> CookingOilItems = new ArrayList<ItemStack>();
 	
 	public static String CookingWaterItemsString = "";
-	public static ArrayList<Item> CookingWaterItems = new ArrayList<Item>();
+	public static ArrayList<ItemStack> CookingWaterItems = new ArrayList<ItemStack>();
 	
 	public static String CookingMilkItemsString = "";
-	public static ArrayList<Item> CookingMilkItems = new ArrayList<Item>();
+	public static ArrayList<ItemStack> CookingMilkItems = new ArrayList<ItemStack>();
 	
 	public int cookTime = 0;
 	public int burnTime = 0;
@@ -30,7 +30,7 @@ public class RecipeKawaiiBigPot extends RecipeKawaiiCookingBase
 	public boolean milk = false;
 	public boolean keepLiquid = false;
 	public boolean texture = false;
-	public Item harvest = null;
+	public ItemStack harvest = null;
 
 	public RecipeKawaiiBigPot() {  }
 	public RecipeKawaiiBigPot(ItemStack output, Object... input) 
@@ -77,7 +77,7 @@ public class RecipeKawaiiBigPot extends RecipeKawaiiCookingBase
 					keepLiquid = true;
 				else
 				{
-					Item item = NamespaceHelper.getItemByName(option);
+					ItemStack item = NamespaceHelper.getItemByName(option);
 					if (item != null)
 						harvest = item;
 					else

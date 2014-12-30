@@ -68,8 +68,9 @@ public class RecipeHelper {
 		}
 		
 		ItemStack output = (outputType == IngredientType.ITEM ? 
-				new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
-				new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));		
+				NamespaceHelper.getItemByName(parts[0]) : 
+				new ItemStack(NamespaceHelper.getBlockByName(parts[0])));
+		output.stackSize = outputNum;
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(output, input.toArray()));
 		
@@ -127,8 +128,9 @@ public class RecipeHelper {
 		}
 		
 		ItemStack output = (outputType == IngredientType.ITEM ? 
-				new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
-				new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));		
+				NamespaceHelper.getItemByName(parts[0]) : 
+				new ItemStack(NamespaceHelper.getBlockByName(parts[0])));
+		output.stackSize = outputNum;
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(output, input.toArray()));
 		
@@ -164,8 +166,9 @@ public class RecipeHelper {
 		}
 
 		ItemStack output = (outputType == IngredientType.ITEM ? 
-			new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
-			new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+			NamespaceHelper.getItemByName(parts[0]) : 
+			new ItemStack(NamespaceHelper.getBlockByName(parts[0])));
+		output.stackSize = outputNum;
 		
 		GameRegistry.addRecipe(new ShapelessOreRecipe(output, input.toArray()));
 		
@@ -197,12 +200,13 @@ public class RecipeHelper {
 			return false;
 		
 		ItemStack input = (inputType == IngredientType.ITEM ? 
-				new ItemStack(NamespaceHelper.getItemByName(parts[2])) : 
+				NamespaceHelper.getItemByName(parts[2]) : 
 				new ItemStack(NamespaceHelper.getBlockByName(parts[2])));
 
 		ItemStack output = (outputType == IngredientType.ITEM ? 
-				new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
-				new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+				NamespaceHelper.getItemByName(parts[0]) : 
+				new ItemStack(NamespaceHelper.getBlockByName(parts[0])));
+		output.stackSize = outputNum;
 
 		GameRegistry.addSmelting(input, output, 0.1F);
 		
@@ -233,8 +237,9 @@ public class RecipeHelper {
 			return false;
 		
 		ItemStack output = (outputType == IngredientType.ITEM ? 
-				new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
-				new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+				NamespaceHelper.getItemByName(parts[0]) : 
+				new ItemStack(NamespaceHelper.getBlockByName(parts[0])));
+		output.stackSize = outputNum;
 		
 		(new RecipeKawaiiCuttingBoard(output, parseIngredient(parts[2]))).register();
 		
@@ -267,8 +272,9 @@ public class RecipeHelper {
 			return false;
 		
 		ItemStack output = (outputType == IngredientType.ITEM ? 
-				new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
-				new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+				NamespaceHelper.getItemByName(parts[0]) : 
+				new ItemStack(NamespaceHelper.getBlockByName(parts[0])));
+		output.stackSize = outputNum;
 
 		try
 		{
@@ -361,8 +367,9 @@ public class RecipeHelper {
 		try
 		{
 			ItemStack output = (outputType == IngredientType.ITEM ? 
-					new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
-					new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+					NamespaceHelper.getItemByName(parts[0]) : 
+					new ItemStack(NamespaceHelper.getBlockByName(parts[0])));
+			output.stackSize = outputNum;
 			
 			RecipeKawaiiGrill r = new RecipeKawaiiGrill(output,params.toArray());
 			r.register();
@@ -452,8 +459,9 @@ public class RecipeHelper {
 		try
 		{
 			ItemStack output = (outputType == IngredientType.ITEM ? 
-					new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
-					new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+					NamespaceHelper.getItemByName(parts[0]) : 
+					new ItemStack(NamespaceHelper.getBlockByName(parts[0])));
+			output.stackSize = outputNum;
 			
 			RecipeKawaiiFryingPan r = new RecipeKawaiiFryingPan(output,params.toArray());
 			r.register();
@@ -543,8 +551,9 @@ public class RecipeHelper {
 		try
 		{
 			ItemStack output = (outputType == IngredientType.ITEM ? 
-					new ItemStack(NamespaceHelper.getItemByName(parts[0]),outputNum) : 
-					new ItemStack(NamespaceHelper.getBlockByName(parts[0]),outputNum));
+					NamespaceHelper.getItemByName(parts[0]) : 
+					new ItemStack(NamespaceHelper.getBlockByName(parts[0])));
+			output.stackSize = outputNum;
 			
 			RecipeKawaiiBigPot r = new RecipeKawaiiBigPot(output,params.toArray());
 			r.register();

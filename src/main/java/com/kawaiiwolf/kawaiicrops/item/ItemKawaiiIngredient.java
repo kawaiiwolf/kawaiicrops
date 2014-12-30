@@ -53,7 +53,7 @@ public class ItemKawaiiIngredient extends Item
     public Item getContainerItem()
     {
 		if (super.getContainerItem() == null && ContainerItemString.length() > 0)
-			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString));
+			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString).getItem());
         return super.getContainerItem();
     }
 	
@@ -61,7 +61,7 @@ public class ItemKawaiiIngredient extends Item
     public ItemStack getContainerItem(ItemStack stack)
     {
 		if (super.getContainerItem(stack) == null && ContainerItemString.length() > 0)
-			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString));
+			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString).getItem());
         return super.getContainerItem(stack);
     }
 }
