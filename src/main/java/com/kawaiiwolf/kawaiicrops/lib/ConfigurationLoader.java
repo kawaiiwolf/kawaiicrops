@@ -539,8 +539,8 @@ public class ConfigurationLoader {
 		
 		// Crops
 		
-		cfg_general.setCategoryComment("KawaiiCrop Crops", GENERAL_CROP_COMMENT);
-		String cropsRaw = cfg_general.getString("Crops", "KawaiiCrop Crops", "","Crop List");
+		cfg_general.setCategoryComment("KawaiiCrops Crops", GENERAL_CROP_COMMENT);
+		String cropsRaw = cfg_general.getString("Crops", "KawaiiCrops Crops", "","Crop List");
 		String[] cropsParsed = cropsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
 		if(arrayHasString(cropsParsed))
@@ -587,8 +587,8 @@ public class ConfigurationLoader {
 		
 		// Cakes
 		
-		cfg_general.setCategoryComment("KawaiiCrop Yummy Cakes", GENERAL_CAKE_COMMENT);
-		String cakesRaw = cfg_general.getString("Cakes", "KawaiiCrop Yummy Cakes", "", "Cake List");
+		cfg_general.setCategoryComment("KawaiiCrops Yummy Cakes", GENERAL_CAKE_COMMENT);
+		String cakesRaw = cfg_general.getString("Cakes", "KawaiiCrops Yummy Cakes", "", "Cake List");
 		String[] cakesParsed = cakesRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
 		if(arrayHasString(cakesParsed))
@@ -603,8 +603,8 @@ public class ConfigurationLoader {
 		
 		// Foods
 		
-		cfg_general.setCategoryComment("KawaiiCrop Foods", GENERAL_FOOD_COMMENT);
-		String foodsRaw = cfg_general.getString("Foods", "KawaiiCrop Foods", "", "Food List");
+		cfg_general.setCategoryComment("KawaiiCrops Foods", GENERAL_FOOD_COMMENT);
+		String foodsRaw = cfg_general.getString("Foods", "KawaiiCrops Foods", "", "Food List");
 		String[] foodsParsed = foodsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
 		if(arrayHasString(foodsParsed))
@@ -619,8 +619,8 @@ public class ConfigurationLoader {
 		
 		// Ingredients
 		
-		cfg_general.setCategoryComment("KawaiiCrop Ingredients", GENERAL_INGREDIENTS_COMMENT);
-		String ingredientsRaw = cfg_general.getString("Ingredients", "KawaiiCrop Ingredients", "", "Ingredients List");
+		cfg_general.setCategoryComment("KawaiiCrops Ingredients", GENERAL_INGREDIENTS_COMMENT);
+		String ingredientsRaw = cfg_general.getString("Ingredients", "KawaiiCrops Ingredients", "", "Ingredients List");
 		String[] ingredientsParsed = ingredientsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
 		if(arrayHasString(ingredientsParsed))
@@ -635,8 +635,8 @@ public class ConfigurationLoader {
 		
 		// Clothes
 		
-		cfg_general.setCategoryComment("KawaiiCrop Clothes", GENERAL_CLOTHING_COMMENT);
-		String clothesRaw = cfg_general.getString("Clothes", "KawaiiCrop Clothes", "", "Clothes List");
+		cfg_general.setCategoryComment("KawaiiCrops Clothes", GENERAL_CLOTHING_COMMENT);
+		String clothesRaw = cfg_general.getString("Clothes", "KawaiiCrops Clothes", "", "Clothes List");
 		String[] clothesParsed = clothesRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
 		
 		if(arrayHasString(clothesParsed))
@@ -1061,19 +1061,31 @@ public class ConfigurationLoader {
 		
 		config.setCategoryComment(category, 
 				"Resource Pack settings for " + name + " Barrel\n\n"+
-				"");
+				"Langage Name: tile.kawaiicrops." + name + ".barrel.name\n\n"+
+				"Texture Name: textures/blocks/"+ name + ".barrel.png\n"+
+				"Texture Name: textures/blocks/"+ name + ".barrel_label_unfinished.png\n"+
+				"Texture Name: textures/blocks/"+ name + ".barrel_label_finished.png\n"+
+				"Texture Name: textures/blocks/"+ name + ".barrel_label_ruined.png");
 		
 		b.Enabled = config.getBoolean("0.  Enabled", category, b.Enabled, "Is this a block in minecraft ?  Defaults to false to allow you to configure before putting it in the game.");
+		
 		b.FinishedTime = config.getInt("1.  Finished Time", category, b.FinishedTime, 1, 1000, "How many random ticks before the barrel is finished/ripe ?");
 		b.RuinedTime = config.getInt("1.  Ruined Time", category, b.RuinedTime, 0, 1000, "How many random ticks before the barrel is ruined/spoiled ? A value of 0 means the barrel never spoils");
+		
+		boolean barrel = config.getBoolean("1.  Render as Barrel", category, true, "Render this barrel as a barrel ? If false, renders as a crate instead");
+		b.model = (barrel ? BlockKawaiiBarrel.BarrelModel.BARREL : BlockKawaiiBarrel.BarrelModel.CRATE);
 		
 		b.RequiredBlockString = config.getString("2.  Required Blocks", category, b.RequiredBlockString, "Which blocks are required (such as ice) ?  If this block is not nearby the barrel will be ruined. Separate blocks with a space. Leave this empty to have no required blocks. See general.cfg and dump.cfg for a list of block IDs.");
 		b.ForbiddenBlockString = config.getString("2.  Forbidden Blocks", category, b.ForbiddenBlockString, "Which blocks are forbidden (such as lava) ?  If this block is nearby the barrel will be ruined. Separate blocks with a space. Leave this empty to have no required blocks. See general.cfg and dump.cfg for a list of block IDs.");
 		b.SearchRadius = config.getInt("2.  Search Radius", category, b.SearchRadius, 1, 4, "How many blocks should the barrel look for forbidden and required blocks ?");
 		
-		b.UnripeDropTableString = config.getString("3.  Unfinished Drop Table", category, "", "What is the drop table for an unfinished barrel ? Please see General.cfg to see how to use these.");
-		b.RipeDropTableString = config.getString("3.  Finished Drop Table", category, "", "What is the drop table for a finished barrel ? Please see General.cfg to see how to use these.");
+		b.UnfinishedDropTableString = config.getString("3.  Unfinished Drop Table", category, "", "What is the drop table for an unfinished barrel ? Please see General.cfg to see how to use these.");
+		b.FinishedDropTableString = config.getString("3.  Finished Drop Table", category, "", "What is the drop table for a finished barrel ? Please see General.cfg to see how to use these.");
 		b.RuinedDropTableString = config.getString("3.  Ruined Drop Table", category, "", "What is the drop table for a ruined barrel ? Please see General.cfg to see how to use these.");
+		
+		b.UnfinishedTooltip = config.getString("4.  Unfinished Tooltip Text", category, b.UnfinishedTooltip, "What tooltip do you want to use for an unfinished barrel ?");
+		b.FinishedTooltip = config.getString("4.  Finished Tooltip Text", category, b.FinishedTooltip, "What tooltip do you want to use for a finished barrel ?");
+		b.RuinedTooltip = config.getString("4.  Ruined Tooltip Text", category, b.RuinedTooltip, "What tooltip do you want to use for a ruined barrel ?");
 		
 		b.register();
 		

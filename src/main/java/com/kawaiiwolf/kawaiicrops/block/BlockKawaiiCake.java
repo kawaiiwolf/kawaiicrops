@@ -113,9 +113,9 @@ public class BlockKawaiiCake extends BlockCake implements IWailaTooltip {
 	}
 
 	@Override
-	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te) 
+	public String getBody(World world, int x, int y, int z, int meta, TileEntity te) 
 	{
-		return Lists.newArrayList( new String[] { "Slices remaining: " + (6 - meta) });
+		return "Slices remaining: " + (6 - meta);
 	}
     
 }

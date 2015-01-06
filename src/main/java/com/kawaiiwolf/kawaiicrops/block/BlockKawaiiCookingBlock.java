@@ -145,13 +145,13 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer implements 
 	public ItemStack getDisplayStack(World world, int x, int y, int z, int meta, TileEntity te) { return null; }
 	
 	@Override
-	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te) 
+	public String getBody(World world, int x, int y, int z, int meta, TileEntity te) 
 	{ 
 		if (te != null && te instanceof TileEntityKawaiiCookingBlock)
 		{
 			String s = ((TileEntityKawaiiCookingBlock)te).getWAILATip();
 			if (s != null && s.length() > 0)
-				return Lists.newArrayList(s.split("\n"));
+				return s;
 		}
 		
 		return null; 

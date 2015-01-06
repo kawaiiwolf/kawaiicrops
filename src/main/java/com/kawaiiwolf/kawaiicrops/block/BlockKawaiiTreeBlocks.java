@@ -609,30 +609,22 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
 	}
 
 	@Override
-	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te) 
+	public String getBody(World world, int x, int y, int z, int meta, TileEntity te) 
 	{
-		ArrayList<String> currenttip = new ArrayList<String>();
-		
 		switch(this.getState(meta))
 		{
 		case SAPLING:
-			currenttip.add("Sapling");
-			break;
+			return "Sapling";
 		case LEAF:
-			currenttip.add("Leaves");
-			break;
+			return "Leaves";
 		case FRUIT:
-			currenttip.add("Fruit: " + ((meta - 4) * 25) + "% Grown");
-			break;
+			return "Fruit: " + ((meta - 4) * 25) + "% Grown";
 		case FRUITLEAF:
-			currenttip.add("Fruit: " + ((meta - 1) * 25) + "% Grown");
-			break;
+			return "Fruit: " + ((meta - 1) * 25) + "% Grown";
 		case FRUITRIPE:
 		case FRUITLEAFRIPE:
-			currenttip.add("Fruit: Mature");
-			break;
+			return "Fruit: Mature";
 		}
-		
-		return currenttip;
+		return null;
 	}
 }

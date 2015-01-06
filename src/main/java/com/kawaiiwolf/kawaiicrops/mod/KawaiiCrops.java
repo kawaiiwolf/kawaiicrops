@@ -62,15 +62,13 @@ public class KawaiiCrops {
      * 
      * TEST TEST TEST
      * 
-     * Document Metadata in Configuration Loader
-     * 
-     * Cheese block ! Takes a while to ferment.
-     *   Rendering
-     * 
+     * NEI for barrels
+     * Feedback for grill ?
      * 
      * Changes:
      *   Drop Table tolower removed
      *   Metadata added in ALL the things
+     *   Barrels !
      *   WAILA update
      *   
      */

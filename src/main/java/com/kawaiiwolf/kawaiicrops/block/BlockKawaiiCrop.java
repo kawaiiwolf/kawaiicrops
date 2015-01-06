@@ -521,16 +521,14 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
 	}
 
 	@Override
-	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te) 
-	{
-		ArrayList<String> currenttip = new ArrayList<String>(); 
-		
+	public String getBody(World world, int x, int y, int z, int meta, TileEntity te) 
+	{	
 		if (MaxHeight == 1 || !MaxHeightRequiredToRipen)
 		{
 			if (meta == 7)
-				currenttip.add("Crop: Mature");
+				return "Crop: Mature";
 			else
-				currenttip.add("Crop: " + ((meta + CropStages - 7) * 100 / CropStages) + "% Grown");
+				return "Crop: " + ((meta + CropStages - 7) * 100 / CropStages) + "% Grown";
 		}
 		else
 		{
@@ -541,14 +539,12 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
 			int unripe = (UnripeStage + 1) * MaxHeight;
 			
 			if (current == max)
-				currenttip.add("Crop: " + (MultiHarvest ? "Fully Grown, " : "") + "Mature");
+				return "Crop: " + (MultiHarvest ? "Fully Grown, " : "") + "Mature";
 			else if (MultiHarvest && current >= unripe)
-				currenttip.add("Crop: Fully Grown, " + (current - unripe) * 100 / (max - unripe) + "% Mature");
+				return "Crop: Fully Grown, " + (current - unripe) * 100 / (max - unripe) + "% Mature";
 			else
-				currenttip.add("Crop: " + current * 100 / (MultiHarvest ? unripe : max) + "% Grown");
+				return "Crop: " + current * 100 / (MultiHarvest ? unripe : max) + "% Grown";
 		}
-		
-		return currenttip;
 	}
 	
 }

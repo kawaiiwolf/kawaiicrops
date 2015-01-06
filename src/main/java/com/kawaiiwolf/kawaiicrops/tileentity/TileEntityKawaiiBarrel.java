@@ -1,21 +1,13 @@
 package com.kawaiiwolf.kawaiicrops.tileentity;
 
-import java.util.List;
+import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiBarrel;
 
-import com.kawaiiwolf.kawaiicrops.lib.ConfigurationLoader;
-
-import mcp.mobius.waila.api.IWailaBlock;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import mcp.mobius.waila.api.SpecialChars;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.IIcon;
 
 public class TileEntityKawaiiBarrel extends TileEntity
 {
@@ -58,5 +50,28 @@ public class TileEntityKawaiiBarrel extends TileEntity
 	{
 		super.onDataPacket(net, packet);
 		readFromNBT(packet.func_148857_g(), false);
+	}
+	
+	public IIcon getDisplay()
+	{
+		if (worldObj.getBlock(xCoord, yCoord, zCoord) instanceof BlockKawaiiBarrel)
+		{
+			BlockKawaiiBarrel b = (BlockKawaiiBarrel)worldObj.getBlock(xCoord, yCoord, zCoord);
+			
+			if (this.isRuined)
+				return b.labelRuined;
+			if (this.cookTime < b.FinishedTime)
+				return b.labelUnfinished;
+			return b.labelFinished;
+		}
+		
+		return null;
+	}
+	
+	public BlockKawaiiBarrel.BarrelModel getModel()
+	{
+		if (worldObj.getBlock(xCoord, yCoord, zCoord) instanceof BlockKawaiiBarrel)
+			return ((BlockKawaiiBarrel)worldObj.getBlock(xCoord, yCoord, zCoord)).model;
+		return null;
 	}
 }

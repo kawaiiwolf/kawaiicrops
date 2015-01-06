@@ -9,5 +9,5 @@ import net.minecraft.world.World;
 public interface IWailaTooltip 
 {
 	public ItemStack getDisplayStack(World world, int x, int y, int z, int meta, TileEntity te);
-	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te);
+	public String getBody(World world, int x, int y, int z, int meta, TileEntity te);
 }

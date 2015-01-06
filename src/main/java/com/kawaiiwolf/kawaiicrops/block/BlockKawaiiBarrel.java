@@ -23,12 +23,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -47,14 +50,18 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 	public String ForbiddenBlockString = "";
 	public ArrayList<Block> ForbiddenBlocks = null;
 	
-	public String UnripeDropTableString = "";
-	public DropTable UnripeDropTable = null;
+	public String UnfinishedDropTableString = "";
+	public DropTable UnfinishedDropTable = null;
 	
-	public String RipeDropTableString = "";
-	public DropTable RipeDropTable = null;
+	public String FinishedDropTableString = "";
+	public DropTable FinishedDropTable = null;
 	
 	public String RuinedDropTableString = "";
 	public DropTable RuinedDropTable = null;
+	
+	public String UnfinishedTooltip = "Status: Not Ready Yet";
+	public String FinishedTooltip = "Status: Aged to perfection";
+	public String RuinedTooltip = "Status: Something spoiled";
 
 	public BlockKawaiiBarrel(String name)
 	{
@@ -107,10 +114,33 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 		RequiredBlocks = NamespaceHelper.getBlocksByName(RequiredBlockString);
 		ForbiddenBlocks = NamespaceHelper.getBlocksByName(ForbiddenBlockString);
 		
-		UnripeDropTable = new DropTable(UnripeDropTableString, new ItemStack(i), null);
-		RipeDropTable = new DropTable(RipeDropTableString, new ItemStack(i), null);
+		UnfinishedDropTable = new DropTable(UnfinishedDropTableString, new ItemStack(i), null);
+		FinishedDropTable = new DropTable(FinishedDropTableString, new ItemStack(i), null);
 		RuinedDropTable = new DropTable(RuinedDropTableString, new ItemStack(i), null);
 	}
+	
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack item) 
+	{
+		Vec3 look = entity.getLookVec();
+		int meta = 0;
+		if (Math.abs(look.xCoord) >= Math.abs(look.zCoord))
+			meta = (look.xCoord > 0.0d ? 1 : 3);
+		else
+			meta = (look.zCoord > 0.0d ? 0 : 2);
+		world.setBlockMetadataWithNotify(x, y, z, meta, 2);
+	}
+	
+	@Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitx, float htiy, float hitz)
+    {
+		if (player.getCurrentEquippedItem().getItem() == ModItems.MagicSpoon)
+		{
+			updateTick(world, x, y, z, world.rand);
+			return true;
+		}
+		return false;
+    }
 	
 	@Override
 	public void updateTick(World world, int x, int y, int z, Random rand)
@@ -121,7 +151,7 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 			TileEntityKawaiiBarrel t = (TileEntityKawaiiBarrel)te;
 			
 			if(t.isRuined) return;
-			if(t.cookTime > RuinedTime && RuinedTime != 0)
+			if(t.cookTime >= RuinedTime && RuinedTime != 0)
 				t.isRuined = true;
 			else
 				t.cookTime++;
@@ -140,12 +170,15 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 							if (denyCheck && ForbiddenBlocks.contains(world.getBlock(i, j, k)))
 							{
 								t.isRuined = true;
+								world.markBlockForUpdate(x, y, z);
 								return;
 							}
 						}
 			}
 			if (!approved)
 				t.isRuined = true;
+			
+			world.markBlockForUpdate(x, y, z);
 		}
 	}
 	
@@ -162,22 +195,30 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 			if (t.isRuined)
 				ret.addAll(RuinedDropTable.generateLoot(world.rand));
 			else if (t.cookTime < this.FinishedTime)
-				ret.addAll(UnripeDropTable.generateLoot(world.rand));
+				ret.addAll(UnfinishedDropTable.generateLoot(world.rand));
 			else
-				ret.addAll(RipeDropTable.generateLoot(world.rand));
+				ret.addAll(FinishedDropTable.generateLoot(world.rand));
 		}
         
         return ret;
     }
     
+	public IIcon labelUnfinished;
+	public IIcon labelFinished;
+	public IIcon labelRuined;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg)
 	{
 		super.registerBlockIcons(reg);
 		
-		// Gotta load the labels !
+		labelUnfinished = reg.registerIcon("kawaiicrops:" + Name + ".barrel_label_unfinished");
+		labelFinished = reg.registerIcon("kawaiicrops:" + Name + ".barrel_label_finished");
+		labelRuined = reg.registerIcon("kawaiicrops:" + Name + ".barrel_label_ruined");
 	}
+	
+	public enum BarrelModel { BARREL, CRATE };
+	public BarrelModel model = BarrelModel.BARREL;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // WAILA Mod Integration
@@ -188,8 +229,19 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 	}
 
 	@Override
-	public List<String> getBody(World world, int x, int y, int z, int meta, TileEntity te) {
-		// TODO Auto-generated method stub
+	public String getBody(World world, int x, int y, int z, int meta, TileEntity te) 
+	{
+		if (te instanceof TileEntityKawaiiBarrel)
+		{
+			TileEntityKawaiiBarrel t = (TileEntityKawaiiBarrel)te;
+			
+			if (t.isRuined)
+				return RuinedTooltip;
+			else if (t.cookTime < this.FinishedTime)
+				return UnfinishedTooltip;
+			else
+				return FinishedTooltip;
+		}
 		return null;
 	}
 }
