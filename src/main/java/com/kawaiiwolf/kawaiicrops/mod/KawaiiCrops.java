@@ -45,8 +45,6 @@ public class KawaiiCrops {
     	proxy.registerRenderers();
     	ModTileEntities.register();
     	ModItems.registerOreDictionary();
-    	
-    	FMLInterModComms.sendMessage("Waila", "register", "com.kawaiiwolf.kawaiicrops.waila.WailaTileHandler.callbackRegister");
     }
  
     @Mod.EventHandler
@@ -55,23 +53,19 @@ public class KawaiiCrops {
     	config.loadConfiguration_PostInit();
     	ModBlocks.registerDropTables();
     	ModBlocks.registerCookingBlockLists();
+    	
+    	FMLInterModComms.sendMessage("Waila", "register", "com.kawaiiwolf.kawaiicrops.waila.WailaTileHandler.callbackRegister");
     }
     
     /**
      * TODO:
      * 
      * TEST TEST TEST
-     * 
-     * Test, is fast forward fixed ?
-     * 
-     * NEI for barrels
+     * Pitchers
      * Feedback for grill ?
      * 
      * Changes:
-     *   Drop Table tolower removed
-     *   Metadata added in ALL the things
-     *   Barrels !
-     *   WAILA update
+     *   Updated Crop, removed TileEntities
      *   
      */
 }

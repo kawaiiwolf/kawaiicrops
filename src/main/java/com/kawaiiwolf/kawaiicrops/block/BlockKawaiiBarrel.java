@@ -212,9 +212,9 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 	{
 		super.registerBlockIcons(reg);
 		
-		labelUnfinished = reg.registerIcon("kawaiicrops:" + Name + ".barrel_label_unfinished");
-		labelFinished = reg.registerIcon("kawaiicrops:" + Name + ".barrel_label_finished");
-		labelRuined = reg.registerIcon("kawaiicrops:" + Name + ".barrel_label_ruined");
+		labelUnfinished = reg.registerIcon(Constants.MOD_ID + ":" + Name + ".barrel_label_unfinished");
+		labelFinished = reg.registerIcon(Constants.MOD_ID + ":" + Name + ".barrel_label_finished");
+		labelRuined = reg.registerIcon(Constants.MOD_ID + ":" + Name + ".barrel_label_ruined");
 	}
 	
 	public enum BarrelModel { BARREL, CRATE };

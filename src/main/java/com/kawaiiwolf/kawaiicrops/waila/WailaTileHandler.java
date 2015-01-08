@@ -63,6 +63,8 @@ public class WailaTileHandler implements IWailaDataProvider
 	{
 		if (accessor.getBlock() instanceof IWailaTooltip)
 		{
+			if (accessor.getBlock() instanceof BlockKawaiiCrop)
+				currenttip.clear();
 			String items = ((IWailaTooltip)accessor.getBlock()).getBody(accessor.getWorld(), accessor.getPosition().blockX, accessor.getPosition().blockY, accessor.getPosition().blockZ, accessor.getMetadata(), accessor.getTileEntity());
 			if (items != null)
 			{

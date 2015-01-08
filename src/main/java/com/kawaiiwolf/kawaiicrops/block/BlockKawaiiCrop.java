@@ -10,13 +10,13 @@ import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiFood;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiIngredient;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeed;
 import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiSeedFood;
+import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.ConfigurationLoader;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
 import com.kawaiiwolf.kawaiicrops.lib.DropTable;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
 import com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
-import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
 import com.kawaiiwolf.kawaiicrops.waila.IWailaTooltip;
 import com.kawaiiwolf.kawaiicrops.world.ModWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
@@ -35,6 +35,7 @@ import net.minecraft.block.BlockCrops;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -49,7 +50,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, IWailaTooltip {
+public class BlockKawaiiCrop extends BlockCrops implements IWailaTooltip {
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Rendering Code
@@ -262,28 +263,12 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////
-	// Tile Entity Code
-	
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		return (this.MultiHarvest ? new TileEntityKawaiiCrop() : null);
-	}
+	// Block Breaking & Replanting
 	
 	@Override
     public void breakBlock(World world, int x, int y, int z, Block block, int meta)
     {
-		// No SUPER. Prevent base BLock class from destroying the tile entity.
-		TileEntity te = world.getTileEntity(x, y, z);
-		
-		if (te != null)
-		{
-			if (this.MultiHarvest && te != null && te instanceof TileEntityKawaiiCrop && meta == 7)
-			{
-				((TileEntityKawaiiCrop)te).arm(block, 8 - CropStages + UnripeStage);
-			}
-			else 
-				world.removeTileEntity(x, y, z);
-		}
+		super.breakBlock(world, x, y, z, block, meta);
 		
 		for (int i = -1; i <= 1; i += 2)
 			if (world.getBlock(x, y + i, z) == this && (MaxHeightRequiredToRipen || meta < 7)) 
@@ -294,6 +279,42 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
 					world.setBlockMetadataWithNotify(x,  y + i, z, 0, 0);
 				world.setBlock(x, y + i, z, getBlockById(0), 0, 2);
 	        }
+    }
+	
+	public void breakAndReplantBlocks(World world, int x, int y, int z, Block block, int meta)
+	{
+		if (!MaxHeightRequiredToRipen)
+			breakAndReplantBlock(world, x, y, z, block, meta);
+		else 
+			for (int i = getBaseY(world, x, y, z); i <= getTopY(world, x, y, z); i++)
+				breakAndReplantBlock(world, x, i, z, block, meta);		
+	}
+	
+	public void breakAndReplantBlock(World world, int x, int y, int z, Block block, int meta)
+	{
+		world.setBlockMetadataWithNotify(x, y, z, 8 - CropStages + UnripeStage, 2);
+		
+		if (!MaxHeightRequiredToRipen || y == getTopY(world, x, y, z))
+		{
+			ArrayList<ItemStack> drops = getDrops(world, x, y, z, meta, 0);
+			if (drops != null)
+				for (ItemStack drop : drops)
+					this.dropBlockAsItem(world, x, y, z, drop);
+		}
+	}
+	
+	@Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitx, float htiy, float hitz)
+    {
+		if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == ModItems.MagicSpoon)
+			growPlant(world, x, y, z);
+
+		else if (MultiHarvest && world.getBlockMetadata(x, y, z) == 7)
+			breakAndReplantBlocks(world, x, y, z, world.getBlock(x, y, z), world.getBlockMetadata(x, y, z));
+		
+		else
+			return false;
+		return true;
     }
 	
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -377,10 +398,6 @@ public class BlockKawaiiCrop extends BlockCrops implements ITileEntityProvider, 
     			return true;
     	}
     	if (this.MaxHeight > 1 && below == this)
-    		return true;
-    	
-    	TileEntity te = world.getTileEntity(x, y - 1, z);
-    	if (te != null && te instanceof TileEntityKawaiiCrop && ((TileEntityKawaiiCrop)te).isArmed())
     		return true;
     	
         return false;

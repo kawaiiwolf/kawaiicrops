@@ -1147,7 +1147,7 @@ public class ConfigurationLoader {
 		food.ContainerItemString = container;
 
 		if (enabled)
-			GameRegistry.registerItem(food, Constants.MOD_ID + "." + name);
+			food.register();
 		
 		return food;
 	}
@@ -1173,7 +1173,7 @@ public class ConfigurationLoader {
 		ingredient.ContainerItemString = container;
 		
 		if (enabled)
-			GameRegistry.registerItem(ingredient, Constants.MOD_ID + "." + name);		
+			ingredient.register();
 		
 		return ingredient;
 	}

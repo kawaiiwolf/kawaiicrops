@@ -7,5 +7,6 @@ public class ModEvents
 	public static void register()
 	{
 		MinecraftForge.EVENT_BUS.register(new EventKawaiiLivingDrop());
+		MinecraftForge.EVENT_BUS.register(new EventKawaiiMultiHarvest());
 	}
 }
