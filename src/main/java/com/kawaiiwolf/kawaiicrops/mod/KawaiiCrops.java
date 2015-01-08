@@ -61,17 +61,14 @@ public class KawaiiCrops {
      * TODO:
      * 
      * TEST TEST TEST
-     * 
-     * Test, is fast forward fixed ?
-     * 
-     * NEI for barrels
+     * Pitchers
      * Feedback for grill ?
      * 
      * Changes:
      *   Drop Table tolower removed
      *   Metadata added in ALL the things
      *   Barrels !
-     *   WAILA update
+     *   WAILA update 
      *   
      */
 }
