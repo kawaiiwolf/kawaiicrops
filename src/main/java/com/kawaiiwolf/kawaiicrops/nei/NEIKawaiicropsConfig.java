@@ -33,7 +33,8 @@ public class NEIKawaiicropsConfig implements IConfigureNEI
 			new NEIRecipeHandlerKawaiiFryingPan(), 
 			new NEIRecipeHandlerKawaiiBigPot(),
 			new NEIRecipeHandlerKawaiiChurn(), 
-			new NEIRecipeHandlerKawaiiGrill()
+			new NEIRecipeHandlerKawaiiGrill(),
+			new NEIRecipeHandlerKawaiiBarrel()
 		};
 		for (TemplateRecipeHandler handler : handlers)
 		{

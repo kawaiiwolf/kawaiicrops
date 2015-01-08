@@ -88,7 +88,22 @@ public class DropTable {
 		return ret;
 	}
 	
-	public void DEBUG_OUT() {
+	private ArrayList<ItemStack> display = null;
+	public ArrayList<ItemStack> getDisplay()
+	{
+		if (display == null)
+		{
+			display = new ArrayList<ItemStack>();
+			
+			for (ArrayList<DropTableItem> set : list)
+				for (DropTableItem item : set)
+					display.add(item.item.copy());
+		}
+		return display;
+	}
+	
+	public void DEBUG_OUT() 
+	{
 		System.out.println("Outputting Drop Table");
 		for (int i = 0; i < list.size(); i++){
 			System.out.println("  Drop Group " + (1 + i));
@@ -97,7 +112,8 @@ public class DropTable {
 		}
 	}
 	
-	private class DropTableItem {
+	private class DropTableItem 
+	{
 		public ItemStack item = null;
 		public int weight = 1; 
 	}

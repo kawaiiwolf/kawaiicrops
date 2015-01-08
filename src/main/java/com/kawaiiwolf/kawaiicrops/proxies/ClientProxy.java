@@ -7,7 +7,6 @@ import com.kawaiiwolf.kawaiicrops.renderer.RendererKawaiiFryingPan;
 import com.kawaiiwolf.kawaiicrops.renderer.RendererKawaiiGrill;
 import com.kawaiiwolf.kawaiicrops.renderer.RendererkawaiiBarrel;
 import com.kawaiiwolf.kawaiicrops.renderer.RenderingHandlerKawaiiCropBlocks;
-import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCrop;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 
