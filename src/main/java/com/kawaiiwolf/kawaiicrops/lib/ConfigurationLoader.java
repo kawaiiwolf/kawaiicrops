@@ -927,7 +927,7 @@ public class ConfigurationLoader {
 		String comment = "Resource Pack settings for " + name + "\n\nLangage Name: tile.kawaiicrops." + name + ".name\n\n";
 		for (int i = 0; i < (b.MaxHeightRequiredToRipen ? b.MaxHeight : 1); i++)
 			for (int j = 0; j < b.CropStages; j++)
-				comment += "Texture Name: textures/blocks/" + name + "_stage_" + (b.MaxHeightRequiredToRipen && b.MaxHeight > 1 ? j + "_" : "") + j + ".png\n";
+				comment += "Texture Name: textures/blocks/" + name + "_stage_" + (b.MaxHeightRequiredToRipen && b.MaxHeight > 1 ? i + "_" : "") + j + ".png\n";
 		comment += "\nWarning: Texture names listed above will change as \"1.General  Crop Stages\", \"1.General  Max Height\" " +
 				"\n and \"2.Harvest  Max Height Required to Ripen\" settings are changed."; 
 		
