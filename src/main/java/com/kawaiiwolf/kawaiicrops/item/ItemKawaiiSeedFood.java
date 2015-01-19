@@ -40,7 +40,7 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
 		super(hunger, saturation, plant, soil);
 		
 		this.setTextureName(Constants.MOD_ID + ":" + name);
-		this.setUnlocalizedName(Constants.MOD_ID + "." + "name");
+		this.setUnlocalizedName(Constants.MOD_ID + "." + name);
 		this.name = name;
 		this.plant = plant;
 		this.ToolTipText = toolTip;
