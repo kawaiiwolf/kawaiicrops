@@ -46,7 +46,7 @@ public class DropTable {
 					else
 						item.item = NamespaceHelper.getItemByName(name);
 		
-					if (drops.length() > 0) {
+					if (drops.length() > 0 && item.item != null) {
 						int i = Integer.parseInt(drops);
 						if (i < 1) i = 1;
 						if (i > 64) i = 64;
