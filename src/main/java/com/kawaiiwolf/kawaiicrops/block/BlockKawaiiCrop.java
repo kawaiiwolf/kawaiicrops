@@ -34,6 +34,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -150,9 +151,8 @@ public class BlockKawaiiCrop extends BlockCrops implements IWailaTooltip {
 			
 			boolean water = false;
 			for (Block b : CropGrowsOn)
-				if (b.getMaterial() == Material.water || b.getMaterial() == Material.lava)
-					if (SeedsEdible) 
-						water = true;
+				if (b.getMaterial() instanceof MaterialLiquid && ((MaterialLiquid)b.getMaterial()).isLiquid())
+					water = true;
 			
 			if (SeedsEdible)
 			{
