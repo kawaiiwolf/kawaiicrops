@@ -65,7 +65,7 @@ public class KawaiiCrops {
      * Feedback for grill ?
      * 
      * Changes:
-     *   Updated Crop, removed TileEntities
+     *   Nothing, just a public bug fix release !
      *   
      */
 }
