@@ -63,18 +63,9 @@ public class KawaiiCrops {
      * TODO:
      * 
      * TEST TEST TEST
-     * Pitchers
-     * Feedback for grill ?
-     * 
+     * Pitchers 
      * 
      * Changes:
-     *   Fixed harvesting frying pan with object in hand
-     *   Fixed NEI Crash bug with OreDictionary
-     *   Added Sheared Drop Table for Trees
-     *   Duplication bugs fixed on cooking recipes
-     *   Better detection for automation (Aborts recipe when ingredients are swiped from inventory)
-     *   WAILA integration fixed
-     *   Various NPE errors fixed
-     *   Added tooltips for ItemBlocks of various CookingBlocks
+
      */
 }

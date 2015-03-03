@@ -25,20 +25,6 @@ public class WailaTileHandler implements IWailaDataProvider
 	
 	public static void callbackRegister(IWailaRegistrar register) 
 	{
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		System.out.println("ALERT: WAILA Registered");
-		
 		ArrayList<Class> blocks = Lists.newArrayList( new Class[] { 
 			BlockKawaiiCuttingBoard.class,
 			BlockKawaiiFryingPan.class,
