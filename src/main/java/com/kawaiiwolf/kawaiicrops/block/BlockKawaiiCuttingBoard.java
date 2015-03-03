@@ -27,6 +27,8 @@ public class BlockKawaiiCuttingBoard extends BlockKawaiiCookingBlock
 		minX = minZ = 1.0d / 16.0d;
 		maxX = maxZ = 1.0d - minX;
 		
+		ToolTipText = "Now with Modern Chopping Technology !";
+		
 		this.setBlockTextureName(Constants.MOD_ID + ":cuttingboard");
 	}
 

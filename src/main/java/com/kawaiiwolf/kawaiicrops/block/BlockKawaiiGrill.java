@@ -17,6 +17,8 @@ public class BlockKawaiiGrill extends BlockKawaiiCookingBlock {
 		minX = minZ = 0.0d / 16.0d;
 		maxX = maxZ = 1.0d - minX;
 		
+		ToolTipText = "Remember to heat your grill before cooking !";
+		
 		this.setBlockTextureName(Constants.MOD_ID + ":grill");
 	}
 
@@ -25,4 +27,6 @@ public class BlockKawaiiGrill extends BlockKawaiiCookingBlock {
 	{
 		return new TileEntityKawaiiGrill();
 	}
+	
+
 }

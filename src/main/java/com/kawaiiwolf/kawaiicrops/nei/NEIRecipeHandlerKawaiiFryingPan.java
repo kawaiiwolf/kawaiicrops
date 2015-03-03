@@ -125,9 +125,16 @@ public class NEIRecipeHandlerKawaiiFryingPan  extends TemplateRecipeHandler
 			return NEIServerUtils.areStacksSameTypeCrafting((ItemStack)o, ingredient);
 		else if (o instanceof List)
 		{
-			for (ItemStack item : (ArrayList<ItemStack>)o)
-				if (NEIServerUtils.areStacksSameTypeCrafting(item, ingredient))
-					return true;
+			for (Object element : (ArrayList)o)
+			{
+				if (element instanceof ArrayList)
+					for (Object item : (ArrayList)element)
+						if (NEIServerUtils.areStacksSameTypeCrafting((ItemStack)item, ingredient))
+							return true;
+				if (element instanceof ItemStack)
+					if (NEIServerUtils.areStacksSameTypeCrafting((ItemStack)element, ingredient))
+						return true;
+			}
 		}
 		return false;
 	}

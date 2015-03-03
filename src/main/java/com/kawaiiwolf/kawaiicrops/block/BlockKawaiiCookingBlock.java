@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
+import com.kawaiiwolf.kawaiicrops.item.ItemKawaiiTooltipBlock;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.ConfigurationLoader;
 import com.kawaiiwolf.kawaiicrops.lib.Constants;
+import com.kawaiiwolf.kawaiicrops.lib.IToolTipBlock;
 import com.kawaiiwolf.kawaiicrops.tileentity.TileEntityKawaiiCookingBlock;
 import com.kawaiiwolf.kawaiicrops.waila.IWailaTooltip;
 
@@ -27,11 +29,12 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public abstract class BlockKawaiiCookingBlock extends BlockContainer implements IWailaTooltip 
+public abstract class BlockKawaiiCookingBlock extends BlockContainer implements IWailaTooltip, IToolTipBlock
 {
 
 	public String Name = "";
 	public IIcon burntTexture = null;
+	public String ToolTipText = "";
 	
 	protected BlockKawaiiCookingBlock(Material material, String name, boolean randomTick) 
 	{
@@ -127,7 +130,7 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer implements 
 		if (isRegistered) return;
 		isRegistered = true;
 		
-		GameRegistry.registerBlock(this, Constants.MOD_ID + "." + Name);
+		GameRegistry.registerBlock(this, ItemKawaiiTooltipBlock.class, Constants.MOD_ID + "." + Name);
 	}
 	
 	@Override
@@ -137,6 +140,11 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer implements 
 		super.registerBlockIcons(register);
 		this.burntTexture = register.registerIcon(Constants.MOD_ID + ":ruined");
     }
+	
+	public String getToolTip()
+	{
+		return ToolTipText;
+	}
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // WAILA Mod Integration

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -125,9 +126,10 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 			else
 			{
 				RecipeKawaiiBigPot recipe = (RecipeKawaiiBigPot) this.getCurrentRecipe();
-				if (cookTime > recipe.cookTime && recipe.harvest.getItem() == player.getCurrentEquippedItem().getItem() && recipe.harvest.getItemDamage() == player.getCurrentEquippedItem().getItemDamage())
+				if (cookTime > recipe.cookTime && inventorySlots[0] != null && (recipe.harvest == null || (recipe.harvest.getItem() == player.getCurrentEquippedItem().getItem() && recipe.harvest.getItemDamage() == player.getCurrentEquippedItem().getItemDamage())))
 				{
-					player.getCurrentEquippedItem().stackSize--;
+					if (recipe.harvest != null)
+						player.getCurrentEquippedItem().stackSize--;
 					this.dropBlockAsItem(world, x, y, z, new ItemStack(inventorySlots[0].getItem(),1));
 					if (inventorySlots[0].stackSize > 1)
 						inventorySlots[0].stackSize--;
@@ -278,8 +280,11 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 			}
 			if (recipe != null && cookTime > recipe.cookTime && inventorySlots[0] != null)
 			{
-				for (int i = 0; i < inventorySlots[0].stackSize && i < display.length; i++)
+				int i = 0;
+				for (; i < inventorySlots[0].stackSize && i < display.length; i++)
 					display[i] = inventorySlots[0] == null ? null : new TexturedIcon(inventorySlots[0]);
+				for (; i < display.length; i++)
+					display[i] = null;
 				return (DisplayCache = display);
 			}
 		}
@@ -300,6 +305,28 @@ public class TileEntityKawaiiBigPot extends TileEntityKawaiiCookingBlock
 			return BlockKawaiiBigPot.WaterTexture;
 		
 		return null;
+	}
+	
+	@Override
+	protected void writeToNBT(NBTTagCompound tags, boolean callSuper) 
+	{ 
+		// Forced Update, check for valid state
+		if (inventorySlots[0] == null && recipeHash != 0)
+		{
+			RecipeKawaiiBigPot recipe = (RecipeKawaiiBigPot) getCompleteRecipe();
+			if (recipe == null || recipeHash != recipe.hashCode())
+			{
+				if (recipe != null && recipe.keepLiquid && recipe.milk) state = "milk";
+				else if (recipe != null && recipe.keepLiquid && recipe.oil) state = "oil";
+				else if (recipe != null && recipe.keepLiquid && recipe.water) state = "water";
+				else state = "clean";
+
+				cookTime = state.equals("clean") ? 0 : 1;
+				recipeHash = 0;
+			}
+		}
+		
+		super.writeToNBT(tags, callSuper);
 	}
 
 	@Override

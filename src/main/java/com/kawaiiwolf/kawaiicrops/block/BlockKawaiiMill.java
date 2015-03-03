@@ -16,6 +16,8 @@ public class BlockKawaiiMill extends BlockKawaiiCookingBlock {
 		minX = minZ = 5.0d / 16.0d;
 		maxX = maxZ = 1.0d - minX;
 		
+		ToolTipText = "Hand Powered ... and mini !";
+		
 		this.setBlockTextureName(Constants.MOD_ID + ":mill");
 	}
 	

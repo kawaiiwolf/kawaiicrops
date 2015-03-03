@@ -101,14 +101,16 @@ public class NamespaceHelper {
 		return Block.getBlockFromItem(item) != Blocks.air;
 	}
 
-	public static String getItemLocalizedName(Item item) { return getItemLocalizedName(new ItemStack(item)); }
+	public static String getItemLocalizedName(Item item) { return getItemLocalizedName(item == null ? null : new ItemStack(item)); }
 	public static String getItemLocalizedName(ItemStack item) 
 	{
+		if (item == null) return "NULL";
 		return item.getDisplayName();
 	}
 	
 	public static String getBlockLocalizedName(Block block)
 	{
+		if (block == null) return "NULL";
 		return StatCollector.translateToLocal(block.getUnlocalizedName() + ".name");
 	}
 

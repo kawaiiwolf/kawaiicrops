@@ -1020,6 +1020,7 @@ public class ConfigurationLoader {
 		t.DropTableRipeString = config.getString("4.Drops  Ripe Fruit Drop Table", category, t.DropTableDestroyedString, "What is the drop table for Ripe fruit ? Please see General.cfg to see how to use these.");
 		t.DropTableUnripeString = config.getString("4.Drops  Unripe Fruit Drop Table", category, t.DropTableDestroyedString, "What is the drop table for Unripe fruit ? Please see General.cfg to see how to use these.");;
 		t.DropTableDestroyedString = config.getString("4.Drops  Destroyed Leaf Drop Table", category, t.DropTableDestroyedString, "What is the drop table for Leaf Blocks without fruit ? Please see General.cfg to see how to use these.");
+		t.DropTableShearedString = config.getString("4.Drops  Sheared Leaf Drop Table", category, t.DropTableShearedString, "What is the drop table for Leaf Blocks when sheared ? Please see General.cfg to see how to use these.");
 		
 		WorldGenKawaiiBaseWorldGen.WorldGen gen = new WorldGen();
 		gen.weight = config.getInt("5.WorldGen  Weight", category, gen.weight, 0, 1000, "How often should this tree attempt to spawn ?  A weight of 1 will attempt to spawn this treey in every chunk, 5 in every 5 chunks, etc.. A weight of 0 disables world gen for this tree.");

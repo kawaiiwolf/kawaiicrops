@@ -50,7 +50,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWailaTooltip {
+public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWailaTooltip, IShearable {
 
 	private String name = "";
 	public Boolean Enabled = false;
@@ -84,6 +84,9 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
 	
 	public String DropTableDestroyedString = "";
 	private DropTable LeafDropTableDestroyed = null;
+	
+	public String DropTableShearedString = "";
+	private DropTable LeafDropTableSheared = null;
 
 	private ItemKawaiiSeed Sapling;
 	private Item Fruit;
@@ -148,6 +151,7 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
 		LeafDropTableRipe = new DropTable(DropTableRipeString, new ItemStack(Sapling), new ItemStack (Fruit));
 		LeafDropTableUnripe = new DropTable(DropTableUnripeString, new ItemStack(Sapling), new ItemStack (Fruit));
 		LeafDropTableDestroyed = new DropTable(DropTableDestroyedString, new ItemStack(Sapling), new ItemStack (Fruit));
+		LeafDropTableSheared = new DropTable(DropTableShearedString, new ItemStack(Sapling), new ItemStack (Fruit));
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -321,6 +325,22 @@ public class BlockKawaiiTreeBlocks extends BlockBush implements IGrowable, IWail
 				decayLeaves(world, x, y, z);
 				break;
 		}
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////
+	// IShearable
+	
+	@Override
+	public boolean isShearable(ItemStack item, IBlockAccess world, int x, int y, int z) 
+	{
+		TreeState state = getState(world, x, y, z);
+		return ( state == TreeState.LEAF || state == TreeState.FRUITLEAF || state == TreeState.FRUITLEAFRIPE);
+	}
+
+	@Override
+	public ArrayList<ItemStack> onSheared(ItemStack item, IBlockAccess world, int x, int y, int z, int fortune) 
+	{
+		return this.LeafDropTableSheared.generateLoot(Minecraft.getMinecraft().theWorld.rand);
 	}
 	
     /////////////////////////////////////////////////////////////////////////////////////

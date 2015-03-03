@@ -28,11 +28,12 @@ import net.minecraft.world.World;
 
 public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements IInventory
 {
-
 	protected ItemStack[] inventorySlots = new ItemStack[getSizeInventory()];
 	protected int cookTime = 0;
 	protected String state = "";
 	protected int recipeHash = 0;
+	
+	private boolean DEBUG = false;
 	
 	// Cached icon for quicker rendering. NULLed on readFromNBT to mark dirty
 	protected TexturedIcon[] DisplayCache = null;
@@ -40,6 +41,8 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 	@Override
 	public int getSizeInventory() 
 	{
+		if (DEBUG) System.out.println("DEBUG: ");
+		
 		return getInputSlots() + 1;
 	}
 	
@@ -92,43 +95,59 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack item) 
 	{
-		if (slot < 0 || slot >= inventorySlots.length || !isItemValidForSlot(slot, item)) return; 
-		inventorySlots[slot] = item.copy();
+		if (DEBUG) System.out.println("DEBUG: " + slot + " " + NamespaceHelper.getItemLocalizedName(item));
+		
+		boolean dirty = false;
+		
+		if (slot < 0 || slot >= inventorySlots.length) return;
+		if (item == null)
+		{
+			inventorySlots[slot] = null;
+			dirty = true;
+		}
+		else if (isItemValidForSlot(slot, item))
+		{
+			inventorySlots[slot] = item.copy();
+			dirty = true;
+		}
+		if (!worldObj.isRemote && dirty) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slot) 
 	{
+		if (DEBUG) System.out.println("DEBUG: " + slot);
+		
 		if (slot < 0 || slot >= inventorySlots.length)
 			return null;
 		return inventorySlots[slot];
 	}
-
+	
 	@Override
-	public ItemStack decrStackSize(int slot, int amount) {
-		if (slot < 0 || slot >= inventorySlots.length || inventorySlots[0] != null || inventorySlots[slot] == null || inventorySlots[slot].stackSize < amount)
+	public ItemStack decrStackSize(int slot, int amount) 
+	{
+		if (DEBUG) System.out.println("DEBUG: " + slot + " " + amount);
+		
+		if (slot < 0 || slot >= inventorySlots.length || (inventorySlots[0] != null && slot != 0) || inventorySlots[slot] == null || inventorySlots[slot].stackSize < amount)
 			return null;
+		
 		ItemStack ret = new ItemStack(inventorySlots[slot].getItem(), amount, inventorySlots[slot].getItemDamage());
 		if (inventorySlots[slot].stackSize == amount)
 			inventorySlots[slot] = null;
 		else
 			inventorySlots[slot].stackSize -= amount;
-		return ret;
-	}
-	
-	public ItemStack takeStack(int slot)
-	{
-		if (slot < 0 || slot >= inventorySlots.length || inventorySlots[slot] == null)
-			return null;
-		ItemStack ret = inventorySlots[slot];
-		inventorySlots[slot] = null;
+		if (!worldObj.isRemote) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return ret;
 	}
 	
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack item) 
 	{
-		if (slot <= 0 || slot >= inventorySlots.length || item == null || inventorySlots[slot] != null || !itemAllowedByRecipie(item))
+		if (DEBUG) System.out.println("DEBUG: " + slot + " " + NamespaceHelper.getItemLocalizedName(item));
+		
+		if (item == null)
+			return true;
+		if (slot <= 0 || slot >= inventorySlots.length || inventorySlots[slot] != null || !itemAllowedByRecipie(item))
 			return false;
 		return true;
 	}
@@ -311,10 +330,18 @@ public abstract class TileEntityKawaiiCookingBlock extends TileEntity implements
 	public boolean hasCustomInventoryName() { return false; }
 
 	@Override
-	public int getInventoryStackLimit() { return 1; }
+	public int getInventoryStackLimit() 
+	{
+		if (DEBUG) System.out.println("DEBUG");
+		return 1; 
+	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer p) { return true; }
+	public boolean isUseableByPlayer(EntityPlayer p) 
+	{
+		if (DEBUG) System.out.println("DEBUG: " + p.toString());
+		return true; 
+	}
 
 	@Override
 	public void openInventory() { }

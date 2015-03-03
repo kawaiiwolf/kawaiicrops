@@ -96,7 +96,7 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 				// Check for valid ingredient
 				else if (slot != -1 && isItemValidForSlot(slot, player.getCurrentEquippedItem()))
 				{
-					setInventorySlotContents(slot, takeCurrentItemContainer(world, x, y, z, player));
+					inventorySlots[slot] = takeCurrentItemContainer(world, x, y, z, player);
 				}
 				
 				// If the pan is heated, start checking for instant cook recipes
@@ -116,13 +116,14 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 					}
 				}
 			}
-			// Else we're cooking. Check to see if we've got the correct item to harvest
+			// Else we're cooking. Harvest ?
 			else
 			{
 				RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) this.getCurrentRecipe();
-				if (cookTime > recipe.cookTime && recipe.harvest.getItem() == player.getCurrentEquippedItem().getItem() && recipe.harvest.getItemDamage() == player.getCurrentEquippedItem().getItemDamage())
+				if (cookTime > recipe.cookTime && inventorySlots[0] != null && ( recipe.harvest == null || (recipe.harvest.getItem() == player.getCurrentEquippedItem().getItem() && recipe.harvest.getItemDamage() == player.getCurrentEquippedItem().getItemDamage())))
 				{
-					player.getCurrentEquippedItem().stackSize--;
+					if (recipe.harvest != null)
+						player.getCurrentEquippedItem().stackSize--;
 					this.dropBlockAsItem(world, x, y, z, new ItemStack(inventorySlots[0].getItem(),1));
 					if (inventorySlots[0].stackSize > 1)
 						inventorySlots[0].stackSize--;
@@ -277,8 +278,11 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 			}
 			if (recipe != null && cookTime > recipe.cookTime && inventorySlots[0] != null)
 			{
-				for (int i = 0; i < inventorySlots[0].stackSize && i < display.length; i++)
+				int i = 0;
+				for (; i < inventorySlots[0].stackSize && i < display.length; i++)
 					display[i] = inventorySlots[0] == null ? null : new TexturedIcon(inventorySlots[0]);
+				for (; i < display.length; i++)
+					display[i] = null;
 				return (DisplayCache = display);
 			}
 		}
@@ -311,14 +315,42 @@ public class TileEntityKawaiiFryingPan extends TileEntityKawaiiCookingBlock
 	@Override
 	protected void writeToNBT(NBTTagCompound tags, boolean callSuper) 
 	{ 
+		// Forced Update, check for valid state
+		if (inventorySlots[0] == null && recipeHash != 0)
+		{
+			RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCompleteRecipe();
+			if (recipe == null || recipeHash != recipe.hashCode())
+			{
+				state = (recipe != null && recipe.greasy ? "oiled" : "clean");
+				cookTime = 1;
+				recipeHash = 0;
+			}
+		}
+		
 		super.writeToNBT(tags, callSuper);
 		tags.setBoolean("steam", steam);
 	}
 	
-	
 	@Override
 	public String getWAILATip() 
 	{
+		/*
+		String s = "State: " + state + ", Time: " + cookTime + "\nCooking: ";
+		if (state.equals("cooking"))
+		{
+			RecipeKawaiiFryingPan recipe = (RecipeKawaiiFryingPan) getCurrentRecipe();
+			s += NamespaceHelper.getItemLocalizedName(recipe.output);
+		}
+		else s += "No Recipe";
+		s += "\n[0] " + (inventorySlots[0] == null ? "" : NamespaceHelper.getItemLocalizedName(inventorySlots[0]));
+		s += "\n[1] " + (inventorySlots[1] == null ? "" : NamespaceHelper.getItemLocalizedName(inventorySlots[1]));
+		s += "\n[2] " + (inventorySlots[2] == null ? "" : NamespaceHelper.getItemLocalizedName(inventorySlots[2]));
+		s += "\n[3] " + (inventorySlots[3] == null ? "" : NamespaceHelper.getItemLocalizedName(inventorySlots[3]));
+		
+		if (s.length() > 0)
+			return s;
+		*/
+		
 		if (state.equals("clean"))
 		{
 			if (steam)

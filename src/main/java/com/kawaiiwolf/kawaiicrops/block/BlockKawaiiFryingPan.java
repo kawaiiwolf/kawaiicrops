@@ -28,6 +28,8 @@ public class BlockKawaiiFryingPan extends BlockKawaiiCookingBlock {
 		minX = minZ = 1.0d / 16.0d;
 		maxX = maxZ = 1.0d - minX;
 		
+		ToolTipText = "Too heavy to be used as a weapon ... probably.";
+		
 		this.setBlockTextureName(Constants.MOD_ID + ":fryingpan");
 	}
 

@@ -34,6 +34,8 @@ public class BlockKawaiiBigPot extends BlockKawaiiCookingBlock
 		setHardness(0.5f);
 		setBlockTextureName(Constants.MOD_ID + ":bigpot");
 		
+		ToolTipText = "Best start with some sort of liquid.";
+		
 		maxY = 8.0d / 16.0d;
 		minX = minZ = 0.0d / 16.0d;
 		maxX = maxZ = 1.0d - minX;

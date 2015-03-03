@@ -6,11 +6,13 @@ import java.util.Random;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.NamespaceHelper;
+import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiBigPot;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiCookingBase;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiGrill;
@@ -226,8 +228,11 @@ public class TileEntityKawaiiGrill extends TileEntityKawaiiCookingBlock
 		
 		if (inventorySlots[0] != null)
 		{
-			for (int i = 0; i < inventorySlots[0].stackSize && i < display.length; i++)
+			int i = 0;
+			for (; i < inventorySlots[0].stackSize && i < display.length; i++)
 				display[i] = inventorySlots[0] == null ? null : new TexturedIcon(inventorySlots[0]);
+			for (; i < display.length; i++)
+				display[i] = null;
 			return (DisplayCache = display);
 		}
 		for (int i = 0; i < inventorySlots.length && i < display.length; i++)
@@ -235,6 +240,25 @@ public class TileEntityKawaiiGrill extends TileEntityKawaiiCookingBlock
 		return (DisplayCache = display);
 	}
 
+	@Override
+	protected void writeToNBT(NBTTagCompound tags, boolean callSuper) 
+	{ 
+		// Forced Update, check for valid state
+		if (inventorySlots[0] == null && recipeHash != 0)
+		{
+			RecipeKawaiiGrill recipe = (RecipeKawaiiGrill) getCompleteRecipe();
+			if (recipe == null || recipeHash != recipe.hashCode())
+			{
+				if (state.equals("cooking") || state.equals("burning")) state = "hot";
+				if (state.equals("drying") || state.equals("ruined")) state = "cool";
+				cookTime = (recipe == null || recipe.dry ? 0 : 1);
+				recipeHash = 0;
+			}
+		}
+		
+		super.writeToNBT(tags, callSuper);
+	}
+	
 	@Override
 	public String getWAILATip() 
 	{

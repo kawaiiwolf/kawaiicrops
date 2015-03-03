@@ -8,7 +8,11 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mcp.mobius.waila.api.SpecialChars;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 import com.kawaiiwolf.kawaiicrops.block.*;
@@ -21,6 +25,20 @@ public class WailaTileHandler implements IWailaDataProvider
 	
 	public static void callbackRegister(IWailaRegistrar register) 
 	{
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		System.out.println("ALERT: WAILA Registered");
+		
 		ArrayList<Class> blocks = Lists.newArrayList( new Class[] { 
 			BlockKawaiiCuttingBoard.class,
 			BlockKawaiiFryingPan.class,
@@ -85,4 +103,10 @@ public class WailaTileHandler implements IWailaDataProvider
 			 currenttip.add(SpecialChars.BLUE + SpecialChars.ITALIC + ConfigurationLoader.WAILAName);
 		 return currenttip;
 	 }
+
+	@Override
+	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -8,6 +8,7 @@ import com.kawaiiwolf.kawaiicrops.proxies.*;
 import com.kawaiiwolf.kawaiicrops.tileentity.ModTileEntities;
 import com.kawaiiwolf.kawaiicrops.world.ModWorldGen;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -45,6 +46,9 @@ public class KawaiiCrops {
     	proxy.registerRenderers();
     	ModTileEntities.register();
     	ModItems.registerOreDictionary();
+
+    	if (Loader.isModLoaded("Waila"))
+    		FMLInterModComms.sendMessage("Waila", "register", "com.kawaiiwolf.kawaiicrops.waila.WailaTileHandler.callbackRegister");
     }
  
     @Mod.EventHandler
@@ -53,8 +57,6 @@ public class KawaiiCrops {
     	config.loadConfiguration_PostInit();
     	ModBlocks.registerDropTables();
     	ModBlocks.registerCookingBlockLists();
-    	
-    	FMLInterModComms.sendMessage("Waila", "register", "com.kawaiiwolf.kawaiicrops.waila.WailaTileHandler.callbackRegister");
     }
     
     /**
@@ -64,8 +66,15 @@ public class KawaiiCrops {
      * Pitchers
      * Feedback for grill ?
      * 
+     * 
      * Changes:
-     *   Nothing, just a public bug fix release !
-     *   
+     *   Fixed harvesting frying pan with object in hand
+     *   Fixed NEI Crash bug with OreDictionary
+     *   Added Sheared Drop Table for Trees
+     *   Duplication bugs fixed on cooking recipes
+     *   Better detection for automation (Aborts recipe when ingredients are swiped from inventory)
+     *   WAILA integration fixed
+     *   Various NPE errors fixed
+     *   Added tooltips for ItemBlocks of various CookingBlocks
      */
 }
