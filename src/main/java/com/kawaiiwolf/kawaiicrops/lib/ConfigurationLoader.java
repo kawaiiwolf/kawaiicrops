@@ -994,7 +994,7 @@ public class ConfigurationLoader {
 		t.SaplingOreDict = config.getString("1.Sapling  Ore Dictionary Entries", category, t.SaplingOreDict, "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
 		t.SaplingToolTip = config.getString("1.Sapling  Tool Tip Text", category, t.SaplingToolTip, "What is the Tooltip for this sapling in game ?");
 		
-		String shape = config.getString("2.Tree  Tree Shape", category, "Forest", "What shape should the resulting tree be ? Options: [Forest, Taiga, Savanah, Canopy, Eucalyptus, Sakura]");
+		String shape = config.getString("2.Tree  Tree Shape", category, "Forest", "What shape should the resulting tree be ? Options: [Forest, Taiga, Savanah, Canopy, Eucalyptus, Sakura, Shrub]");
 		if (shape.toLowerCase().equals("canopy"))
 			t.TreeShape = WorldGenKawaiiTree.TreeShape.CANOPY;
 		else if (shape.toLowerCase().equals("savanah"))
@@ -1005,6 +1005,8 @@ public class ConfigurationLoader {
 			t.TreeShape = WorldGenKawaiiTree.TreeShape.EUCALYPTUS;
 		else if (shape.toLowerCase().equals("sakura"))
 			t.TreeShape = WorldGenKawaiiTree.TreeShape.SAKURA;
+		else if (shape.toLowerCase().equals("shrub"))
+			t.TreeShape = WorldGenKawaiiTree.TreeShape.SHRUB;
 		else
 			t.TreeShape = WorldGenKawaiiTree.TreeShape.FOREST;
 		
@@ -1079,6 +1081,7 @@ public class ConfigurationLoader {
 		b.RequiredBlockString = config.getString("2.  Required Blocks", category, b.RequiredBlockString, "Which blocks are required (such as ice) ?  If this block is not nearby the barrel will be ruined. Separate blocks with a space. Leave this empty to have no required blocks. See general.cfg and dump.cfg for a list of block IDs.");
 		b.ForbiddenBlockString = config.getString("2.  Forbidden Blocks", category, b.ForbiddenBlockString, "Which blocks are forbidden (such as lava) ?  If this block is nearby the barrel will be ruined. Separate blocks with a space. Leave this empty to have no required blocks. See general.cfg and dump.cfg for a list of block IDs.");
 		b.SearchRadius = config.getInt("2.  Search Radius", category, b.SearchRadius, 1, 4, "How many blocks should the barrel look for forbidden and required blocks ?");
+		b.ResetOnRuined = config.getBoolean("2.  Reset On Ruined", category, b.ResetOnRuined, "Should the barrel reset to a fresh (just placed) state if ruined ?");
 		
 		b.UnfinishedDropTableString = config.getString("3.  Unfinished Drop Table", category, "", "What is the drop table for an unfinished barrel ? Please see General.cfg to see how to use these.");
 		b.FinishedDropTableString = config.getString("3.  Finished Drop Table", category, "", "What is the drop table for a finished barrel ? Please see General.cfg to see how to use these.");

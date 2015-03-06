@@ -62,6 +62,8 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 	public String UnfinishedTooltip = "Status: Not Ready Yet";
 	public String FinishedTooltip = "Status: Aged to perfection";
 	public String RuinedTooltip = "Status: Something spoiled";
+	
+	public boolean ResetOnRuined = false;
 
 	public BlockKawaiiBarrel(String name)
 	{
@@ -156,7 +158,7 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 			else
 				t.cookTime++;
 			
-			boolean approved = (RequiredBlocks.size() == 0);
+			boolean approved = (RequiredBlocks.size() == 0 && !t.isRuined);
 			boolean denyCheck = (ForbiddenBlocks.size() > 0);
 			if (approved && !denyCheck)
 			{
@@ -169,7 +171,10 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 								approved = true;
 							if (denyCheck && ForbiddenBlocks.contains(world.getBlock(i, j, k)))
 							{
-								t.isRuined = true;
+								if (ResetOnRuined)
+									t.cookTime = 0;
+								else
+									t.isRuined = true;
 								world.markBlockForUpdate(x, y, z);
 								return;
 							}
@@ -177,6 +182,12 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 			}
 			if (!approved)
 				t.isRuined = true;
+			
+			if (t.isRuined && ResetOnRuined)
+			{
+				t.isRuined = false;
+				t.cookTime = 0;
+			}
 			
 			world.markBlockForUpdate(x, y, z);
 		}

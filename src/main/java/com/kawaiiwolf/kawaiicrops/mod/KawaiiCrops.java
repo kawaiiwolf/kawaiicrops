@@ -66,6 +66,9 @@ public class KawaiiCrops {
      * Pitchers 
      * 
      * Changes:
-
+     * 
+     *   Added the "Shrub" tree shape 
+     *   Added barrel option to reset to time 0 instead of reset state
+     * 
      */
 }

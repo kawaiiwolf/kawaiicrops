@@ -27,7 +27,7 @@ public class WorldGenKawaiiTree extends WorldGenAbstractTree implements IWorldGe
 		this.tree = tree;
 	}
 	
-	public enum TreeShape { FOREST, TAIGA, SAVANAH, CANOPY, EUCALYPTUS, SAKURA };
+	public enum TreeShape { FOREST, TAIGA, SAVANAH, CANOPY, EUCALYPTUS, SAKURA, SHRUB };
 
 	@Override
     public boolean generate(World world, Random rand, int x, int y, int z)
@@ -46,6 +46,8 @@ public class WorldGenKawaiiTree extends WorldGenAbstractTree implements IWorldGe
 				return generateEucalyptus(world, rand, x, y, z);
 			case SAKURA:
 				return generateSakura(world, rand, x, y, z);
+			case SHRUB:
+				return generateShrub(world, rand, x, y ,z);
 		}
 		return false;		/**/
     }
@@ -54,8 +56,34 @@ public class WorldGenKawaiiTree extends WorldGenAbstractTree implements IWorldGe
 	public HashSet<Block> getSoil() {
 		return tree.SaplingSoilBlocks;
 	}
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-	// The below is shamelessly adapted from Vanilla code, with the following adaptations:
+	
+	private static double[] shrubProbability = new double[] { 1.0d, 0.8d, 0.6d };
+	public boolean generateShrub(World world, Random rand, int x, int y, int z)
+	{
+		if ( y < 1 || y > 254 || !isReplaceable(world, x, y, z) || !isReplaceable(world, x, y + 1, z) || !tree.SaplingSoilBlocks.contains(world.getBlock(x, y - 1, z)))
+			return false;
+		
+		world.setBlock(x, y, z, tree.TreeTrunkBlock, 0, 3);
+		world.setBlock(x, y + 1, z, tree, 1, 3);
+		
+		for (int i = x - 1; i <= x + 1; i++)
+			for (int j = y; j <= y + 1; j++)
+				for (int k = z - 1; k <= z + 1; k++)
+				{
+					if (i == x && j == y && k == z)
+						continue;
+					
+					if (rand.nextDouble() < shrubProbability[Math.abs(x - i) + Math.abs(z - k) + j - y - 1])
+						if (tree.isAir(world, i, j, k) || tree.isLeaves(world, i, j, k))
+							world.setBlock(i, j, k, tree, 1, 3);
+				}
+		return true;
+	}	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// Below is shamelessly adapted from Vanilla code, with the following adaptations:
 	//
 	//		boolean isSoil = tree.SaplingGrowsOn.contains(block);
 	//		world.setBlock(x, y, z, tree, 1, 3);
