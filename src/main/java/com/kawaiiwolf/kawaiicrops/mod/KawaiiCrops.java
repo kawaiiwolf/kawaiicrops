@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Added stack size to ingredients.
+     *   Fixed container item on food/ingredient
      * 
      */
 }

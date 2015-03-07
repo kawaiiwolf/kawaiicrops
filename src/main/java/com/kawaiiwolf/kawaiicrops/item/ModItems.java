@@ -88,10 +88,16 @@ public class ModItems {
 			insertIntoOreDictionary(cake, cake.OreDict);
 		
 		for (ItemKawaiiFood food : ModFoods)
+		{
 			insertIntoOreDictionary(food, food.OreDict);
+			food.RegisterContainerItem();
+		}
 		
 		for (ItemKawaiiIngredient ingredient : ModIngredients)
+		{
 			insertIntoOreDictionary(ingredient, ingredient.OreDict);
+			ingredient.RegisterContainerItem();
+		}
 		
 		for (ItemKawaiiSeed seed : ModSeeds)
 			insertIntoOreDictionary(seed, seed.OreDict);

@@ -49,19 +49,11 @@ public class ItemKawaiiIngredient extends Item
 			list.add(ToolTipText);
 	}
 	
-	@Override
-    public Item getContainerItem()
-    {
-		if (super.getContainerItem() == null && ContainerItemString.length() > 0)
-			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString).getItem());
-        return super.getContainerItem();
-    }
-	
-	@Override
-    public ItemStack getContainerItem(ItemStack stack)
-    {
-		if (super.getContainerItem(stack) == null && ContainerItemString.length() > 0)
-			this.setContainerItem(NamespaceHelper.getItemByName(ContainerItemString).getItem());
-        return super.getContainerItem(stack);
-    }
+	public void RegisterContainerItem()
+	{
+		ItemStack container = NamespaceHelper.getItemByName(ContainerItemString);
+		if (container == null) 
+			return;
+		setContainerItem(container.getItem());
+	}
 }
