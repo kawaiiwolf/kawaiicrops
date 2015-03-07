@@ -47,6 +47,7 @@ public class ModItems {
 	public static ItemKawaiiIngredient CookingOil = new ItemKawaiiIngredient("cookingoil", "Perfect for frying or greasing a pan.");
 	public static ItemKawaiiIngredient MagicSpoon = new ItemKawaiiMagicSpoon();
 	public static ItemKawaiiIngredient Steamer = new ItemKawaiiIngredient("steamer","Set on a frying pan to cook with steam.");
+	public static ItemKawaiiIngredient Nothing = new ItemKawaiiNothing();
 	
 	public static boolean HungerPotionEnabled = false;
 	public static boolean MagicSpoonEnabled = false;
@@ -70,6 +71,7 @@ public class ModItems {
 		GameRegistry.registerItem(BurntFood, Constants.MOD_ID + ".burntfood");
 		GameRegistry.registerItem(CookingOil, Constants.MOD_ID + ".cookingoil");
 		GameRegistry.registerItem(Steamer, Constants.MOD_ID + ".steamer");
+		GameRegistry.registerItem(Nothing, Constants.MOD_ID + ".nothing");
 	}
 	
 	private static boolean hasClothArmorMaterialized = false;

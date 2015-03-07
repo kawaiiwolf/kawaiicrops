@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Fixed container item on food/ingredient
+     *   Added "Nothing" item, lets you craft an item into nothing to get its container back.
      * 
      */
 }
