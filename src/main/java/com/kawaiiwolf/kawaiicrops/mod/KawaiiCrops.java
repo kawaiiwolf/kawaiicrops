@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Added "Nothing" item, lets you craft an item into nothing to get its container back.
+     *   Fixed barrel Drops
      * 
      */
 }

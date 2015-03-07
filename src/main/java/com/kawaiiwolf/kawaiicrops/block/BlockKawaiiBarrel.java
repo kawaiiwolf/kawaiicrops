@@ -74,6 +74,7 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 		
 		setTickRandomly(true);
 		setCreativeTab(ModItems.KawaiiCreativeTab);
+		setHardness(1);
 	}
 
 	@Override
@@ -197,8 +198,9 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
         ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-
+        
 		TileEntity te = world.getTileEntity(x, y, z);
+		
 		if (te instanceof TileEntityKawaiiBarrel && !world.isRemote)
 		{
 			TileEntityKawaiiBarrel t = (TileEntityKawaiiBarrel)te;
@@ -210,9 +212,21 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 			else
 				ret.addAll(FinishedDropTable.generateLoot(world.rand));
 		}
-        
         return ret;
     }
+
+    // Block requires tile entity to still exist for proper drops.
+    @Override
+    public void onBlockPreDestroy(World world, int x, int y, int z, int meta) 
+    {
+    	ArrayList<ItemStack> ret = getDrops(world, x, y, z, meta, 0);
+    	for ( ItemStack item : ret)
+    		dropBlockAsItem(world, x, y, z, item);
+    }
+    
+    // Sanity check
+    @Override
+    public void harvestBlock(World p_149636_1_, EntityPlayer p_149636_2_, int p_149636_3_, int p_149636_4_, int p_149636_5_, int p_149636_6_) {}
     
 	public IIcon labelUnfinished;
 	public IIcon labelFinished;
