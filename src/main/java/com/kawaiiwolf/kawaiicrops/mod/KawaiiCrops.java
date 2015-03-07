@@ -67,8 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Added the "Shrub" tree shape 
-     *   Added barrel option to reset to time 0 instead of reset state
+     *   Added stack size to ingredients.
      * 
      */
 }

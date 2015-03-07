@@ -1162,10 +1162,12 @@ public class ConfigurationLoader {
 		
 		String category = "Kawaiicrops: " + name;
 		
+		
 		boolean enabled = config.getBoolean("0.  Enabled", category, false, "Is this an item in minecraft ? Defaults to false to allow you to configure before putting it in the game.");
-		String toolTipText = config.getString("2.Other  Tool Tip Text", category, "", "What is the Tooltip for this food ?");
+		int stack = config.getInt("1.  Stack Size", category, 64, 1, 64, "What is the maximum number of items this ingredient can be stacked to ?");
+		String toolTipText = config.getString("2.Other  Tool Tip Text", category, "", "What is the Tooltip for this ingredient ?");
 		String oreDict = config.getString("2.Other  Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");
-		String container = config.getString("2.Other  Container Item", category, "", "What item is used to hold this food, which might be returned upon eating it (Ex: minecraft:bowl) ?  Please see General.cfg and enable Dump to get a list of all items.");
+		String container = config.getString("2.Other  Container Item", category, "", "What item is used to hold this ingredient, which might be returned upon crafting with it (Ex: minecraft:bowl) ?  Please see General.cfg and enable Dump to get a list of all items.");
 		
 		config.setCategoryComment(category, 
 				"Resource Pack settings for " + name + "\n\n" +
@@ -1175,6 +1177,7 @@ public class ConfigurationLoader {
 		ItemKawaiiIngredient ingredient = new ItemKawaiiIngredient(name, toolTipText);
 		ingredient.OreDict = oreDict;
 		ingredient.ContainerItemString = container;
+		ingredient.setMaxStackSize(stack);
 		
 		if (enabled)
 			ingredient.register();
