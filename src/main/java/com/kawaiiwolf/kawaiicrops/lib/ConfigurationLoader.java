@@ -742,7 +742,7 @@ public class ConfigurationLoader {
 		
 		category = "Kawaiicraft Big Pot Recipes";
 		cfg.setCategoryComment(category, this.REFERENCE_RECIPES_CUST_BIG_POT);
-		for (int i = 0; i < recipesC_fry; i++)
+		for (int i = 0; i < recipesC_pot; i++)
 		{
 			String recipe = cfg.getString("" + i, category, "", "");
 			RecipeHelper.registerCustomBigPotRecipe(recipe);

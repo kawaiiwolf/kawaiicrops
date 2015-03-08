@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Fixed drinkable food & eating food anytime Derp
+     *   Fixed configuration loader # of big pot recipies bug
      * 
      */
 }
