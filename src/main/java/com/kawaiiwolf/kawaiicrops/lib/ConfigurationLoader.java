@@ -1147,6 +1147,7 @@ public class ConfigurationLoader {
 				"Texture Name: textures/items/" + name + ".png");
 		
 		ItemKawaiiFood food = new ItemKawaiiFood(name, toolTipText, hunger, saturation, potion, drinkable, anytime);
+		
 		food.OreDict = oreDict;
 		food.ContainerItemString = container;
 
