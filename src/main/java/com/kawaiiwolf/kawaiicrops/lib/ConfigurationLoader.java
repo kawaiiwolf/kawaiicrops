@@ -1149,6 +1149,8 @@ public class ConfigurationLoader {
 		ItemKawaiiFood food = new ItemKawaiiFood(name, toolTipText, hunger, saturation, potion);
 		food.OreDict = oreDict;
 		food.ContainerItemString = container;
+		food.DrinkEffect = drinkable;
+		food.EatAnytime = anytime;
 
 		if (enabled)
 			food.register();

@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Fixed barrel Drops
+     *   Fixed drinkable food & eating food anytime Derp
      * 
      */
 }
