@@ -82,7 +82,7 @@ public class ItemKawaiiFood extends ItemFood
 	@Override
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
     {
-		if (player.canEat(false) && !world.isRemote && this.Potion != null)
+		if ((player.canEat(false) || EatAnytime) && !world.isRemote && this.Potion != null)
         	for (com.kawaiiwolf.kawaiicrops.lib.PotionEffectHelper.Potion p : this.Potion.Effects)
         		if (world.rand.nextFloat() < p.Chance)
                 	player.addPotionEffect(p.getPotionEffect());
