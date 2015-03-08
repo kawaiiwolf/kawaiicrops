@@ -1146,11 +1146,9 @@ public class ConfigurationLoader {
 				"Langage Name: item.kawaiicrops." + name + ".name\n" +
 				"Texture Name: textures/items/" + name + ".png");
 		
-		ItemKawaiiFood food = new ItemKawaiiFood(name, toolTipText, hunger, saturation, potion);
+		ItemKawaiiFood food = new ItemKawaiiFood(name, toolTipText, hunger, saturation, potion, drinkable, anytime);
 		food.OreDict = oreDict;
 		food.ContainerItemString = container;
-		food.DrinkEffect = drinkable;
-		food.EatAnytime = anytime;
 
 		if (enabled)
 			food.register();

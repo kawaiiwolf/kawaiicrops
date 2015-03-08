@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Fixed configuration loader # of big pot recipies bug
+     *   Fixed drink anytime (for real this time)
      * 
      */
 }
