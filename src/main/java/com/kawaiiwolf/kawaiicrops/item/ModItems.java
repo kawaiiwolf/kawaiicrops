@@ -69,6 +69,7 @@ public class ModItems {
 			MinecraftForge.addGrassSeed(new ItemStack(MysterySeed), 12);
 		
 		GameRegistry.registerItem(BurntFood, Constants.MOD_ID + ".burntfood");
+		GameRegistry.registerItem(RuinedFood, Constants.MOD_ID + ".ruinedfood");
 		GameRegistry.registerItem(CookingOil, Constants.MOD_ID + ".cookingoil");
 		GameRegistry.registerItem(Steamer, Constants.MOD_ID + ".steamer");
 		GameRegistry.registerItem(Nothing, Constants.MOD_ID + ".nothing");

@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Fixed drink anytime (for real this time)
+     *   Fixed ruined food registration
      * 
      */
 }
