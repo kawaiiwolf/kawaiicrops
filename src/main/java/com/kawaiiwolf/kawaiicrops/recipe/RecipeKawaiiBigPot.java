@@ -123,6 +123,8 @@ public class RecipeKawaiiBigPot extends RecipeKawaiiCookingBase
 		allRecipes.add(this);
 		if(this.oil)
 			this.oilRecipes.add(this);
+		else if (this.milk)
+			this.milkRecipes.add(this);
 		else
 			this.waterRecipes.add(this);
 	}

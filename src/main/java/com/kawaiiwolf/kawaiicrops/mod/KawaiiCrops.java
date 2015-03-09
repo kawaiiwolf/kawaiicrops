@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Fixed ruined food registration
+     *   Fixed milk big pot recipe registration
      * 
      */
 }
