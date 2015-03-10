@@ -85,8 +85,8 @@ public class BlockKawaiiCake extends BlockCake implements IWailaTooltip {
     		onEat(world, x, y, z, player);
     	else
     	{
-    		player.inventory.addItemStackToInventory(slice.copy());
-    		removeSlice(world, x, y, z);
+    		if(player.inventory.addItemStackToInventory(slice.copy()))
+    			removeSlice(world, x, y, z);
     	}
     }
 
