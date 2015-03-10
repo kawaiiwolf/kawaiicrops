@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Fixed milk big pot recipe registration
+     *   Cakes can optionally give items instead of being eaten
      * 
      */
 }

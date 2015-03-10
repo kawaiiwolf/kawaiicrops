@@ -41,6 +41,9 @@ public class ModBlocks
 		
 		for (BlockKawaiiBarrel barrel : AllBarrels)
 			barrel.registerDropTables();
+		
+		for (BlockKawaiiCake cake : AllCakes)
+			cake.registerCakeSlice();
 	}
 	
 	public static void registerCookingBlockLists()
