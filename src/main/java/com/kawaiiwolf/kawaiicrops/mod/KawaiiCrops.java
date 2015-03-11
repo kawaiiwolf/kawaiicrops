@@ -67,7 +67,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Cakes can optionally give items instead of being eaten
+     *   Cakes have hardness !
      * 
      */
 }

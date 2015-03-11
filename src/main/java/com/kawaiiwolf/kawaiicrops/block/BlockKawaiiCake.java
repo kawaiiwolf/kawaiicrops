@@ -43,9 +43,10 @@ public class BlockKawaiiCake extends BlockCake implements IWailaTooltip {
 	public BlockKawaiiCake(String name)
 	{
 		super();
-		this.Name = name;
-		this.setBlockName(Constants.MOD_ID + "." + this.Name + ".cake");
-		this.setBlockTextureName(Constants.MOD_ID + ":" + this.Name + ".cake");
+		Name = name;
+		setBlockName(Constants.MOD_ID + "." + this.Name + ".cake");
+		setBlockTextureName(Constants.MOD_ID + ":" + this.Name + ".cake");
+		setHardness(1.0f);
 	}
 	
 	public void register() 
