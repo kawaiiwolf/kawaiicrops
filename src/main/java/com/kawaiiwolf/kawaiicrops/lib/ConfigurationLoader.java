@@ -1106,7 +1106,7 @@ public class ConfigurationLoader {
 		c.Enabled = config.getBoolean("0.  Enabled", category, c.Enabled, "Is this a block in minecraft ? Defaults to false to allow you to configure before putting it in game.");
 		c.Hunger = config.getInt("1.General  Hunger Restored", category, c.Hunger, 0, 20, "How many half shanks of food does eating a slice of cake restore ?");
 		c.Saturation = config.getFloat("1.General  Saturation", category, c.Saturation, 0.0F, 20.0f, "How saturating is a slice of cake ?");
-		c.SliceItemString = config.getString("1.General  Slice Item", category, c.SliceItemString, "Should this cake give you an item instead of just eating ? If so, which item (leave blank to eat). Please see General.cfg and Dump.cfg to get a list of items.");
+		c.SliceItemString = config.getString("1.General  Slice Item", category, c.SliceItemString, "Should this cake give you an item when clicked ? If so, which item; please see General.cfg and Dump.cfg to get a list of items.");
 		c.ToolTipText = config.getString("2.Other  Tool Tip Text", category, c.ToolTipText, "What is the Tooltip for the cake in game ?");
 		c.Potion = new PotionEffectHelper(config.getString("2.Other  Potion Effect", category, "", "What potion effect do you want triggered on eating this cake ?  Please see General.cfg to see how to use these."));
 		c.OreDict = config.getString("2.Other  Ore Dictionary Entries", category, "", "This item is part of which Forge Ore Dictionary entries ?  Please see General.cfg to see how to use these.");

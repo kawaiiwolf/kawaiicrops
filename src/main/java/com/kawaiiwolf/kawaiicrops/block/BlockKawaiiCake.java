@@ -81,16 +81,22 @@ public class BlockKawaiiCake extends BlockCake implements IWailaTooltip {
     		player.inventory.addItemStackToInventory(new ItemStack(cake));
     		world.setBlockToAir(x, y, z);
     	}
-    	else if (slice == null)
-    		onEat(world, x, y, z, player);
-    	else
+    	else 
     	{
-    		if(player.inventory.addItemStackToInventory(slice.copy()))
+    		boolean remove = false;
+    		
+    		if (Hunger != 0)
+    			remove |= onEat(world, x, y, z, player);
+    		
+    		if(slice != null)
+    			remove |= player.inventory.addItemStackToInventory(slice.copy());
+    			
+    		if (remove)
     			removeSlice(world, x, y, z);
     	}
     }
 
-    private void onEat(World world, int x, int y, int z, EntityPlayer player)
+    private boolean onEat(World world, int x, int y, int z, EntityPlayer player)
     {
         if (player.canEat(false))
         {
@@ -104,8 +110,9 @@ public class BlockKawaiiCake extends BlockCake implements IWailaTooltip {
             	}
             }
             
-            removeSlice(world, x, y, z);
+            return true;
         }
+        return false;
     }
     
     private void removeSlice(World world, int x, int y, int z)
