@@ -57,22 +57,22 @@ public class ModItems {
 	public static void register()
 	{
 		if (HungerPotionEnabled)
-			GameRegistry.registerItem(HungerPotion, Constants.MOD_ID + ".hungerpotion");
+			GameRegistry.registerItem(HungerPotion, "hungerpotion");
 		
 		if (MagicSpoonEnabled)
-			GameRegistry.registerItem(MagicSpoon, Constants.MOD_ID + ".houchou");
+			GameRegistry.registerItem(MagicSpoon, "houchou");
 
 		MysterySeed = new ItemKawaiiMysterySeed(MysterySeedVanilla);
-		GameRegistry.registerItem(MysterySeed, Constants.MOD_ID + ".mysteryseed");
+		GameRegistry.registerItem(MysterySeed, "mysteryseed");
 
 		if (MysterySeedEnabled)
 			MinecraftForge.addGrassSeed(new ItemStack(MysterySeed), 12);
 		
-		GameRegistry.registerItem(BurntFood, Constants.MOD_ID + ".burntfood");
-		GameRegistry.registerItem(RuinedFood, Constants.MOD_ID + ".ruinedfood");
-		GameRegistry.registerItem(CookingOil, Constants.MOD_ID + ".cookingoil");
-		GameRegistry.registerItem(Steamer, Constants.MOD_ID + ".steamer");
-		GameRegistry.registerItem(Nothing, Constants.MOD_ID + ".nothing");
+		GameRegistry.registerItem(BurntFood, "burntfood");
+		GameRegistry.registerItem(RuinedFood, "ruinedfood");
+		GameRegistry.registerItem(CookingOil, "cookingoil");
+		GameRegistry.registerItem(Steamer, "steamer");
+		GameRegistry.registerItem(Nothing, "nothing");
 	}
 	
 	private static boolean hasClothArmorMaterialized = false;

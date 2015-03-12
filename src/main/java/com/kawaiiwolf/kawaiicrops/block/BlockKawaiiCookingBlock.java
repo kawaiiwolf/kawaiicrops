@@ -130,7 +130,7 @@ public abstract class BlockKawaiiCookingBlock extends BlockContainer implements 
 		if (isRegistered) return;
 		isRegistered = true;
 		
-		GameRegistry.registerBlock(this, ItemKawaiiTooltipBlock.class, Constants.MOD_ID + "." + Name);
+		GameRegistry.registerBlock(this, ItemKawaiiTooltipBlock.class, Name);
 	}
 	
 	@Override

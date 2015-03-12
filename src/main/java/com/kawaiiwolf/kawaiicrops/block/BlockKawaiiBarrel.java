@@ -107,7 +107,7 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 		isRegistered = true;
 		
 		ModBlocks.AllBarrels.add(this);
-		GameRegistry.registerBlock(this, Constants.MOD_ID + "." + Name);
+		GameRegistry.registerBlock(this, Name);
 	}
 	
 	public void registerDropTables()

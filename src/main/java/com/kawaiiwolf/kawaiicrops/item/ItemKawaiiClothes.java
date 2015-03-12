@@ -58,6 +58,6 @@ public class ItemKawaiiClothes extends ItemArmor
 		isRegistered = true;
 		
 		ModItems.ModClothes.add(this);
-		GameRegistry.registerItem(this, Constants.MOD_ID + "." + getPieceName());
+		GameRegistry.registerItem(this, getPieceName());
 	}
 }

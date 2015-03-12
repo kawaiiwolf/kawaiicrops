@@ -39,7 +39,7 @@ public class ItemKawaiiIngredient extends Item
 		isRegistered = true;
 		
 		ModItems.ModIngredients.add(this);
-		GameRegistry.registerItem(this, Constants.MOD_ID + "." + name);
+		GameRegistry.registerItem(this, name);
 	}
 	
 	@Override

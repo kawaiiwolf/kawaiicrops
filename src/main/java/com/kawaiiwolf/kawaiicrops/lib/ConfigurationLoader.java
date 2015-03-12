@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import scala.actors.threadpool.Arrays;
+
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiBarrel;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCrop;
@@ -20,6 +22,7 @@ import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen.WorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiTree;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -33,6 +36,7 @@ import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.potion.Potion;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.common.DimensionManager;
 
@@ -45,6 +49,7 @@ public class ConfigurationLoader {
 	private static boolean DumpIDs = false;
 	private static boolean BonusOres = false;
 	private static boolean BonusDrops = false;
+	private static boolean SortLists = false;
 	
 	public static String WAILAName;
 	
@@ -518,6 +523,7 @@ public class ConfigurationLoader {
 		BonusOres = cfg_general.getBoolean("Bonus Ore Dictionary", category, BonusOres, "Add items from other mods to ore dictionary references ?  If enabled, see ore.cfg");
 		BonusDrops = cfg_general.getBoolean("Bonus Mob Drops", category, BonusDrops, "Add items to the drop tables of living entities ?  If enabled, see mobs.cfg");
 		WAILAName = cfg_general.getString("WAILA Plugin Mod Name", category, WAILAName, "If the WAILA Mod is installed, what mod name do you want to show up ?  You can override the default with a custom name for your configuration/mod pack.");
+		SortLists = cfg_general.getBoolean("Sort Lists", category, SortLists, "Automatically sort lists (Foods, Crops, Etc.) in this file in alphabetic order ? Helps find entries in long lists.");
 
 		category = Configuration.CATEGORY_GENERAL + " Item Config";
 
@@ -542,7 +548,8 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("KawaiiCrops Crops", GENERAL_CROP_COMMENT);
 		String cropsRaw = cfg_general.getString("Crops", "KawaiiCrops Crops", "","Crop List");
 		String[] cropsParsed = cropsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
-		
+		sortCategory(cfg_general, "Crops", "KawaiiCrops Crops", cropsParsed);
+
 		if(arrayHasString(cropsParsed))
 		{
 			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CROPS));
@@ -558,6 +565,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("KawaiiCrops Trees", GENERAL_TREE_COMMENT);
 		String treesRaw = cfg_general.getString("Trees", "KawaiiCrops Trees", "", "Tree List");
 		String[] treesParsed = treesRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		sortCategory(cfg_general, "Trees", "KawaiiCrops Trees", treesParsed);
 
 		if(arrayHasString(treesParsed))
 		{
@@ -574,6 +582,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("KawaiiCrops Barrels", GENERAL_BARREL_COMMENT);
 		String barrelsRaw = cfg_general.getString("Barrels", "KawaiiCrops Barrels", "", "Barrels List");
 		String[] barrelsParsed = barrelsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		sortCategory(cfg_general, "Barrels", "KawaiiCrops Barrels", barrelsParsed);
 		
 		if(arrayHasString(barrelsParsed))
 		{
@@ -590,6 +599,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("KawaiiCrops Yummy Cakes", GENERAL_CAKE_COMMENT);
 		String cakesRaw = cfg_general.getString("Cakes", "KawaiiCrops Yummy Cakes", "", "Cake List");
 		String[] cakesParsed = cakesRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		sortCategory(cfg_general, "Cakes", "KawaiiCrops Yummy Cakes", cakesParsed);
 		
 		if(arrayHasString(cakesParsed))
 		{
@@ -606,6 +616,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("KawaiiCrops Foods", GENERAL_FOOD_COMMENT);
 		String foodsRaw = cfg_general.getString("Foods", "KawaiiCrops Foods", "", "Food List");
 		String[] foodsParsed = foodsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		sortCategory(cfg_general, "Foods", "KawaiiCrops Foods", foodsParsed);
 		
 		if(arrayHasString(foodsParsed))
 		{
@@ -622,6 +633,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("KawaiiCrops Ingredients", GENERAL_INGREDIENTS_COMMENT);
 		String ingredientsRaw = cfg_general.getString("Ingredients", "KawaiiCrops Ingredients", "", "Ingredients List");
 		String[] ingredientsParsed = ingredientsRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		sortCategory(cfg_general, "Ingredients", "KawaiiCrops Ingredients", ingredientsParsed);
 		
 		if(arrayHasString(ingredientsParsed))
 		{
@@ -638,6 +650,7 @@ public class ConfigurationLoader {
 		cfg_general.setCategoryComment("KawaiiCrops Clothes", GENERAL_CLOTHING_COMMENT);
 		String clothesRaw = cfg_general.getString("Clothes", "KawaiiCrops Clothes", "", "Clothes List");
 		String[] clothesParsed = clothesRaw.toLowerCase().replaceAll("[^a-z, 0-9]", "").replaceAll("  ", " ").replaceAll(",,", ",").split("[, ]");
+		sortCategory(cfg_general, "Clothes", "KawaiiCrops Clothes", clothesParsed);
 		
 		if(arrayHasString(clothesParsed))
 		{
@@ -1245,6 +1258,19 @@ public class ConfigurationLoader {
 			if (s.length() > 0)
 				return true;
 		return false;
+	}
+	
+	private void sortCategory(Configuration config, String key, String category, String[] vars) 
+	{
+		if (!SortLists) return;
+		
+		String sorted = "";
+		Arrays.sort(vars);
+		
+		for (String var : vars)
+			sorted += var + " ";
+		
+		config.get(category, key, "").set(sorted);
 	}
 	
 }

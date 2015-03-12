@@ -57,7 +57,7 @@ public class BlockKawaiiCake extends BlockCake implements IWailaTooltip {
 		cake = new ItemKawaiiCake(this);
 		cake.OreDict = OreDict;
 		
-		GameRegistry.registerItem(cake, Constants.MOD_ID + "." + this.Name + ".cake");
+		GameRegistry.registerItem(cake, Name + ".cake");
 		ModBlocks.AllCakes.add(this);
 	}
 	

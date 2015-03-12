@@ -69,7 +69,7 @@ public class ItemKawaiiSeed extends ItemSeeds {
 		isRegistered = true;
 		
 		ModItems.ModSeeds.add(this);
-		GameRegistry.registerItem(this, Constants.MOD_ID + "." + name);
+		GameRegistry.registerItem(this, name);
 		
 		if (MysterySeedWeight > 0)
 		{

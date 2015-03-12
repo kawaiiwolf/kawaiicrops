@@ -67,7 +67,14 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Cakes have hardness !
-     * 
+     *   Sort option for general.cfg
+     *   
+     *   RENAMED ALL INTERNAL ITEMS. Since they automatically include mod name, the redundant
+     *   "kawaiicrops." will be removed from the troublesome "kawaiicrops:kawaiicrops.itemname". This
+     *   might break existing items but anyone working with the recipes from here on out will be much
+     *   happier !
+     *   
+     *   Note: Recipies should be easy to change over. Search "kawaiicrops:kawaiicrops." and replace
+     *   with "kawaiicrops:". Done ! Sorry to anyone's world who was broken as a result of this.
      */
 }

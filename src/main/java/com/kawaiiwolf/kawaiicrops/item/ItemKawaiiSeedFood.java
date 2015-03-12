@@ -56,7 +56,7 @@ public class ItemKawaiiSeedFood extends ItemSeedFood {
 		isRegistered = true;
 		
 		ModItems.ModSeedFoods.add(this);
-		GameRegistry.registerItem(this, Constants.MOD_ID + "." + name);
+		GameRegistry.registerItem(this, name);
 		
 		if (MysterySeedWeight > 0)
 			ItemKawaiiMysterySeed.SeedList.add(new Pair(plant,MysterySeedWeight));

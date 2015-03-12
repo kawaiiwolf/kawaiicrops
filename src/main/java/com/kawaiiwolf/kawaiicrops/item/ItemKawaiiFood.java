@@ -63,7 +63,7 @@ public class ItemKawaiiFood extends ItemFood
 		isRegistered = true;
 		
 		ModItems.ModFoods.add(this);
-		GameRegistry.registerItem(this, Constants.MOD_ID + "." + Name);
+		GameRegistry.registerItem(this, Name);
 	}
 	
 	@Override
