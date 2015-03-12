@@ -2,10 +2,9 @@ package com.kawaiiwolf.kawaiicrops.lib;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import scala.actors.threadpool.Arrays;
 
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiBarrel;
 import com.kawaiiwolf.kawaiicrops.block.BlockKawaiiCake;
@@ -22,7 +21,6 @@ import com.kawaiiwolf.kawaiicrops.recipe.RecipeKawaiiFryingPan;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiBaseWorldGen.WorldGen;
 import com.kawaiiwolf.kawaiicrops.world.WorldGenKawaiiTree;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;
