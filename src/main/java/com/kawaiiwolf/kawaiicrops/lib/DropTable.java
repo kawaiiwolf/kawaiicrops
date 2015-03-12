@@ -96,8 +96,10 @@ public class DropTable {
 			display = new ArrayList<ItemStack>();
 			
 			for (ArrayList<DropTableItem> set : list)
-				for (DropTableItem item : set)
-					display.add(item.item.copy());
+				if (set != null)
+					for (DropTableItem item : set)
+						if (item != null && item.item != null)
+							display.add(item.item.copy());
 		}
 		return display;
 	}
