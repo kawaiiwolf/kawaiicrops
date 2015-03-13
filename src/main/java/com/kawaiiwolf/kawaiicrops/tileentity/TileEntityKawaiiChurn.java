@@ -36,7 +36,7 @@ public class TileEntityKawaiiChurn extends TileEntityKawaiiCookingBlock
 			dropAllItems(world, x, y, z);
 		else if (getChunMovementTick() > 0) 
 			return true; // In the middle of an animation. Move along !
-		else if (isItemValidForSlot(1, player.getCurrentEquippedItem()))
+		else if (player.getCurrentEquippedItem() != null && isItemValidForSlot(1, player.getCurrentEquippedItem()))
 		{
 			setInventorySlotContents(1, takeCurrentItemContainer(world, x, y, z, player));
 			cookTime = 0;
@@ -48,7 +48,10 @@ public class TileEntityKawaiiChurn extends TileEntityKawaiiCookingBlock
 			if (recipe != null && (cookTime >> 6) < recipe.ChurnTime)
 				cookTime += (1 << 6) + 20;
 			else if(tryCraft())
+			{
 				dropAllItems(world, x, y, z);
+				cookTime = 0;
+			}
 		}
 		world.markBlockForUpdate(x, y, z);
 		return true;
