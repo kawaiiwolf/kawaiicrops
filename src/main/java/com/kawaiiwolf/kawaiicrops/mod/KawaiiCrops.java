@@ -67,6 +67,6 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Fixed Chrun/Mill with an empty hand
+     *   Fixed empty handed right click on emtpy barrel
      */
 }

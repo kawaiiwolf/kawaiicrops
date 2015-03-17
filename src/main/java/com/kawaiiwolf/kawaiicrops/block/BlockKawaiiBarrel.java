@@ -137,7 +137,7 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 	@Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitx, float htiy, float hitz)
     {
-		if (player.getCurrentEquippedItem().getItem() == ModItems.MagicSpoon)
+		if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == ModItems.MagicSpoon)
 		{
 			updateTick(world, x, y, z, world.rand);
 			return true;
