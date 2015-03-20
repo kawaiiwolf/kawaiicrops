@@ -40,7 +40,7 @@ import net.minecraftforge.common.DimensionManager;
 
 public class ConfigurationLoader {
 
-	// Parent folder for configuration files.
+	// Parent folder for LockedConfiguration files.
 	private String configFolder = null;
 	
 	// Dump a list of Block/Item names to a config file.
@@ -59,7 +59,7 @@ public class ConfigurationLoader {
 	public static final String HEADER_COMMENT = ""+
 			"Note: If your block/item doesn't show up in this file, make sure you set it in general.cfg, save\n" +
 			"and open minecraft at least once. You don't need to load into a world, just get to the splash \n" +
-			"screen and the necesary configuration will be automatically generated for you.";
+			"screen and the necesary LockedConfiguration will be automatically generated for you.";
 
 	public static final String GENERAL_CROP_COMMENT = "" +
 			"Here you'll list the names of all the plants that you want the mod to generate. Make sure each crop\n"+
@@ -504,9 +504,10 @@ public class ConfigurationLoader {
 			"\nEx: minecraft:shears" + Constants.META + "10 for partially damaged Shears."+
 			"";
 	
+	private LockedConfiguration cfg_general = null;
 	public void loadConfiguration_PreInit() 
 	{
-		Configuration cfg_general = new Configuration(new File(configFolder + Constants.CONFIG_GENERAL));
+		cfg_general = new LockedConfiguration(new File(configFolder + Constants.CONFIG_GENERAL));
 		cfg_general.load();
 		
 		cfg_general.setCategoryComment(Configuration.CATEGORY_GENERAL, "Global Settings for KawaiiCraft");
@@ -517,7 +518,7 @@ public class ConfigurationLoader {
 		
 		String category = Configuration.CATEGORY_GENERAL;
 		
-		DumpIDs = cfg_general.getBoolean("Dump All IDs", category, DumpIDs, "Creates a list of Block and Item Names in the configuration directory ?");
+		DumpIDs = cfg_general.getBoolean("Dump All IDs", category, DumpIDs, "Creates a list of Block and Item Names in the LockedConfiguration directory ?");
 		BonusOres = cfg_general.getBoolean("Bonus Ore Dictionary", category, BonusOres, "Add items from other mods to ore dictionary references ?  If enabled, see ore.cfg");
 		BonusDrops = cfg_general.getBoolean("Bonus Mob Drops", category, BonusDrops, "Add items to the drop tables of living entities ?  If enabled, see mobs.cfg");
 		WAILAName = cfg_general.getString("WAILA Plugin Mod Name", category, WAILAName, "If the WAILA Mod is installed, what mod name do you want to show up ?  You can override the default with a custom name for your configuration/mod pack.");
@@ -525,7 +526,7 @@ public class ConfigurationLoader {
 
 		category = Configuration.CATEGORY_GENERAL + " Item Config";
 
-		cfg_general.setCategoryComment(category, "Configuration Settings for special KawaiiCrops Items");
+		cfg_general.setCategoryComment(category, "LockedConfiguration Settings for special KawaiiCrops Items");
 		ModItems.HungerPotionEnabled = cfg_general.getBoolean("Hunger Potion", category, ModItems.HungerPotionEnabled, "Enable the Potion of Hunger ?  This debug item makes you hungrier by drinking it.");
 		ModItems.MagicSpoonEnabled = cfg_general.getBoolean("Magic Spoon", category, ModItems.MagicSpoonEnabled, "Enable the Magic Spoon ?  This debug item makes cooking blocks tick instantly.");
 		ModItems.MysterySeedEnabled = cfg_general.getBoolean("Mystery Seed Enabled", category, ModItems.MysterySeedEnabled, "Enable the Myster Seed to drop from tall grass ?  When planted it could grow into just about anything !");
@@ -533,7 +534,7 @@ public class ConfigurationLoader {
 		
 		category = Configuration.CATEGORY_GENERAL + " Cooking Config";
 		
-		cfg_general.setCategoryComment(category, "Configuration Settings for special KawaiiCrops Crafting Blocks");
+		cfg_general.setCategoryComment(category, "LockedConfiguration Settings for special KawaiiCrops Crafting Blocks");
 		RecipeKawaiiCookingBase.CookingHeatSourcesString = cfg_general.getString("Heat Sources", category, "minecraft:lava minecraft:fire minecraft:lit_furnace ", "Which blocks act as heat sources on which cooking blocks (pots/pans/etc) can cook ontop of ?  Please separate blocks with spaces. Enable \"Dump All IDs\" to see a list of valid block names.");
 		RecipeKawaiiCookingBase.CookingFireString = cfg_general.getString("Grill Fire Sources", category, "minecraft:lava minecraft:fire", "Which blocks act as fire sources on which a grill can cook ontop of ?  Please separate blocks with spaces. Enable \"Dump All IDs\" to see a list of valid block names.");
 		RecipeKawaiiFryingPan.CookingOilItemsString = cfg_general.getString("Frying Pan Oil Items", category, "kawaiicrops:kawaiicrops.cookingoil", "What items can be used as a cooking oil for frying pan recipes ?  Please separate items with spaces.");
@@ -550,7 +551,7 @@ public class ConfigurationLoader {
 
 		if(arrayHasString(cropsParsed))
 		{
-			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CROPS));
+			LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_CROPS));
 			cfg.load();
 			cfg.setCategoryComment("0", HEADER_COMMENT);
 			for (String crop : cropsParsed)
@@ -567,7 +568,7 @@ public class ConfigurationLoader {
 
 		if(arrayHasString(treesParsed))
 		{
-			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_TREES));
+			LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_TREES));
 			cfg.load();
 			cfg.setCategoryComment("0", HEADER_COMMENT + "\n\nSpecial thanks to mDiyo & the Natura Mod for the tree generation code for type: Eucalyptus & Sakura");
 			for (String tree : treesParsed)
@@ -584,7 +585,7 @@ public class ConfigurationLoader {
 		
 		if(arrayHasString(barrelsParsed))
 		{
-			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_BARRELS));
+			LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_BARRELS));
 			cfg.load();
 			cfg.setCategoryComment("0", HEADER_COMMENT);
 			for (String barrel : barrelsParsed)
@@ -601,7 +602,7 @@ public class ConfigurationLoader {
 		
 		if(arrayHasString(cakesParsed))
 		{
-			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CAKES));
+			LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_CAKES));
 			cfg.load();
 			cfg.setCategoryComment("0", HEADER_COMMENT);
 			for (String cake : cakesParsed)
@@ -618,7 +619,7 @@ public class ConfigurationLoader {
 		
 		if(arrayHasString(foodsParsed))
 		{
-			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_FOODS));
+			LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_FOODS));
 			cfg.load();
 			cfg.setCategoryComment("0", HEADER_COMMENT);
 			for (String food : foodsParsed)
@@ -635,7 +636,7 @@ public class ConfigurationLoader {
 		
 		if(arrayHasString(ingredientsParsed))
 		{
-			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_INGREDIENTS));
+			LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_INGREDIENTS));
 			cfg.load();
 			cfg.setCategoryComment("0", HEADER_COMMENT);
 			for (String ingredient : ingredientsParsed)
@@ -652,7 +653,7 @@ public class ConfigurationLoader {
 		
 		if(arrayHasString(clothesParsed))
 		{
-			Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_CLOTHES));
+			LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_CLOTHES));
 			cfg.load();
 			cfg.setCategoryComment("0", HEADER_COMMENT);
 			ModItems.ClothArmorMaterialDurability = cfg.getInt("Cloth Armor Durability", "0", ModItems.ClothArmorMaterialDurability, 1, 500, "What do you want the durability for your clothes to be ? Ex: Leather 5, Gold 7, Chain & Iron 15, Diamond 33.");
@@ -662,7 +663,7 @@ public class ConfigurationLoader {
 			cfg.save();
 		}		
 		
-		cfg_general.save();
+		//cfg_general.save();
 	}
 	
 	public void loadConfiguration_Init()
@@ -678,7 +679,7 @@ public class ConfigurationLoader {
 		if (this.BonusDrops)
 			loadBonusDrops();			
 		
-		Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_RECIPES));
+		LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_RECIPES));
 		cfg.load();
 		
 		String category = "0 Main Settings";
@@ -768,6 +769,7 @@ public class ConfigurationLoader {
 		}
 		
 		cfg.save();
+		cfg_general.save();
 	}
 	
 	private void dumpIDs() {
@@ -816,7 +818,7 @@ public class ConfigurationLoader {
 
 	private void loadBonusOres()
 	{
-		Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_ORES));
+		LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_ORES));
 		cfg.load();
 
 		cfg.setCategoryComment("0 General", "Number of Ore Dictionary References");
@@ -841,7 +843,7 @@ public class ConfigurationLoader {
 	
 	private void loadBonusDrops()
 	{
-		Configuration cfg = new Configuration(new File(configFolder + Constants.CONFIG_DROPS));
+		LockedConfiguration cfg = new LockedConfiguration(new File(configFolder + Constants.CONFIG_DROPS));
 		cfg.load();
 		
 		cfg.setCategoryComment("0 General", "Number of Mob Drop References");
@@ -888,7 +890,7 @@ public class ConfigurationLoader {
 		cfg.save();
 	}
 
-	private BlockKawaiiCrop loadCrop(Configuration config, String name) 
+	private BlockKawaiiCrop loadCrop(LockedConfiguration config, String name) 
 	{
 		if (name == null || name.length() == 0) return null;
 
@@ -980,7 +982,7 @@ public class ConfigurationLoader {
 		return b; 
 	}
 	
-	private BlockKawaiiTreeBlocks loadTree(Configuration config, String name)
+	private BlockKawaiiTreeBlocks loadTree(LockedConfiguration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1066,7 +1068,7 @@ public class ConfigurationLoader {
 		return t;
 	}
 	
-	private BlockKawaiiBarrel loadBarrel(Configuration config, String name)
+	private BlockKawaiiBarrel loadBarrel(LockedConfiguration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1107,7 +1109,7 @@ public class ConfigurationLoader {
 		return b;
 	}
 	
-	private BlockKawaiiCake loadCake(Configuration config, String name)
+	private BlockKawaiiCake loadCake(LockedConfiguration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1138,7 +1140,7 @@ public class ConfigurationLoader {
 		return c;
 	}
 	
-	private ItemKawaiiFood loadFood(Configuration config, String name)
+	private ItemKawaiiFood loadFood(LockedConfiguration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1169,7 +1171,7 @@ public class ConfigurationLoader {
 		return food;
 	}
 	
-	private ItemKawaiiIngredient loadIngredient(Configuration config, String name)
+	private ItemKawaiiIngredient loadIngredient(LockedConfiguration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1198,7 +1200,7 @@ public class ConfigurationLoader {
 		return ingredient;
 	}
 	
-	private void loadClothes(Configuration config, String name)
+	private void loadClothes(LockedConfiguration config, String name)
 	{
 		if (name == null || name.length() == 0) return;
 		
@@ -1258,7 +1260,7 @@ public class ConfigurationLoader {
 		return false;
 	}
 	
-	private void sortCategory(Configuration config, String key, String category, String[] vars) 
+	private void sortCategory(LockedConfiguration config, String key, String category, String[] vars) 
 	{
 		if (!SortLists) return;
 		

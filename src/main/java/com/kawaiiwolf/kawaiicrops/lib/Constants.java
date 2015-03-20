@@ -4,8 +4,8 @@ public class Constants
 {
 	public static final String MOD_ID = "kawaiicrops";
 	public static final String MOD_NAME = "A Kawaii Crop Mod";
-	public static final String VERSION = "0.5.10b";
-	public static final String VERSION_MC = "1.7.11";
+	public static final String VERSION = "0.5.11b";
+	public static final String VERSION_MC = "1.7.10";
 	public static final String VERSION_FULL = VERSION_MC + "-" + VERSION;
 	
 	public static final String META = "$";
@@ -23,4 +23,7 @@ public class Constants
 	public static final String CONFIG_DROPS = CONFIG_FOLDER + "/mobs.cfg";
 	public static final String CONFIG_CLOTHES = CONFIG_FOLDER + "/clothes.cfg";
 	public static final String CONFIG_BARRELS = CONFIG_FOLDER + "/barrels.cfg";
+	
+	public static final String CONFIG_LOCK = "lock.cfg";
+	public static final String CONFIG_ZIP_NAME = "locked.config.zip";
 }

@@ -4,6 +4,7 @@ import com.kawaiiwolf.kawaiicrops.block.ModBlocks;
 import com.kawaiiwolf.kawaiicrops.event.ModEvents;
 import com.kawaiiwolf.kawaiicrops.item.ModItems;
 import com.kawaiiwolf.kawaiicrops.lib.*;
+import com.kawaiiwolf.kawaiicrops.net.ModNetty;
 import com.kawaiiwolf.kawaiicrops.proxies.*;
 import com.kawaiiwolf.kawaiicrops.tileentity.ModTileEntities;
 import com.kawaiiwolf.kawaiicrops.world.ModWorldGen;
@@ -15,6 +16,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.relauncher.Side;
 
 
 @Mod(modid = Constants.MOD_ID, name = Constants.MOD_NAME, version = Constants.VERSION_FULL)
@@ -24,7 +26,7 @@ public class KawaiiCrops {
 	public static CommonProxy proxy;
 
 	ConfigurationLoader config = null;
-	
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) 
     {
@@ -33,6 +35,7 @@ public class KawaiiCrops {
     	ModBlocks.register();
     	ModItems.register();
     	ModWorldGen.register();
+    	ModNetty.register();
     	ModEvents.register();
     	
     	// Dynamically set mcmod.info version
@@ -67,6 +70,7 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Fixed Chrun/Mill with an empty hand
+     *   Implemented locked configuration (Zips files)
+     *   Locked configuration must match between client/server (Server kicks if not)
      */
 }
