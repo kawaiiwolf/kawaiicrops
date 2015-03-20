@@ -40,7 +40,7 @@ import net.minecraftforge.common.DimensionManager;
 
 public class ConfigurationLoader {
 
-	// Parent folder for LockedConfiguration files.
+	// Parent folder for Configuration files.
 	private String configFolder = null;
 	
 	// Dump a list of Block/Item names to a config file.
@@ -59,7 +59,7 @@ public class ConfigurationLoader {
 	public static final String HEADER_COMMENT = ""+
 			"Note: If your block/item doesn't show up in this file, make sure you set it in general.cfg, save\n" +
 			"and open minecraft at least once. You don't need to load into a world, just get to the splash \n" +
-			"screen and the necesary LockedConfiguration will be automatically generated for you.";
+			"screen and the necesary Configuration will be automatically generated for you.";
 
 	public static final String GENERAL_CROP_COMMENT = "" +
 			"Here you'll list the names of all the plants that you want the mod to generate. Make sure each crop\n"+
@@ -518,7 +518,7 @@ public class ConfigurationLoader {
 		
 		String category = Configuration.CATEGORY_GENERAL;
 		
-		DumpIDs = cfg_general.getBoolean("Dump All IDs", category, DumpIDs, "Creates a list of Block and Item Names in the LockedConfiguration directory ?");
+		DumpIDs = cfg_general.getBoolean("Dump All IDs", category, DumpIDs, "Creates a list of Block and Item Names in the Configuration directory ?");
 		BonusOres = cfg_general.getBoolean("Bonus Ore Dictionary", category, BonusOres, "Add items from other mods to ore dictionary references ?  If enabled, see ore.cfg");
 		BonusDrops = cfg_general.getBoolean("Bonus Mob Drops", category, BonusDrops, "Add items to the drop tables of living entities ?  If enabled, see mobs.cfg");
 		WAILAName = cfg_general.getString("WAILA Plugin Mod Name", category, WAILAName, "If the WAILA Mod is installed, what mod name do you want to show up ?  You can override the default with a custom name for your configuration/mod pack.");
@@ -526,7 +526,7 @@ public class ConfigurationLoader {
 
 		category = Configuration.CATEGORY_GENERAL + " Item Config";
 
-		cfg_general.setCategoryComment(category, "LockedConfiguration Settings for special KawaiiCrops Items");
+		cfg_general.setCategoryComment(category, "Configuration Settings for special KawaiiCrops Items");
 		ModItems.HungerPotionEnabled = cfg_general.getBoolean("Hunger Potion", category, ModItems.HungerPotionEnabled, "Enable the Potion of Hunger ?  This debug item makes you hungrier by drinking it.");
 		ModItems.MagicSpoonEnabled = cfg_general.getBoolean("Magic Spoon", category, ModItems.MagicSpoonEnabled, "Enable the Magic Spoon ?  This debug item makes cooking blocks tick instantly.");
 		ModItems.MysterySeedEnabled = cfg_general.getBoolean("Mystery Seed Enabled", category, ModItems.MysterySeedEnabled, "Enable the Myster Seed to drop from tall grass ?  When planted it could grow into just about anything !");
@@ -534,7 +534,7 @@ public class ConfigurationLoader {
 		
 		category = Configuration.CATEGORY_GENERAL + " Cooking Config";
 		
-		cfg_general.setCategoryComment(category, "LockedConfiguration Settings for special KawaiiCrops Crafting Blocks");
+		cfg_general.setCategoryComment(category, "Configuration Settings for special KawaiiCrops Crafting Blocks");
 		RecipeKawaiiCookingBase.CookingHeatSourcesString = cfg_general.getString("Heat Sources", category, "minecraft:lava minecraft:fire minecraft:lit_furnace ", "Which blocks act as heat sources on which cooking blocks (pots/pans/etc) can cook ontop of ?  Please separate blocks with spaces. Enable \"Dump All IDs\" to see a list of valid block names.");
 		RecipeKawaiiCookingBase.CookingFireString = cfg_general.getString("Grill Fire Sources", category, "minecraft:lava minecraft:fire", "Which blocks act as fire sources on which a grill can cook ontop of ?  Please separate blocks with spaces. Enable \"Dump All IDs\" to see a list of valid block names.");
 		RecipeKawaiiFryingPan.CookingOilItemsString = cfg_general.getString("Frying Pan Oil Items", category, "kawaiicrops:kawaiicrops.cookingoil", "What items can be used as a cooking oil for frying pan recipes ?  Please separate items with spaces.");
@@ -890,7 +890,7 @@ public class ConfigurationLoader {
 		cfg.save();
 	}
 
-	private BlockKawaiiCrop loadCrop(LockedConfiguration config, String name) 
+	private BlockKawaiiCrop loadCrop(Configuration config, String name) 
 	{
 		if (name == null || name.length() == 0) return null;
 
@@ -982,7 +982,7 @@ public class ConfigurationLoader {
 		return b; 
 	}
 	
-	private BlockKawaiiTreeBlocks loadTree(LockedConfiguration config, String name)
+	private BlockKawaiiTreeBlocks loadTree(Configuration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1068,7 +1068,7 @@ public class ConfigurationLoader {
 		return t;
 	}
 	
-	private BlockKawaiiBarrel loadBarrel(LockedConfiguration config, String name)
+	private BlockKawaiiBarrel loadBarrel(Configuration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1109,7 +1109,7 @@ public class ConfigurationLoader {
 		return b;
 	}
 	
-	private BlockKawaiiCake loadCake(LockedConfiguration config, String name)
+	private BlockKawaiiCake loadCake(Configuration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1140,7 +1140,7 @@ public class ConfigurationLoader {
 		return c;
 	}
 	
-	private ItemKawaiiFood loadFood(LockedConfiguration config, String name)
+	private ItemKawaiiFood loadFood(Configuration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1171,7 +1171,7 @@ public class ConfigurationLoader {
 		return food;
 	}
 	
-	private ItemKawaiiIngredient loadIngredient(LockedConfiguration config, String name)
+	private ItemKawaiiIngredient loadIngredient(Configuration config, String name)
 	{
 		if (name == null || name.length() == 0) return null;
 		
@@ -1200,7 +1200,7 @@ public class ConfigurationLoader {
 		return ingredient;
 	}
 	
-	private void loadClothes(LockedConfiguration config, String name)
+	private void loadClothes(Configuration config, String name)
 	{
 		if (name == null || name.length() == 0) return;
 		
@@ -1260,7 +1260,7 @@ public class ConfigurationLoader {
 		return false;
 	}
 	
-	private void sortCategory(LockedConfiguration config, String key, String category, String[] vars) 
+	private void sortCategory(Configuration config, String key, String category, String[] vars) 
 	{
 		if (!SortLists) return;
 		
