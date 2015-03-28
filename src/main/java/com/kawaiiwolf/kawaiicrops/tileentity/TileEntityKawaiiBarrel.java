@@ -52,7 +52,14 @@ public class TileEntityKawaiiBarrel extends TileEntity
 		readFromNBT(packet.func_148857_g(), false);
 	}
 	
-	public IIcon getDisplay()
+	public IIcon getLabel()
+	{
+		if (worldObj.getBlock(xCoord, yCoord, zCoord) instanceof BlockKawaiiBarrel)
+			return ((BlockKawaiiBarrel)worldObj.getBlock(xCoord, yCoord, zCoord)).label;
+		return null;
+	}
+	
+	public IIcon getLabelBacking()
 	{
 		if (worldObj.getBlock(xCoord, yCoord, zCoord) instanceof BlockKawaiiBarrel)
 		{
@@ -64,7 +71,6 @@ public class TileEntityKawaiiBarrel extends TileEntity
 				return b.labelUnfinished;
 			return b.labelFinished;
 		}
-		
 		return null;
 	}
 	

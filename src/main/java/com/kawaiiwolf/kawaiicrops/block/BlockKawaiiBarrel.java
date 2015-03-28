@@ -37,7 +37,6 @@ import net.minecraft.world.World;
 
 public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
 {
-	
 	public String Name = "";
 	public int FinishedTime = 0;
 	public int RuinedTime = 0;
@@ -228,18 +227,21 @@ public class BlockKawaiiBarrel extends BlockContainer implements IWailaTooltip
     @Override
     public void harvestBlock(World p_149636_1_, EntityPlayer p_149636_2_, int p_149636_3_, int p_149636_4_, int p_149636_5_, int p_149636_6_) {}
     
-	public IIcon labelUnfinished;
-	public IIcon labelFinished;
-	public IIcon labelRuined;
+	public static IIcon labelUnfinished;
+	public static IIcon labelFinished;
+	public static IIcon labelRuined;	
+	public IIcon label;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg)
 	{
 		super.registerBlockIcons(reg);
 		
-		labelUnfinished = reg.registerIcon(Constants.MOD_ID + ":" + Name + ".barrel_label_unfinished");
-		labelFinished = reg.registerIcon(Constants.MOD_ID + ":" + Name + ".barrel_label_finished");
-		labelRuined = reg.registerIcon(Constants.MOD_ID + ":" + Name + ".barrel_label_ruined");
+		label = reg.registerIcon(Constants.MOD_ID + ":" + Name + ".barrel_label");
+		
+		labelUnfinished = reg.registerIcon(Constants.MOD_ID + ":" + "barrel_label_unfinished");
+		labelFinished = reg.registerIcon(Constants.MOD_ID + ":" + "barrel_label_finished");
+		labelRuined = reg.registerIcon(Constants.MOD_ID + ":" + "barrel_label_ruined");
 	}
 	
 	public enum BarrelModel { BARREL, CRATE };

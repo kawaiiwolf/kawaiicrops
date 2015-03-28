@@ -70,7 +70,8 @@ public class KawaiiCrops {
      * 
      * Changes:
      * 
-     *   Implemented locked configuration (Zips files)
-     *   Locked configuration must match between client/server (Server kicks if not)
+     *   Altered barrels/crates to use standard (included) labels. You just provide the one image and don't worry about the color of
+     *   the state.
+     *   
      */
 }

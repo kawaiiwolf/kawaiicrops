@@ -51,6 +51,7 @@ public class RendererkawaiiBarrel extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float scale)
 	{
+		final float modelScale = 1.0f / 16.0f;
 		if (te instanceof TileEntityKawaiiBarrel)
 		{
 			TileEntityKawaiiBarrel b = (TileEntityKawaiiBarrel)te;
@@ -60,27 +61,27 @@ public class RendererkawaiiBarrel extends TileEntitySpecialRenderer
 			
 			if (b.getModel() == BarrelModel.BARREL)
 			{
-				renderModel(modelBarrel, modelBarrelTexture, x, y, z, meta);
-				renderLabelIcon(b.getDisplay(), x, y + 6.0d/16d, z, meta, 0.25d, 0d);
+				renderModel(modelBarrel, modelBarrelTexture, x, y, z, meta, modelScale, modelScale);
+				renderLabelIcon(b.getLabel(), x, y + 6.0d/16d, z, meta, 0.25d, -0.001d);
+				renderLabelIcon(b.getLabelBacking(), x, y + 6.0d/16d, z, meta, 0.25d, 0d);
 			}
 			if (b.getModel() == BarrelModel.CRATE)
 			{
-				renderModel(modelCrate, modelCrateTexture, x, y, z, meta);
-				renderLabelIcon(b.getDisplay(), x, y + 4.0d/16d, z, meta, 0.5d, 1.0d/16.0d);
+				renderModel(modelCrate, modelCrateTexture, x, y, z, meta, modelScale * 0.975f, modelScale);
+				renderLabelIcon(b.getLabel(), x, y + 4.0d/16d, z, meta, 0.5d, 1.0d/16.0d - 0.001d);
+				renderLabelIcon(b.getLabelBacking(), x, y + 4.0d/16d, z, meta, 0.5d, 1.0d/16.0d);
 			}
 		}
 	}
 	
-	private void renderModel(IModelCustom model, ResourceLocation texture, double x, double y, double z, int meta)
+	private void renderModel(IModelCustom model, ResourceLocation texture, double x, double y, double z, int meta, float xzScale, float yScale)
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
-		float scale = 1.0f / 16.0f;
-		
 		GL11.glPushMatrix();
 		GL11.glTranslated(x + 0.5d, y, z + 0.5d);
 		GL11.glRotatef(((meta + 2) * 90.0f), 0.0f, 1.0f, 0.0f);
-		GL11.glScalef(scale, scale, scale);
+		GL11.glScalef(xzScale, yScale, xzScale);
 		model.renderAll();
 		GL11.glPopMatrix();
 	}
