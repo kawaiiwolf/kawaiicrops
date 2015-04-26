@@ -1,0 +1,18 @@
+
+itemGroup.kawaiicrops=Kawaii Crops
+
+item.kawaiicrops.hungerpotion.name=饥饿药水
+item.kawaiicrops.burntfood.name=烧焦食物
+item.kawaiicrops.ruinedfood.name=烧毁食物
+item.kawaiicrops.cookingoil.name=食用油
+item.kawaiicrops.houchou.name=魔法汤勺
+item.kawaiicrops.mysteryseed.name=神秘种子
+item.kawaiicrops.steamer.name=蒸锅
+item.kawaiicrops.nothing.name=澄清容器
+
+tile.kawaiicrops.cuttingboard.name=砧板
+tile.kawaiicrops.bigpot.name=铁罐
+tile.kawaiicrops.fryingpan.name=煎锅
+tile.kawaiicrops.churn.name=搅乳桶
+tile.kawaiicrops.mill.name=手磨机
+tile.kawaiicrops.grill.name=烤架
